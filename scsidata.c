@@ -39,10 +39,10 @@
  * February 6th, 2012 by Robin T. Miller
  * 	When displaying additional sense data, dynamically allocate the memory
  * required, since the previously allocated 32 bytes could be exceeded!
- * 
+ *
  * May 12th, 2010 by Robin T. Miller
  * 	Added function to return SCSI operation code name.
- * 
+ *
  * April 23rd, 2010 by Robin T. Miller
  *	Update with new asc/ascq pairs from SPC4.
  */
@@ -191,19 +191,19 @@ LookupSenseKey(char *sense_key_name)
  *                       D - DIRECT ACCESS BLOCK DEVICE (SBC-2)  Device Column key:
  *                       . T - SEQUENTIAL ACCESS DEVICE (SSC-2)  blank = code not used
  *                       .   L - PRINTER DEVICE (SSC)            not blank = code used
- *                       .     P - PROCESSOR DEVICE (SPC-2) 
- *                       .     . W - WRITE ONCE BLOCK DEVICE (SBC) 
- *                       .     .   R - CD/DVD DEVICE (MMC-4) 
- *                       .     .     O - OPTICAL MEMORY BLOCK DEVICE (SBC) 
- *                       .     .     . M - MEDIA CHANGER DEVICE (SMC-2) 
- *                       .     .     .   A - STORAGE ARRAY DEVICE (SCC-2) 
- *                       .     .     .     E - ENCLOSURE SERVICES DEVICE (SES) 
- *                       .     .     .     . B - SIMPLIFIED DIRECT-ACCESS DEVICE (RBC) 
- *                       .     .     .     .   K - OPTICAL CARD READER/WRITER DEVICE (OCRW) 
- *                       .     .     .     .     V - AUTOMATION/DRIVE INTERFACE (ADC) 
- *                       .     .     .     .     . F - OBJECT-BASED STORAGE (OSD) 
- *                       .     .     .     .     . 
- *         ASC  ASCQ     D T L P W R O M A E B K V F    Description 
+ *                       .     P - PROCESSOR DEVICE (SPC-2)
+ *                       .     . W - WRITE ONCE BLOCK DEVICE (SBC)
+ *                       .     .   R - CD/DVD DEVICE (MMC-4)
+ *                       .     .     O - OPTICAL MEMORY BLOCK DEVICE (SBC)
+ *                       .     .     . M - MEDIA CHANGER DEVICE (SMC-2)
+ *                       .     .     .   A - STORAGE ARRAY DEVICE (SCC-2)
+ *                       .     .     .     E - ENCLOSURE SERVICES DEVICE (SES)
+ *                       .     .     .     . B - SIMPLIFIED DIRECT-ACCESS DEVICE (RBC)
+ *                       .     .     .     .   K - OPTICAL CARD READER/WRITER DEVICE (OCRW)
+ *                       .     .     .     .     V - AUTOMATION/DRIVE INTERFACE (ADC)
+ *                       .     .     .     .     . F - OBJECT-BASED STORAGE (OSD)
+ *                       .     .     .     .     .
+ *         ASC  ASCQ     D T L P W R O M A E B K V F    Description
  */
 struct sense_entry SenseCodeTable[] = {
 	{ 0x00, 0x00, /* D T L P W R O M A E B K V F */ "No additional sense information"			},
@@ -598,9 +598,9 @@ struct sense_entry SenseCodeTable[] = {
 	{ 0x41, 0x00, /* D                           */ "Data path failure (should use 40 NN)"			},
 	{ 0x42, 0x00, /* D                           */ "Power-on or self-test failure (should use 40 NN)"	},
 	{ 0x43, 0x00, /* D T L P W R O M A E B K V F */ "Message error"						},
-	{ 0x44, 0x00, /* D T L P W R O M A E B K V F */ "Internal target failure"				}, 
+	{ 0x44, 0x00, /* D T L P W R O M A E B K V F */ "Internal target failure"				},
 	{ 0x44, 0x71, /* D T                 B       */ "ATA device failed set features"			},
-	{ 0x45, 0x00, /* D T L P W R O M A E B K V F */ "Select or reselect failure"				}, 
+	{ 0x45, 0x00, /* D T L P W R O M A E B K V F */ "Select or reselect failure"				},
 	{ 0x46, 0x00, /* D T L P W R O M     B K     */ "Unsuccessful soft reset"				},
 	{ 0x47, 0x00, /* D T L P W R O M A E B K V F */ "SCSI parity error"					},
 	{ 0x47, 0x01, /* D T L P W R O M A E B K V F */ "Data phase CRC error detected"				},
@@ -926,8 +926,8 @@ GetSenseErrors(scsi_sense_t *ssp, unsigned char *sense_key,
 
 #if 0
 /*
- * Note: Short term until sense descriptors are added. 
- * Also Note: This mapping mangles the original sense data! 
+ * Note: Short term until sense descriptors are added.
+ * Also Note: This mapping mangles the original sense data!
  */
 void
 MapSenseDescriptorToFixed(scsi_sense_t *ssp)
@@ -1051,7 +1051,7 @@ DumpSenseData(scsi_generic_t *sgp, scsi_sense_t *ssp)
 	if (ssp->sense_key == SKV_ILLEGAL_REQUEST) {
 	    unsigned short field_ptr;
 	    scsi_sense_illegal_request_t *sksp;
-	    
+	
 	    sksp = (scsi_sense_illegal_request_t *)ssp->sense_key_specific;
 	    field_ptr = ((sksp->field_ptr1 << 8) + sksp->field_ptr0);
 	    PrintHex(sgp->opaque, "Bit Pointer to Field in Error", sksp->bit_pointer,
@@ -1208,8 +1208,8 @@ DumpSenseKeySpecificSense(scsi_generic_t *sgp, sense_key_specific_desc_type_t *s
 
     bp++; /* Point to sense specific data. */
     PrintHex(sgp->opaque, "Sense Key Valid", sksp->sksv, PNL);
-    PrintDecHex(sgp->opaque, "Sense Key Specific Bits", sksp->sense_key_bits, PNL); 
-    PrintAscii(sgp->opaque, "Sense Key Bytes", "", DNL); 
+    PrintDecHex(sgp->opaque, "Sense Key Specific Bits", sksp->sense_key_bits, PNL);
+    PrintAscii(sgp->opaque, "Sense Key Bytes", "", DNL);
     for (i = 0; i < (int)sizeof(sksp->sense_key_bytes); i++) {
 	Lprintf(sgp->opaque, "%02x ", sksp->sense_key_bytes[i]);
     }
@@ -1298,11 +1298,11 @@ DumpUnitErrorSense(scsi_generic_t *sgp, hgst_unit_error_desc_type_t *uep)
     /*
      * This field gives detailed information about the error. It contains a
      * unique code which describes where the error was detected and which piece
-     * of hardware or microcode detected the error depending on current operation. 
-     *  
+     * of hardware or microcode detected the error depending on current operation.
+     *
      * Note: I don't know where these error codes are documented! (Robin)
      */
-    PrintHexDec(sgp->opaque, "Unit Error Code", unit_error_code, PNL); 
+    PrintHexDec(sgp->opaque, "Unit Error Code", unit_error_code, PNL);
     return;
 }
 
@@ -1336,12 +1336,12 @@ void
 DumpCdbData(scsi_generic_t *sgp)
 {
     unsigned int dump_length;
-    
+
     if (!sgp || !sgp->data_buffer || !sgp->data_length || !sgp->data_dump_limit) {
 	return;
     }
     dump_length = min(sgp->data_length, sgp->data_dump_limit);
-    Lprintf(sgp->opaque, "\nCDB Data %s: (%u bytes)\n\n", 
+    Lprintf(sgp->opaque, "\nCDB Data %s: (%u bytes)\n\n",
 	    (sgp->data_dir == scsi_data_read) ? "Received" : "Sent",
 	    dump_length);
     DumpFieldsOffset(sgp->opaque, (uint8_t *)sgp->data_buffer, dump_length);

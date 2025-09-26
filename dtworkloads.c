@@ -31,24 +31,24 @@
  *	Support for dt workloads.
  *
  * Modification History:
- * 
+ *
  * November 16th, 2021 by Robin T. Miller
  *	Add hammer and sio worklaods, thanks to Chris @NetApp!
  *
  * June 14th, 2021 by Robin T. Miller
  *      Add workload templates for define the dedup pattern and stopon file.
  *      This makes it easy for automation to use the default file locations!
- * 
+ *
  * August 8th, 2019 (happy birthday brother Randy!)
  *      Added keepalive workload to define a better keepalive message.
- * 
+ *
  * June 6th, 2019 by Robin T. Miller
  *      Add log_files workload template to create job/thread log files.
- * 
+ *
  * May 20th, 2019 by Robin T. Miller
  *      Add direct disk read-after-write w/reread workload.
  *      Add log prefix with timestamp workload (for options).
- * 
+ *
  * December 11th, 2015 by Robin T. Miller
  *	Adding new workloads with newly added percentages. (yay!)
  *
@@ -69,8 +69,8 @@ pthread_mutex_t workloads_lock;		/* The workloads queue lock.	*/
 
 #define QUEUE_EMPTY(whdr)	(whdr->wi_flink == workloads)
 
-/* 
- * Note: The C compiler concatenates strings together, thus trailing space " ".* 
+/*
+ * Note: The C compiler concatenates strings together, thus trailing space " ".*
  */
 workload_entry_t predefined_workloads[] =
 {
@@ -303,22 +303,22 @@ workload_entry_t predefined_workloads[] =
 	"MB/sec: %mbps, IO/sec: %iops, Pass %p, Elapsed: %T'"
     },
     /* -> Start of Deduplication Workloads <- */
-    /* 
-     * The disk and block sizes chosen are suitable for deduplication, 
-     * where aligned modulo 4k requests are required to enable. 
+    /*
+     * The disk and block sizes chosen are suitable for deduplication,
+     * where aligned modulo 4k requests are required to enable.
      * Plesae Note: File system block size and array volume size is
-     * also a factor for deduplication, override defaults (as required) 
-     *  
-     * The end delay provides time for deduplication to occur, before we 
-     * start overwriting previous data. Increase the end delay to provide 
-     * more time for deduplication. 
-     *  
-     * Note: Knowing the specifics of array dedup algorithms is ket to 
-     * the correct set of dt options, so "tuning" to your array may be 
-     * required. 
-     *  
-     * TODO: Adding compression/deduplication ratios to be added! 
-     * For now, please use the dedup pattern file to verify both! 
+     * also a factor for deduplication, override defaults (as required)
+     *
+     * The end delay provides time for deduplication to occur, before we
+     * start overwriting previous data. Increase the end delay to provide
+     * more time for deduplication.
+     *
+     * Note: Knowing the specifics of array dedup algorithms is ket to
+     * the correct set of dt options, so "tuning" to your array may be
+     * required.
+     *
+     * TODO: Adding compression/deduplication ratios to be added!
+     * For now, please use the dedup pattern file to verify both!
      */
     /* Deduplication Workloads */
     {	"dt_dedup_common",
@@ -344,11 +344,11 @@ workload_entry_t predefined_workloads[] =
     /*
      * The dedupe data generated is suitable per set of disks.
      * The pattern file consists of both compresible/dedup data.
-     * The prefix makes the data unique per disk and per host. 
-     * The I/O direction is varied to force varying data pattern. 
+     * The prefix makes the data unique per disk and per host.
+     * The I/O direction is varied to force varying data pattern.
      *
-     * Note: The "%s" is for the SCSI disk serial number. 
-     * TODO: Consider adding SCSI UNMAPs to avoid reading stale data. 
+     * Note: The "%s" is for the SCSI disk serial number.
+     * TODO: Consider adding SCSI UNMAPs to avoid reading stale data.
      */
     {	"dt_disk_dedup",
 	"Direct Disk Deduplication Workload",
@@ -358,13 +358,13 @@ workload_entry_t predefined_workloads[] =
     },
     /*
      * The dedupe data generated is suitable per set of files.
-     * The IOT pattern will change per pass, as is the default. 
-     * Add "disable=unique" to avoid changing IOT seed per pass. 
+     * The IOT pattern will change per pass, as is the default.
+     * Add "disable=unique" to avoid changing IOT seed per pass.
      * Add "dispose=keep" to avoid file system trims, if enabled.
-     * Increase the file count for higher duplication data factor. 
-     *  
-     * Note: The prefix is suitable for multiple files per host. 
-     * Deduplicate data is achieved by same data to multiple files! 
+     * Increase the file count for higher duplication data factor.
+     *
+     * Note: The prefix is suitable for multiple files per host.
+     * Deduplicate data is achieved by same data to multiple files!
      */
     {	"dt_file_system_dedup",
 	"File System Deduplication Workload 2x Data Factor",
@@ -452,7 +452,7 @@ int workload_entries = sizeof(predefined_workloads) / sizeof(workload_entry_t);
 
 /*
  * Forward References:
- */ 
+ */
 int acquire_workloads_lock(void);
 int release_workloads_lock(void);
 
@@ -551,7 +551,7 @@ insert_workload(workload_info_t *workload)
 {
     workload_info_t *whdr = workloads, *wptr;
     int status;
-    
+
     if ( (status = acquire_workloads_lock()) != SUCCESS) {
 	return;
     }

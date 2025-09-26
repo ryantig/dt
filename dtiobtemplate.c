@@ -1,9 +1,9 @@
 /*
  * dtTOOL.c - I/O Behavior for TOOL tool.
- * 
+ *
  * Author: Robin T. Miller
  * Date Created: November 5th, 2013
- * 
+ *
  * Modification History:
  */
 
@@ -16,7 +16,7 @@
 #define DEFAULT_RUNTIME         0
 
 /*
- * TOOL Specific Parameters (options): 
+ * TOOL Specific Parameters (options):
  */
 typedef struct TOOL_parameters {
     /* Add TOOL specific parameters... */
@@ -26,7 +26,7 @@ typedef struct TOOL_parameters {
 } TOOL_parameters_t;
 
 /*
- * TOOL Thread Specific Information: 
+ * TOOL Thread Specific Information:
  */
 typedef struct TOOL_thread_info {
     dinfo_t     *dip;
@@ -39,7 +39,7 @@ typedef struct TOOL_information {
 } TOOL_information_t;
 
 /*
- * Forward References: 
+ * Forward References:
  */
 void TOOL_help(dinfo_t *dip);
 int TOOL_thread_setup(dinfo_t *dip);
@@ -75,15 +75,15 @@ iobehavior_funcs_t TOOL_iobehavior_funcs = {
     NULL,				/* iob_thread_keepalive */
     &TOOL_show_parameters,		/* iob_show_parameters */
     &TOOL_validate_parameters		/* iob_validate_parameters */
-};     
- 
-void     
+};
+
+void
 TOOL_set_iobehavior_funcs(dinfo_t *dip)
 {
     dip->di_iobf = &TOOL_iobehavior_funcs;
     return;
 }
-     
+
 /* ---------------------------------------------------------------------- */
 
 int
@@ -220,7 +220,7 @@ TOOL_clone_information(dinfo_t *dip, dinfo_t *cdip, hbool_t new_thread)
     if (csip == NULL) return(FAILURE);
     cdip->di_opaque = csip;
     *csip = *sip;           /* Copy the original information. */
-    
+
     /* Do TOOL thread specific cloning (if any) here... */
 
     return(SUCCESS);

@@ -31,28 +31,28 @@
  *	File system operations.
  *
  * Modification History:
- * 
+ *
  * November 16th, 2021 by Robin T. Miller
  *      Add %nate for NetApp NATE log prefix format string.
- * 
+ *
  * June 16th, 2021 by Robin T. Miller
  *      Add SCSI format control strings: %sdsf and %tdsf
  *      %sdsf = The SCSI device, %tdsf = the SCSI trigger device.
- * 
+ *
  * October 21st, 2020 by Robin T. Miller
  *      Add format control strings for Nimble specific SCSI information.
- * 
+ *
  * May 11th, 2020 by Robin T. MIller
  *      Add format strings for individual date and time fields for more
  * flexible formatting and add support for date/time field separators.
- * 
+ *
  * May 9th, 2020 by Robin T. Miller
  *      Use high resolution timer for more accurate I/O timing. This is
  * implemented on Windows, but Unix systems still use gettimeofday() API.
- * 
+ *
  * Decmber 15th, 2015 by Robin T. Miller
  * 	Add %workload as valid format string.
- * 
+ *
  * August 17th, 2013 by Robin T Miller
  * 	Moving formatting functions here.
  */
@@ -100,7 +100,7 @@ static char *not_available = "NA";
  *	%u = The user (login) name.
  *      %w = The records written this pass.
  * 	%W = The total records written this test.
- * 
+ *
  * Performance Keywords: (upper and lower case, see below)
  *      %bps  = The bytes per second.
  *      %lbps = The blocks per second.
@@ -108,7 +108,7 @@ static char *not_available = "NA";
  *      %mbps = The megabytes per second.
  *      %iops = The I/O's per second.
  *      %spio = The seconds per I/O.
- * 
+ *
  * Lowercase means per pass stats, while uppercase means total stats.
  *
  * I/O Keywords:
@@ -118,10 +118,10 @@ static char *not_available = "NA";
  * 	%lba = The current logical block address.
  *      %offset = The current file offset.
  *      %status = The thread exit status.
- * 
+ *
  * Misc Keywords:
  * 	%keepalivet = The keepalive time.
- * 
+ *
  * See FmtCommon() for common format control strings.
  *
  * Inputs:
@@ -662,7 +662,7 @@ GetStatsValue(struct dinfo *dip, stats_value_t stv, hbool_t pass_stats, int *sec
      if (pass_stats) {
        *secs = ((dip->di_end_time - dip->di_pass_time) / hertz);
      } else {
-       *secs = ((dip->di_end_time - dip->di_start_time) / hertz); 
+       *secs = ((dip->di_end_time - dip->di_start_time) / hertz);
      }
    }
    return (value);
@@ -686,7 +686,7 @@ GetStatsValue(struct dinfo *dip, stats_value_t stv, hbool_t pass_stats, int *sec
  * 	%T = The thread ID.
  * 	%u = The user (login) name.
  * 	%U = A UUID (if OS supports).
- * 
+ *
  *	Note: Mainly added %j, %J, %t, and %T for debugging.
  *
  * Inputs:
@@ -853,7 +853,7 @@ FmtPrefix(struct dinfo *dip, char *prefix, int psize)
 	    tmp = NULL;				\
 	}					\
     }
- 
+
 /*
  * FmtString() - Format a String Based on Control Strings.
  *
@@ -897,7 +897,7 @@ FmtPrefix(struct dinfo *dip, char *prefix, int psize)
  * 	%tmpdir = The temporary directory.
  *	%user = The user (login) name.
  * 	%uuid = The UUID string.
- * 
+ *
  * See FmtCommon() for common format control strings.
  *
  * Inputs:
@@ -1280,19 +1280,19 @@ FmtString(dinfo_t *dip, char *format, hbool_t filepath_flag)
 }
 
 /*
- * FmtCommon - Format Common Strings. 
- *  
- * Description: 
+ * FmtCommon - Format Common Strings.
+ *
+ * Description:
  *      This function is invoked from other formatting functions, since what's
  * defined here is common to log prefix, keepalive messages, and prefix strings.
- *  
- * Note: The "%" is expected to have been stripped by the caller! 
- * 
- * Common Format Controls: 
+ *
+ * Note: The "%" is expected to have been stripped by the caller!
+ *
+ * Common Format Controls:
  *      %array = The array name or IP.
  *      %sdsf = The SCSI device special file.
  *      %tdsf = The Trigger device special file.
- *  
+ *
  * Job Control Keywords:
  *      %job = The job ID.
  *      %jlog = The job log.
@@ -1301,8 +1301,8 @@ FmtString(dinfo_t *dip, char *format, hbool_t filepath_flag)
  * 	%tid = The thread ID.
  * 	%thread = The thread number.
  * 	%workload = The workload name.
- * 
- * SCSI Format Control Strings: 
+ *
+ * SCSI Format Control Strings:
  *  	%capacity = The disk capacity.
  *  	%blocklen = The disk block length.
  * 	%vendor = The Inquiry vendor ID.

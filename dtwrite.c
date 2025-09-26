@@ -28,35 +28,35 @@
  *
  * Description:
  *	Write routines for generic data test program.
- * 
+ *
  * Modification History:
- * 
+ *
  * September 20, 2023 by Robin T. Miller
  *      Added debug instrumentation to simulate a premature end of data.
  *      For Linux this is: error = 28 - No space left on device
- * 
+ *
  * August 5th, 2021 by Robin T. Miller
  *      Added support for NVMe disks.
- * 
+ *
  * March 21st, 2021 by Robin T. Miller
  *      Add support for forcing FALSE data corruptiong for debugging.
- * 
+ *
  * July 9th, 2020 by Robin T. Miller (on behalf of dcb314)
  * 	Fix incorrect comparision of maxdata written in iolock function.
  * 	
  * May 5th, 2020 by Robin T. Miller
  *      Use high resolution timer for more accurate I/O timing. This is
  * implemented on Windows, but Unix systems still use gettimeofday() API.
- * 
+ *
  * May 28th, 2019 by Robin T. Miller
  *      Don't adjust offset when write error occurs (count is -1), since this
  * causes the wrong offset when we've specified an error limit.
- * 
+ *
  * January 5th, 2018 by Robin T. Miller
  *      When doing percentages and verifying the write data, then exclude
  * the read verify statistics so our read/write percentages are accurate.
  * Note: By default, read-after-write is enabled to verify data written.
- * 
+ *
  * January 5th, 2018 by Robin T. Miller
  *      Added separate read/write percentage option is and also I/O lock
  * to control multiple threads to the same disk or file.
@@ -64,13 +64,13 @@
  * January 4th, 2018 by Robin T. Miller
  *      When prefilling a file, exclude the record limit and fill to the
  * data limit, otherwise random I/O may read a premature end of file.
- * 
+ *
  * December 28th, 2017 by Robin T. Miller
  *      Added support for multiple threads via I/O lock and shared data.
- * 
+ *
  * September 1st, 2017 by Robin T. Miller
  *      Add support for separate read/write random percentages.
- * 
+ *
  * December 21st, 2016 by Robin T. Miller
  *      Only use pwrite() for random access devices, and normal write() for
  * other device types such as pipes or tapes. This update allows dt to write
@@ -85,7 +85,7 @@
  * December 12th, 2015 by Robin T. Miller
  * 	Added support for initializing files always or once.
  * 	This is required for read percentage and/or debugging.
- * 
+ *
  * November 21th, 2015 by Robin T. Miller
  * 	Added support for read/write and sequential/random percentages.
  *
@@ -186,9 +186,9 @@ prefill_file(dinfo_t *dip, size_t block_size, large_t data_limit, Offset_t start
 	int rc = dt_flush_file(dip, dip->di_dname, &dip->di_fd, NULL, True);
 	if (rc == FAILURE) status = rc;
     }
-    /* 
-     * Reset offset and stats back to where we started. 
-     * Note: Rather ugly, but wish to use common code above. 
+    /*
+     * Reset offset and stats back to where we started.
+     * Note: Rather ugly, but wish to use common code above.
      */
     dip->di_dbytes_written -= data_written;
     dip->di_fbytes_written -= data_written;
@@ -516,7 +516,7 @@ write_data(struct dinfo *dip)
 
 	/*
 	 * Flush data *before* verify (required for buffered mode to catch ENOSPC).
-	 */ 
+	 */
 	if ( dip->di_fsync_frequency && ((dip->di_records_written % dip->di_fsync_frequency) == 0) ) {
 	    status = (*dtf->tf_flush_data)(dip);
 	    if ( (status == FAILURE) && (dip->di_error_count >= dip->di_error_limit) ) break;
@@ -560,10 +560,10 @@ write_data(struct dinfo *dip)
 	}
 
 	/*
-	 * After the first partial write to a regular file, we set a premature EOF, 
-	 * to avoid any further writes. This logic is necessary, since subsequent 
-	 * writes may succeed, but our read pass will try to read an entire record, 
-	 * and will report a false data corruption, depending on the data pattern 
+	 * After the first partial write to a regular file, we set a premature EOF,
+	 * to avoid any further writes. This logic is necessary, since subsequent
+	 * writes may succeed, but our read pass will try to read an entire record,
+	 * and will report a false data corruption, depending on the data pattern
 	 * and I/O type, so we cannot read past this point to be safe.
 	 * Note: A subsequent write may return ENOSPC, but not always!
 	 */
@@ -610,10 +610,10 @@ write_data(struct dinfo *dip)
 		    set_Eof(dip);
 		    break;
 		}
-		/* 
+		/*
 		 * This check prevents us from writing past the end of a slice.
 		 * Note: Without slices, we expect to encounter end of file/media.
-		 */ 
+		 */
 		if ( dip->di_slices &&
 		     ((dip->di_offset + (Offset_t)dsize) >= dip->di_end_position) ) {
 		    set_Eof(dip);
@@ -787,10 +787,10 @@ prefill_file_iolock(dinfo_t *dip, size_t block_size, large_t data_limit, Offset_
 
 /************************************************************************
  *									*
- * write_data_iolock() - Write specified data to the output file.       * 
- *      							        * 
- * Description: 						        * 
- * 	This function supports writing with multiple threads.	        * 
+ * write_data_iolock() - Write specified data to the output file.       *
+ *      							        *
+ * Description: 						        *
+ * 	This function supports writing with multiple threads.	        *
  *									*
  * Inputs:	dip = The device information pointer.			*
  *									*
@@ -1020,10 +1020,10 @@ write_data_iolock(struct dinfo *dip)
 		    set_Eof(dip);
 		    break;
 		}
-		/* 
+		/*
 		 * This check prevents us from writing past the end of a slice.
 		 * Note: Without slices, we expect to encounter end of file/media.
-		 */ 
+		 */
 		if ( dip->di_slices &&
 		     ((offset + (Offset_t)dsize) >= dip->di_end_position) ) {
 		    set_Eof(dip);
@@ -1151,7 +1151,7 @@ write_data_iolock(struct dinfo *dip)
 
 	/*
 	 * Flush data *before* verify (required for buffered mode to catch ENOSPC).
-	 */ 
+	 */
 	if ( dip->di_fsync_frequency && ((dip->di_records_written % dip->di_fsync_frequency) == 0) ) {
 	    status = (*dtf->tf_flush_data)(dip);
 	    if ( (status == FAILURE) && (dip->di_error_count >= dip->di_error_limit) ) break;
@@ -1195,10 +1195,10 @@ write_data_iolock(struct dinfo *dip)
 	}
 
 	/*
-	 * After the first partial write to a regular file, we set a premature EOF, 
-	 * to avoid any further writes. This logic is necessary, since subsequent 
-	 * writes may succeed, but our read pass will try to read an entire record, 
-	 * and will report a false data corruption, depending on the data pattern 
+	 * After the first partial write to a regular file, we set a premature EOF,
+	 * to avoid any further writes. This logic is necessary, since subsequent
+	 * writes may succeed, but our read pass will try to read an entire record,
+	 * and will report a false data corruption, depending on the data pattern
 	 * and I/O type, so we cannot read past this point to be safe.
 	 * Note: A subsequent write may return ENOSPC, but not always!
 	 */
@@ -1310,11 +1310,11 @@ check_write(struct dinfo *dip, ssize_t count, size_t size, Offset_t offset)
 	    if ( (dip->di_debug_flag || dip->di_verbose_flag || ((size_t)count > size)) &&
 		 (dip->di_io_mode == TEST_MODE) ) {
 		if (dip->di_multiple_files) {
-		    Wprintf(dip, 
+		    Wprintf(dip,
 			    "File %s, record #%lu, offset "FUF", attempted to write %lu bytes, wrote only %lu bytes.\n",
 			   dip->di_dname, (dip->di_records_written + 1), offset, size, count);
 		} else {
-		    Wprintf(dip, 
+		    Wprintf(dip,
 			    "Record #%lu, offset "FUF", attempted to write %lu bytes, wrote only %lu bytes.\n",
 			   (dip->di_records_written + 1), offset, size, count);
 		}
@@ -1342,8 +1342,8 @@ check_write(struct dinfo *dip, ssize_t count, size_t size, Offset_t offset)
  *									*
  * Inputs:	dip = The device information pointer.			*
  *		buffer = The data buffer to write.			*
- * 		bsize = The number of bytes to write.		        * 
- * 		offset = The current file offset.		        * 
+ * 		bsize = The number of bytes to write.		        *
+ * 		offset = The current file offset.		        *
  *		status = Pointer to status variable.			*
  *									*
  * Outputs:	status = SUCCESS/FAILURE/WARNING = Ok/Error/Warning	*
@@ -1386,13 +1386,13 @@ copy_record (	struct dinfo	*dip,
  * Inputs:	dip = The device information pointer.			*
  *		buffer = The data buffer to write.			*
  *		bsize = The number of bytes to write.			*
- * 		dsize = The users' requested size.		        * 
- * 		offset = The current file offset.		        * 
+ * 		dsize = The users' requested size.		        *
+ * 		offset = The current file offset.		        *
  *		status = Pointer to status variable.			*
  *									*
  * Outputs:	status = SUCCESS/FAILURE/WARNING = Ok/Error/Warning	*
  *		Return value is number of bytes from write() request.	*
- * 		The status may also be RETRYABLE for retryable errors.	* 
+ * 		The status may also be RETRYABLE for retryable errors.	*
  *									*
  ************************************************************************/
 ssize_t
@@ -1426,11 +1426,11 @@ retry:
 
 #if 0
     /*DEBUG*/
-    /* 
+    /*
      * Force a premature "disk full" error to verify reads are limited.
-     * FYI: I'm leaving this code, since forcing certain error conditions 
+     * FYI: I'm leaving this code, since forcing certain error conditions
      * may be useful to add in the future, like force corruptions above.
-     */ 
+     */
     if ( dip->di_records_written == 5 ) {
         os_set_error(OS_ERROR_DISK_FULL);
         count = FAILURE;
@@ -1440,9 +1440,9 @@ retry:
 
     if (dip->di_history_size) {
 	long files, records;
-	/* 
-	 * Note: We cannot report read/write records with percentage, otherwise 
-	 * the record numbers will NOT match extended error reporting and btags! 
+	/*
+	 * Note: We cannot report read/write records with percentage, otherwise
+	 * the record numbers will NOT match extended error reporting and btags!
 	 */
 	if ( False /*dip->di_read_percentage*/ ) {
 	    files = (dip->di_files_read + dip->di_files_written) + 1;
@@ -1487,7 +1487,7 @@ retry:
  * Inputs:	dip = The device information pointer.			*
  *		buffer = The data buffer written.			*
  *		bsize = The number of bytes written.			*
- * 		dsize = The users' requested size.		        * 
+ * 		dsize = The users' requested size.		        *
  * 		offset = The starting record offset.			*
  *									*
  * Outputs:	status = SUCCESS/FAILURE/WARNING = Ok/Error/Warning	*
@@ -1571,7 +1571,7 @@ write_verify(
 	 * Normally the buffers are exact, but with random I/O and timestamps
 	 * enabled, overwrites will (occasionally) cause miscompares with AIO.
 	 * Since we are doing a read after write, we should match all the time.
-	 * 
+	 *
 	 * Note: This memcmp() works for IOT or patterns without a prefix string.
 	 * 	 Messy and duplicates verify code, so needs cleaned up!
 	 */
@@ -1599,8 +1599,8 @@ write_verify(
 		dip->di_pattern_buffer = pbase;
 		dip->di_pattern_bufsize = psize;
 	    } else {
-		/* 
-		 * Note: This method fails w/AIO and overwriting timestamps! 
+		/*
+		 * Note: This method fails w/AIO and overwriting timestamps!
 		 */
 		if (dip->di_lbdata_flag) {
 		    status = verify_lbdata(dip, buffer, vbuffer, vsize, &lba);

@@ -31,36 +31,36 @@
  *	IOT related functions.
  *
  * Modification History:
- * 
+ *
  * February 22nd, 2021 by Robin T. Miller
  *      When analyzing IOT good/bad data blocks, report block numbers that
  * are zero based rather than starting at block 1 to avoid confusion, and
  * so the individual IOT block numbers (already base zero) will match!
- * 
+ *
  * February 5th, 2021 by Robin T. Miller
  *      Enhance IOT analysis for partial block corruptions.
- * 
+ *
  * November 27th, 2020 by Robnin T. Miller
  *      Add more context for file systems, report physical & relative LBA.
- * 
+ *
  * June 1st, 2020 by Robin T. Miller
  *      Report the record buffer index to make it easier to display data in
  * saved corruption files for use with "showbtags offset=value" command.
- * 
+ *
  * January 9th, 2020 by Robin T. Miller
  *      When displaying block tags, do *not* overwrite the write time or CRC,
  * if we are doing immediate read-after-write, since the expected block tag is
  * the full block tag just written. This fudging of the btag data is to avoid
  * reporting incorrect btag reporting when we are in read only pass, since we
  * do not have the original write time stamps.
- * 
+ *
  * December 22nd, 2019 by Robin T. Miller
  *      For file systems, report the physical LBA, if we can map the offset.
- * 
+ *
  * March 8th, 2016 by Robin T. Miller
  * 	Fix bug in display_iot_data() where the wrong received word0 was copied,
  * which results in a wrong received block number and offset with timestamps!
- * 
+ *
  * June 8th, 2015 by Robin T. Miller
  * 	Added support for block tags (btags).
  *
@@ -80,11 +80,11 @@
  * May 20th, 2014 by Robin T. Miller
  * 	Remove PRT_NOFLUSH when displaying IOT data, since this causes
  * garbled and/or lost stderr output on some OS's (Linux and Solaris).
- * 
+ *
  * May 15th, 2014 by Robin T. MIller
  * 	Fix minor bug when comparing bytes per line with timestamp,
  * a corruption *after* the timestamp was not properly flagged.
- * 
+ *
  * August 17th, 2013 by Robin T Miller
  * 	Moving IOT functions here.
  */
@@ -119,7 +119,7 @@ static char *notmapped_str = "<not mapped or not a valid offset>";
  *
  * Return Value:
  * 	Returns the next lba to use.
- * 
+ *
  * Note: If the count is smaller than sizeof(u_int32), then no lba is
  * encoded in the buffer.  Instead, we init odd bytes with ~0.
  */
@@ -334,11 +334,11 @@ analyze_iot_data(dinfo_t *dip, uint8_t *pbuffer, uint8_t *vbuffer, size_t bcount
     uint32_t block = 0;		/* Zero based to avoid confusion! */
     int blocks = (int)(count / dip->di_lbdata_size);
     Offset_t record_offset;
-    
+
     /* Note: Use dt's offset rather than the OS fd offset (for now)! */
     record_offset = getFileOffset(dip);
     //record_offset = get_current_offset(dip, (ssize_t)bcount);
-    
+
     Fprintf(dip, "\n");
     Fprintf(dip, "Analyzing IOT Record Data: (Note: Block #'s are relative to start of record!)\n");
     Fprintf(dip, "\n");
@@ -502,7 +502,7 @@ display_iot_block(dinfo_t *dip, int block, Offset_t block_offset,
     }
     Fprintf(dip, DT_FIELD_WIDTH "%u (0x%x)\n", "Record Buffer Index", vindex, vindex);
 
-    /* 
+    /*
      * Verify and display the prefix string (if any).
      */
     if (dip->di_fprefix_size) {
@@ -511,7 +511,7 @@ display_iot_block(dinfo_t *dip, int block, Offset_t block_offset,
 
 	aprefix_size = (int)strlen(dip->di_fprefix_string);
 	rprefix_size = dip->di_fprefix_size;
-	/* 
+	/*
 	 * Note: The formatted prefix size includes the terminating NULL.
 	 * and is also rounded up to the sizeof(unsigned int). Therefore,
 	 * we are comparing the ASCII prefix string + NULL bytes!
@@ -608,9 +608,9 @@ display_iot_block(dinfo_t *dip, int block, Offset_t block_offset,
     received_word0 = get_lbn( (riot + rprefix_size + (sizeof(received_lbn) * 1)) );
     received_word1 = get_lbn( (riot + rprefix_size + (sizeof(received_lbn) * 2)) );
 
-    /* 
-     * Process Timestamps (if any). 
-     * Note: This is legacy timestamp support, block tags are now preferred! 
+    /*
+     * Process Timestamps (if any).
+     * Note: This is legacy timestamp support, block tags are now preferred!
      */
     if (dip->di_timestamp_flag == True) {
 	time_t seconds;
@@ -743,15 +743,15 @@ display_iot_block(dinfo_t *dip, int block, Offset_t block_offset,
 	    }
 	}
     }
-    
+
     if (dip->di_btag_flag == True) {
 	report_btag(dip, ebtag, rbtag, raw_flag);
     } else {
 	Fprintf(dip, "\n");
     }
 
-    /* 
-     * Format and display the IOT data. 
+    /*
+     * Format and display the IOT data.
      */
     width = sprintf(sbp, "Byte Expected: address "LLPXFMT, (ptr_t)pptr);
     sbp += width;
@@ -763,7 +763,7 @@ display_iot_block(dinfo_t *dip, int block, Offset_t block_offset,
     while (width++ < expected_width) {
 	sbp += sprintf(sbp, " ");
     }
-    sbp += sprintf(sbp, "Received: address "LLPXFMT"\n", (ptr_t)vptr); 
+    sbp += sprintf(sbp, "Received: address "LLPXFMT"\n", (ptr_t)vptr);
     Fprintf(dip, "%s", str);
 
     while (limit > 0) {
@@ -951,7 +951,7 @@ display_iot_data(dinfo_t *dip, uint8_t *pbuffer, uint8_t *vbuffer, size_t bcount
 
     /*
      * Compare one lbdata sized block at a time.
-     * 
+     *
      * TODO: This does NOT handle any partial IOT blocks! (assumes full IOT data blocks)
      * This is *not* generally a problem, but partial blocks can occur with file system full,
      * and the file offset is not modulo the block size (crossing file system blocks).
@@ -990,7 +990,7 @@ display_iot_data(dinfo_t *dip, uint8_t *pbuffer, uint8_t *vbuffer, size_t bcount
     }
     /*
      * Warn user (including me), that some of the IOT data was NOT displayed!
-     */ 
+     */
     if ((count % dsize) != 0) {
 	Fprint(dip, "\n");
 	Wprintf(dip, "A partial IOT data block of %u bytes was NOT displayed!\n", (count % dsize) );

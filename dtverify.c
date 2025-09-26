@@ -31,65 +31,65 @@
  *	Data Verification functions.
  *
  * Modification History:
- * 
+ *
  * March 8th, 2021 by Robin T. Miller
  *      When corruptions occur, if onerr=stop is enabled, stop other threads,
  * thereby reducing I/O in traces and expediting trigger(s) execution.
- * 
+ *
  * November 30th, 2020 by Robin T. Miller
  *      When reporting extended error information, clarify the LBA type.
- * 
+ *
  * July 9th, 2020 by Robin T. Miller
  *      For Windows, when saving corrupted data files, check for both the
  * native directory separator '\' and the POSIX directory separator '/',
  * since we don't know which was setup during startup.
- * 
+ *
  * June 12th, 2020 by Robin T. Miller
  *      Fix improper limit calculation when dumping expected/received buffers.
  * The limit was going negative, which caused a segmentation fault when hit!
- * 
+ *
  * May 4th, 2020 by Robin T. Miller
  *      Display the command to re-read all data including corrupted record.
- * 
+ *
  * April 26th, 2020 by Robin T. Miller
  *      Add the job and thread ID's to corrupted files being saved, so it's
  * easier to identify the job/thread that created them. While files often
  * have this information, direct disk device names do not, so adding.
- * 
+ *
  * April 8th, 2020 by Robin T. Miller
  *      When dumping block tags (btags), dump the buffer in hex bytes.
- * 
+ *
  * December 22nd, 2019 by Robin T. Miller
  *      For file systems, report the physical LBA if we can translate.
- * 
+ *
  * December 16th, 2-19 by Robin T. Miller
  *      When dumping buffers, for received data display the file offsets
  * rather than memory addresses, which are more useful for troubleshooting.
- * 
+ *
  * December 14th, 2019 by Robin T. Miller
  *      Provide more extended error information to help with troubleshooting.
- * 
+ *
  * December 3rd, 2019 by Robin T. Miller
  *      Add writing corrupted and reread data to a file for later analysis.
  *      This especially helps with "transient" (temporary) verification errors.
- * 
+ *
  * November 21st, 2019 by Robin T. Miller
  *	Added separate retry data corruption delay (was sharing retry delay).
  *      Added retry data corruption limit, rather than just loop on error.
- * 
+ *
  * June 11th, 2019 by Robin T. Miller
  *      When looping on data corruption, use the corruption dip (cdip),
  * for stopping or terminating the thread (was using cloned dip).
- * 
+ *
  * April 30th, 2018 by Robin T. Miller
  *      Added extra compare flag, to control btag prefix verification.
  * Note: The btags is usually sufficient, extra compare is for my debug.
- * 
+ *
  * April 26th, 2018 by Robin T. Miller
  *      When reading only, if the btag is valid, also verify the prefix
  * string (if any), for higher validation. While this is not fullproof,
  * it does catch valid btags with an incorrect prefix strings.
- * 
+ *
  * June 7th, 2015 by Robin T. Miller
  * 	Adding support for verifying block tags (btags).
  * 	Updated dumping buffers display all data if less than dump limit.
@@ -97,7 +97,7 @@
  * April 25th, 2015 by Robin T. Miller
  * 	During verify retries, always display the dt reread command line,
  * but disable compare if pattern options do not permit data verification.
- * 
+ *
  * April 21st, 2015 by Robin T. Miller
  * 	Modified dump_buffer() to use log buffer to consolidate output.
  *
@@ -109,7 +109,7 @@
  * *not* disable Direct I/O (DIO) if the I/O size of offset is not modulo
  * the block size. For SAN on local file systems, these *must* be aligned,
  * or else EINVAL is returned on the read().
- * 
+ *
  * August 17th, 2013 by Robin T Miller
  * 	Moving verify functions here.
  */
@@ -176,7 +176,7 @@ static char *compare_error_str =	"Data compare error at byte";
  * pad bytes do not exist for memory mapped files which are directly	*
  * mapped to memory addresses.						*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	size = The size of the buffer to dump.				*
  *									*
@@ -220,7 +220,7 @@ dump_buffer (	dinfo_t		*dip,
  *									*
  * dump_buffer_legacy() Dump data buffer legacy format.			*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device infromation pointer.				*
  *	name = The buffer name being dumped.				*
  *	base = Base pointer of buffer to dump.				*
@@ -297,8 +297,8 @@ dump_buffer_legacy (	dinfo_t		*dip,
 #endif /* defined(MACHINE_64BITS) */
 
     /*
-     * Note: This may be deprecated with new side by side comparision, but at 
-     * present it's needed for non-IOT patterns, and also provides context. 
+     * Note: This may be deprecated with new side by side comparision, but at
+     * present it's needed for non-IOT patterns, and also provides context.
      */
     for (boff = 0; boff < limit; boff++, bptr++) {
 	if ((boff % field_width) == (size_t) 0) {
@@ -325,7 +325,7 @@ dump_buffer_legacy (	dinfo_t		*dip,
  *									*
  * dump_expected_buffer() Dump the expected data buffer.		*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device infromation pointer.				*
  *	name = The buffer name being dumped.				*
  *	base = Base pointer of buffer to dump.				*
@@ -391,7 +391,7 @@ dump_expected_buffer (	dinfo_t		*dip,
     Lprintf(dip, "   Memory Address / Index \n");
 
     /*
-     * Note: This may be deprecated with new side by side comparision, but at 
+     * Note: This may be deprecated with new side by side comparision, but at
      * present it's needed for non-IOT patterns, and also provides context.
      */
     for (bytes = 0; (bytes < limit) && (bptr < bend); bytes++, bptr++) {
@@ -417,7 +417,7 @@ dump_expected_buffer (	dinfo_t		*dip,
  *									*
  * dump_received_buffer() Dump the received data buffer.		*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device infromation pointer.				*
  *	name = The buffer name being dumped.				*
  *	base = Base pointer of buffer to dump.				*
@@ -494,7 +494,7 @@ dump_received_buffer (	dinfo_t		*dip,
     Lprintf(dip, "      File Offset / Index \n");
 
     /*
-     * Note: This may be deprecated with new side by side comparision, but at 
+     * Note: This may be deprecated with new side by side comparision, but at
      * present it's needed for non-IOT patterns, and also provides context.
      */
     for (bytes = 0; (bytes < limit) && (bptr < bend); bytes++, bptr++, fptr++) {
@@ -521,15 +521,15 @@ dump_received_buffer (	dinfo_t		*dip,
  *									*
  * dump_file_buffer() - Dump the received file buffer.			*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device infromation pointer.				*
  *	name = The buffer name being dumped.				*
  *	base = Base pointer of buffer to dump.				*
  *	cptr  = Pointer into buffer being dumped.			*
  *	dump_size = The size of the buffer to dump.			*
- *      bufr_size = The maximum size of this buffer.    	        * 
- *      							        * 
- * 	Note: Mostly a clone of dump_receive_buffer().			* 
+ *      bufr_size = The maximum size of this buffer.    	        *
+ *      							        *
+ * 	Note: Mostly a clone of dump_receive_buffer().			*
  *									*
  * Return Value:							*
  *		Void.							*
@@ -594,7 +594,7 @@ dump_file_buffer (	dinfo_t		*dip,
     Lprintf(dip, "      File Offset / Index \n");
 
     /*
-     * Note: This may be deprecated with new side by side comparision, but at 
+     * Note: This may be deprecated with new side by side comparision, but at
      * present it's needed for non-IOT patterns, and also provides context.
      */
     for (bytes = 0; bytes < limit; bytes++, bptr++, fptr++) {
@@ -813,8 +813,8 @@ verify_lbdata(	struct dinfo	*dip,
  *		buffer = Pointer to data to verify.			*
  *		count = The number of bytes to compare.			*
  *		pattern = Data pattern to compare against.		*
- * 		lba = Pointer to starting logical block address.        * 
- * 		raw_flag = Performing read-after-write flag.		* 
+ * 		lba = Pointer to starting logical block address.        *
+ * 		raw_flag = Performing read-after-write flag.		*
  *									*
  * Outputs:	Returns SUCCESS/FAILURE = Data Ok/Compare Error.	*
  *		lba gets updated with the next lba to verify with.	*
@@ -853,8 +853,8 @@ verify_data (	struct dinfo	*dip,
 	(void)verify_reread(dip, buffer, count, pattern, lba);
     }
     /*
-     * To capture read retries, for triggers which stop I/O, we now allow 
-     * mismatch triggers to be delayed until *after* re-read retries. 
+     * To capture read retries, for triggers which stop I/O, we now allow
+     * mismatch triggers to be delayed until *after* re-read retries.
      */
     if (dip->di_trigdelay_flag == True) {
 	if ( (dip->di_trigger_control == TRIGGER_ON_ALL) ||
@@ -862,8 +862,8 @@ verify_data (	struct dinfo	*dip,
 	    (void)ExecuteTrigger(dip, miscompare_op);
 	}
     }
-    /* 
-     * The file system map gets allocated whenever file errors are reported. 
+    /*
+     * The file system map gets allocated whenever file errors are reported.
      * Free the file system map if doing read-after-write, to force refresh.
      */
     if (raw_flag && dip->di_fsmap) {
@@ -971,7 +971,7 @@ verify_reread(
 		dip->di_dio_flag = False;
 		Wprintf(dip, "The I/O size or offset is NOT block aligned, so Direct I/O is disabled!\n");
 	    }
-	} else 
+	} else
 #endif /* defined(__linux__) || defined(WIN32) */
 	{
 	    dip->di_dio_flag = True;    /* Valid for Solaris & native Windows. */
@@ -1053,7 +1053,7 @@ cleanup_exit:
 #if defined(DATA_CORRUPTION_URL)
     Fprintf(dip, "Note: For more information regarding data corruptions, please visit this link:\n");
     Fprintf(dip, "      %s\n", DATA_CORRUPTION_URL);
-# if defined(DATA_CORRUPTION_URL1) 
+# if defined(DATA_CORRUPTION_URL1)
     Fprintf(dip, "      %s\n", DATA_CORRUPTION_URL1);
 # endif
     Fprintf(dip, "\n");
@@ -1141,11 +1141,11 @@ report_reread_corrupted(dinfo_t *dip, size_t request_size, Offset_t record_offse
      * - pattern files (need to save pattern data for this record)
      * - pattern strings (but handle special case IOT text here)
      * - request is non-modulo pattern buffer size (pattern wraps)
-     * 
+     *
      * Note: This may not be perfect, but most folks use IOT pattern!
      */
     if ( (dip->di_iot_pattern == False) &&
-	 ( dip->di_pattern_file || dip->di_pattern_string || 
+	 ( dip->di_pattern_file || dip->di_pattern_string ||
 	   (dip->di_pattern_bufsize && (request_size % dip->di_pattern_bufsize)) ) ) {
 	sbp += Sprintf(sbp, " disable=compare");
     }
@@ -1155,15 +1155,15 @@ report_reread_corrupted(dinfo_t *dip, size_t request_size, Offset_t record_offse
 }
 
 /*
- * report_reread_data() - Report command to do re-read the data. 
- *  
- * Description: 
+ * report_reread_data() - Report command to do re-read the data.
+ *
+ * Description:
  *      We'll report the re-read command line for the corrupted data, or
  * report the re-read for all data written for this device/file.
- *  
- * Note: This function has dual purpose: 
+ *
+ * Note: This function has dual purpose:
  *   1) Used during data corruptions to re-read file to corruption.
- *   2) Used to report re-read file command when thread is exiting. 
+ *   2) Used to report re-read file command when thread is exiting.
  */
 void
 report_reread_data(dinfo_t *dip, hbool_t corruption_flag, char *reread_file)
@@ -1438,7 +1438,7 @@ verify_data_with_btags(
     int btag_size = getBtagSize(ebtag);
     hbool_t error = False;
     int status = SUCCESS;
-    
+
 #if defined(DEBUG)
     /* Actually a sanity check! */
     if (bytes % dsize) {
@@ -1775,7 +1775,7 @@ verify_data_with_lba(
 	    if (dip->di_fprefix_string) {
 		size_t pcount;
 		/*
-		 * For IOT data, the prefix is in the pattern buffer. 
+		 * For IOT data, the prefix is in the pattern buffer.
 		 * For lbdata, the prefix is NOT in the pattern buffer.
 		 */
 		status = verify_prefix(dip, vptr, count, (int)i, &pcount);
@@ -1836,7 +1836,7 @@ verify_data_with_lba(
                 u_int32 elbn = vlbn; /* Can't take address of register. */
                 /* expected - yep, real ugly, but gotta be correct! */
                 dump_buffer(dip, lba_str, (u_char *)&elbn, (u_char *)&elbn,
-			    sizeof(elbn), sizeof(elbn), True); 
+			    sizeof(elbn), sizeof(elbn), True);
             } else if (dip->di_pattern_buffer) {
 		size_t pdump_size = (dump_size < dip->di_pattern_bufsize)
 				     ? dump_size : dip->di_pattern_bufsize;
@@ -2015,7 +2015,7 @@ retry_operation(dinfo_t *dip, error_info_t *eip)
 	   "Retrying request after %u second delay, retry #%d\n",
 	   dip->di_retry_delay, dip->di_retry_count);
     SleepSecs(dip, dip->di_retry_delay);
-    
+
     return(True);
 }
 
@@ -2151,7 +2151,7 @@ report_device_information(dinfo_t *dip)
  *
  * Return Value:
  *	void
- * 
+ *
  * TODO: This code is ancient, overloaded, and clearly needs rewritten.
  * 	 Perhaps one day I'll get around to it, but it's messey as heck!
  */
@@ -2350,7 +2350,7 @@ ReportDeviceInfoX(struct dinfo *dip, error_info_t *eip)
 	    PrintLongDecHex(dip, "Starting Relative Error LBA", rlba, PNL);
 	    PrintLongDecHex(dip, "Starting Physical Error LBA", dip->di_error_lba, PNL);
 	    PrintLongDecHex(dip, "Physical Error LBA Offset", (dip->di_error_lba * dsize), PNL);
-	    if (dsize > BLOCK_SIZE) { 
+	    if (dsize > BLOCK_SIZE) {
 		PrintLongDecHex(dip, "Physical 512 byte Error LBA", (error_offset / BLOCK_SIZE), PNL);
 	    } else {
 		PrintLongDecHex(dip, "Physical 4096 byte Error LBA", (error_offset / 4096), PNL);
@@ -2422,7 +2422,7 @@ MapOffsetToLBA(dinfo_t *dip, HANDLE fd, uint32_t dsize, Offset_t offset, hbool_t
  *	buffer_index = Buffer index of corruption.
  *      eio_flag = Indicates if this is an I/O error.
  *      mismatch_flag = Indicates if this is a mismatch.
- * 
+ *
  * Outputs:
  * 	dip is set with relavent device information.
  *

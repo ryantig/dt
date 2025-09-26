@@ -34,7 +34,7 @@
  *
  * August 26th, 2010 by Robin T. Miller
  * 	When opening device, on EROFS errno, try opening read-only.
- * 
+ *
  * April 8th, 2008 by Robin T. Miller.
  *	Add USCSI_DIAGNOSE to default flags for USCSI SPT request.
  *
@@ -600,7 +600,7 @@ error:
  * retriable error. Note: The checks performed here are those that are
  * OS specific, such as looking a host, driver, or syscall errors that can
  * be retried automatically, and/or to perform any OS specific recovery.
- * 
+ *
  * Inputs:
  *      sgp = Pointer to the SCSI generic data structure.
  *
@@ -612,7 +612,7 @@ hbool_t
 os_is_retriable(scsi_generic_t *sgp)
 {
     hbool_t is_retriable = False;
-    
+
     return (is_retriable);
 }
 

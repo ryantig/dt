@@ -43,7 +43,7 @@
 
 /*
  * SCSI Operation Code Information:
- */ 
+ */
 typedef struct scsi_opcodes {
     unsigned char opcode;		/* The SCSI operation code.	*/
     unsigned char subcode;		/* The operation code (if any). */
@@ -99,7 +99,7 @@ typedef struct scsi_opcodes {
  */
 #define CAW_DEFAULT_BLOCKS	1		/* The default CDB blocks.  */
 
-/* 
+/*
  * Unmap Definitions:
  */
 #define UNMAP_MAX_LBA	0xFFFFFFFFFFFFFFFFLL	/* Max Unmap LBA.	    */
@@ -184,7 +184,7 @@ typedef struct scsi_opcodes {
 
 /*
  * Extended Copy (XCOPY) Service Actions:
- */ 
+ */
 typedef enum {
     SCSI_XCOPY_EXTENDED_COPY_LID1	= 0x00,
     SCSI_XCOPY_POPULATE_TOKEN 		= 0x10,
@@ -534,7 +534,7 @@ typedef enum {
 
 /*
  * External Declarations:
- */ 
+ */
 extern int inquiry_encode(void *arg);
 extern int inquiry_decode(void *arg);
 extern scsi_opcode_t *ScsiOpcodeEntry(unsigned char *cdb, unsigned short device_type);

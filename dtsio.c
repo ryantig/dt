@@ -23,36 +23,36 @@
 
 /*
  * dtsio.c - I/O Behavior for NetApp's sio tool.
- * 
+ *
  * Author: Robin T. Miller
  * Date Created: November 5th, 2013
- * 
+ *
  * Modification History:
- * 
+ *
  * November 9, 2021 by Chris Nelson (nelc@netapp.com)
  *  Add MIT license, in order to distribute to FOSS community so it can
  *  be used and maintained by a larger audience, particularly for the
  *  public dt at https://github.com/RobinTMiller/dt
- 
+
  *
  * April 7th, 2016 by Robin T. Miller
  *      Fix regression in sio_thread() where the prefill flag was left uninitialized
  * which kept the file size check from being performed, which sets prefill as required.
- * 
+ *
  * December 12th, 2015 by Robin T. Miller
  *      When file does not exist or is smaller than the requested data limit
  * when there's a read percentage, prefill the file so reads have data to read.
  * Previously, files were being extended to the data limit, but read would never
  * reach the underlying storage, since metadata indicated nothing was written!
- * 
+ *
  * December 10th, 2015 by Robin T. Miller
  *      Updating help with examples.
- * 
+ *
  * June 9th, 2015 by Robin T. Miller
  * 	Fix "floating exception" fault, due to improperly setting the ending
  * block when the starting block was non-zero. Also added a sanity check on the
  * starting and ending blocks to ensure the ending block is greater than start.
- * 
+ *
  * June 4th, 2015 by Robin T. Miller
  * 	With multiple threads, when a starting offset is specified, ensure
  * the global current block gets initialized properly. Since this is done
@@ -63,7 +63,7 @@
  * May 13th, 2015 by Robin T. Miller
  * 	When reporting extended errors, use the current block size,
  * which is in bytes, rather than the I/O size (blocks and always 1).
- * 
+ *
  * March 31st, 2015 by Robin T. Miller
  * 	Added parsing for runtime= and threads= options, since sio
  * options can (optionally) start with '-', while dt options do not!
@@ -103,7 +103,7 @@
  * time recorded *after* all threads have started running (sync'ed by lock).
  * When starting many threads, esp. with active I/O, we don't wish to use
  * the job start time, since this is recorded *before* threads are started.
- * 
+ *
  * April 27th, 2014 by Robin T. Miller
  * 	Added extended error reporting for I/O and miscompare errors.
  *
@@ -146,7 +146,7 @@
 /*
  * Pattern for block filling:
  *
- * Note: This assumes a 32-bit word, it will 
+ * Note: This assumes a 32-bit word, it will
  *       This pattern will wrap around and be repeated after
  *       a long time when dealing with large (>2GB partitions).
  */
@@ -156,12 +156,12 @@
 /* get_sio_opt_bool("instrumentation") pattern: */
 #define PATTERN_B(blk_nbr, word_nbr, no_word) \
     ((blk_nbr*no_word)+word_nbr)
-    
+
 #define RAND(dip)   get_random(dip)
 #define RAND64(dip) get_random64(dip)
 
 /*
- * sio Specific Parameters (options): 
+ * sio Specific Parameters (options):
  */
 typedef struct sio_parameters {
     hbool_t     blockno;
@@ -201,7 +201,7 @@ typedef struct sio_parameters {
 } sio_parameters_t;
 
 /*
- * sio Thread Specific Information: 
+ * sio Thread Specific Information:
  */
 typedef struct sio_thread_info {
     dinfo_t          *dip;
@@ -257,7 +257,7 @@ typedef struct sio_total_stats {
 } sio_total_stats_t;
 
 /*
- * Forward References: 
+ * Forward References:
  */
 void sio_help(dinfo_t *dip);
 int sio_extend_file(dinfo_t *dip);
@@ -278,7 +278,7 @@ void sio_reset_stats(dinfo_t *dip, sio_thread_info_t *stip);
 unsigned long int sio_get_usecs(struct timeval time2, struct timeval time1);
 int sio_check_pattern_buffer(dinfo_t *dip,
                              int target_device,
-                             char *bufP, BlockNum_t offset, size_t iosize, 
+                             char *bufP, BlockNum_t offset, size_t iosize,
                              size_t blocksize, int break_on_error);
 int sio_check_fixed_val_buffer(dinfo_t *dip,
                                int target_device, char *bufP, u_char value,
@@ -351,14 +351,14 @@ iobehavior_funcs_t sio_iobehavior_funcs = {
     &sio_show_parameters,       /* iob_show_parameters */
     &sio_validate_parameters    /* iob_validate_parameters */
 };
- 
+
 void
 sio_set_iobehavior_funcs(dinfo_t *dip)
 {
     dip->di_iobf = &sio_iobehavior_funcs;
     return;
 }
-     
+
 /* ---------------------------------------------------------------------- */
 
 int
@@ -610,8 +610,8 @@ sio_release_global_lock(dinfo_t *dip, sio_global_data_t *sgdp)
     return(status);
 }
 
-/* 
- * Note: This is invoked after the job is created, but *before* threads are created! 
+/*
+ * Note: This is invoked after the job is created, but *before* threads are created!
  */
 int
 sio_job_init(dinfo_t *dip, job_info_t *job)
@@ -676,7 +676,7 @@ sio_job_init(dinfo_t *dip, job_info_t *job)
     return(status);
 }
 
-/* 
+/*
  * sio_cleanup_job() - Do cleanup after a job comepletes.
  *                                                         .
  * This cleanup is invoked after all threads have completed.
@@ -684,7 +684,7 @@ sio_job_init(dinfo_t *dip, job_info_t *job)
  *
  * Inputs:
  *  dip = The device information pointer (of the first thread).
- * 
+ *
  * Return Value:
  *  Returns Success / Failure.
  */
@@ -762,7 +762,7 @@ sio_job_finish(dinfo_t *dip, job_info_t *job)
 
         sio_report_thread_stats(tdip);
     }
-    
+
     /* TODO: Query operation, master dip does *not* have sio pointers! */
     if ( (siop == NULL) || (stip == NULL) ) return(SUCCESS);
 
@@ -832,13 +832,13 @@ sio_report_statistics(dinfo_t *dip, sio_total_stats_t *stp)
     Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "Total reads", stp->global_reads);
     Kbytes = (double)( (double)stp->global_bytes_read / (double)KBYTE_SIZE);
     Mbytes = (double)( (double)stp->global_bytes_read / (double)MBYTE_SIZE);
-    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n", 
+    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n",
             "Total bytes read", stp->global_bytes_read, Kbytes, Mbytes);
-    
+
     Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "Total writes", stp->global_writes);
     Kbytes = (double)( (double)stp->global_bytes_written / (double)KBYTE_SIZE);
     Mbytes = (double)( (double)stp->global_bytes_written / (double)MBYTE_SIZE);
-    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n", 
+    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n",
             "Total bytes written", stp->global_bytes_written, Kbytes, Mbytes);
 
     Lprintf(dip, DT_FIELD_WIDTH "%.2f\n", "Computed IOPS",
@@ -887,7 +887,7 @@ sio_report_thread_stats(dinfo_t *dip)
     Lprintf(dip, "  ios:          %10llu\n", stip->io_completes);
     Lprintf(dip, "  latency(us):  %10llu\n", stip->latency);
     Lprintf(dip, "  sumofsquares: %10llu\n", stip->sumofsquares_latency);
-    
+
     Lprintf(dip, "  min(ms):      %10.2f\n", (stip->min_latency / 1000.0));
     Lprintf(dip, "  max(ms):      %10.2f\n", (stip->max_latency / 1000.0));
     Lprintf(dip, "  avg(ms):      %10.2f\n", avg);
@@ -924,7 +924,7 @@ sio_pretty_thread_stats(dinfo_t *dip)
     Lprintf(dip, DT_FIELD_WIDTH "%d\n", "Thread", dip->di_thread_number);
     Lprintf(dip, DT_FIELD_WIDTH "%s\n", "File name", dip->di_dname);
     Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "I/O's complete", stip->io_completes);
-    
+
     if (siop->no_performance == False) {
         Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "latency(us)", stip->latency);
         Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "sumofsquares", stip->sumofsquares_latency);
@@ -943,19 +943,19 @@ sio_pretty_thread_stats(dinfo_t *dip)
     Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "Total reads", stip->reads);
     Kbytes = (double)( (double)stip->bytes_read / (double)KBYTE_SIZE );
     Mbytes = (double)( (double)stip->bytes_read / (double)MBYTE_SIZE );
-    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n", 
+    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n",
             "Total bytes read", stip->bytes_read, Kbytes, Mbytes);
 
     Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "Total writes", stip->writes);
     Kbytes = (double)( (double)stip->bytes_written / (double)KBYTE_SIZE );
     Mbytes = (double)( (double)stip->bytes_written / (double)MBYTE_SIZE );
-    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n", 
+    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n",
             "Total bytes written", stip->bytes_written, Kbytes, Mbytes);
-    
+
     Lprintf(dip, DT_FIELD_WIDTH "%.2f\n", "Computed IOPS",
             (double)(stip->reads + stip->writes) /
             (double)(stip->end_time.time - stip->begin_time.time));
-    
+
     Lprintf (dip, DT_FIELD_WIDTH, "Total elapsed time");
     format_time(dip, (dip->di_end_time - dip->di_start_time));
 
@@ -1033,7 +1033,7 @@ sio_report_total_stats(dinfo_t *dip, sio_total_stats_t *stp)
     Lprintf(dip, "global_writes = %llu; global_bytes_written = %llu (%llu KB)\n",
             stp->global_writes, stp->global_bytes_written,
             stp->global_bytes_written / 1024);
-    
+
     Lprintf(dip, "global_time_start = " TMF ", global_stop_time = " TMF "\n",
             stp->global_time_start, stp->global_time_end);
     Lprintf(dip, "measurement start = " TMF ", measurement stop = " TMF "\n",
@@ -1069,7 +1069,7 @@ sio_report_total_stats(dinfo_t *dip, sio_total_stats_t *stp)
         Lprintf(dip, "IOS:            %llu\n", stp->total_ios);
         Lprintf(dip, "SEC:            %.0f\n", total_time);
         Lprintf(dip, "Thds:           %d\n", dip->di_threads);
-        Lprintf(dip, "BLKSZ:          %d\n", 
+        Lprintf(dip, "BLKSZ:          %d\n",
                 (dip->di_variable_flag) ? -1 : (int)dip->di_block_size);
     }
     Lflush(dip);
@@ -1154,17 +1154,17 @@ sio_pretty_total_stats(dinfo_t *dip, sio_total_stats_t *stp)
             "avg(ms)", ((stp->total_latency / (double)stp->total_ios) / 1000.0));
     Lprintf(dip, DT_FIELD_WIDTH "%.2f\n", "stddev", combined_stddev_latency);
     Lprintf(dip, "\n");
-    
+
     Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "global reads", stp->global_reads);
     Kbytes = (double)( (double)stp->global_bytes_read / (double)KBYTE_SIZE );
     Mbytes = (double)( (double)stp->global_bytes_read / (double)MBYTE_SIZE );
-    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n", 
+    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n",
             "global bytes read", stp->global_bytes_read, Kbytes, Mbytes);
 
     Lprintf(dip, DT_FIELD_WIDTH LUF "\n", "global writes", stp->global_writes);
     Kbytes = (double)( (double)stp->global_bytes_written / (double)KBYTE_SIZE );
     Mbytes = (double)( (double)stp->global_bytes_written / (double)MBYTE_SIZE );
-    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n", 
+    Lprintf(dip, DT_FIELD_WIDTH LUF " (%.3f Kbytes, %.3f Mbytes)\n",
             "global bytes written", stp->global_bytes_written, Kbytes, Mbytes);
 
     Lprintf(dip, DT_FIELD_WIDTH TMF, "global start/stop time", stp->global_time_start);
@@ -1203,7 +1203,7 @@ sio_pretty_total_stats(dinfo_t *dip, sio_total_stats_t *stp)
  *
  * Arguments:
  *  threadnum   thread number
- *  fd          file descriptor array- copy of globalfds (-globalfds) or a 
+ *  fd          file descriptor array- copy of globalfds (-globalfds) or a
  *              per thread copy
  *  buf         buffer allocated by work_thread for doing i/o
  *
@@ -1217,7 +1217,7 @@ sio_pretty_total_stats(dinfo_t *dip, sio_total_stats_t *stp)
  *    * For other reads, issues pread
  *    *WRITES:
  *    * In case of partial write test, ???
- *    * verify option - fills the buffer with a fixed pattern and does a 
+ *    * verify option - fills the buffer with a fixed pattern and does a
  *      pwrite and does a pread to verify the write/pwrite.
  *    * all other cases issues a pwrite
  */
@@ -1259,7 +1259,7 @@ sio_doio(dinfo_t *dip)
     stip->latency = 0;
 
     while (True) {
-        
+
         PAUSE_THREAD(dip);
         if ( THREAD_TERMINATING(dip) ) break;
         if (dip->di_terminating) break;
@@ -1267,7 +1267,7 @@ sio_doio(dinfo_t *dip)
         gettimeofday(&loop_start_time, NULL);
 
         /*
-         * If not the first time through, get proper accounting of the 
+         * If not the first time through, get proper accounting of the
          * time since last loop measurement
          */
         if (first_pass == False) {
@@ -1280,7 +1280,7 @@ sio_doio(dinfo_t *dip)
 
         /* Note: In this implementation, each target is its' own job. */
         //target_device = pick_target(threadnum);
-    
+
         if (siop->read_percentage == -1) {
             cur_p_read = (int)(RAND(dip) % 100);
         } else {
@@ -1293,10 +1293,10 @@ sio_doio(dinfo_t *dip)
 	}
 
         if (dip->di_variable_flag == True) {
-            /* 
+            /*
              * blk_sz between device size bytes (512 by default) and max blocks
              * (256k by default) at device size byte alignment.
-             */ 
+             */
             cur_blk_sz = (((int)(RAND(dip) % siop->max_blocks)) + 1) * BLOCK_SIZE;
             if (cur_blk_sz < siop->random_alignment) {
                 cur_blk_sz = siop->random_alignment;
@@ -1311,7 +1311,7 @@ sio_doio(dinfo_t *dip)
 	    } else if ( (reading == False) && dip->di_oblock_size ) {
 		cur_blk_sz = dip->di_oblock_size;
 	    }
-        }    
+        }
         if (probrand < siop->random_percentage) {
             (void)sio_random_block(dip, &curblk, stip);
         } else {
@@ -1333,8 +1333,8 @@ sio_doio(dinfo_t *dip)
                     sgdp->global_curblk = curblk;
                     wrapped = True;
                 }
-                /* 
-                 * If another thread wrapped, adjust this thread too! 
+                /*
+                 * If another thread wrapped, adjust this thread too!
                  */
                 if (sgdp->pass_count > dip->di_pass_count) {
                     wrapped = True;
@@ -1474,11 +1474,11 @@ sio_doio(dinfo_t *dip)
         stip->latency += latency;
 
         if (stip->io_completes) {
-            /* 
+            /*
              * Sum of the squares of the difference between average and current latency.
              * We keep track of this so that we can calculate stddev at any time.
              */
-            stip->sumofsquares_latency += (uint64_t)pow(((latency / 1000.0) - 
+            stip->sumofsquares_latency += (uint64_t)pow(((latency / 1000.0) -
                   (((double)stip->latency / (double)stip->io_completes) / 1000.0)), 2);
         }
 
@@ -1510,7 +1510,7 @@ sio_doio(dinfo_t *dip)
         /* Inject a delay to attain I/O's per second, or user specified. */
         if (siop->target_iops > 0) {
             loop_usecs = sio_get_usecs(loop_end_time, loop_start_time);
-            target_total_usecs += (unsigned long int)siop->think_time; 
+            target_total_usecs += (unsigned long int)siop->think_time;
             actual_total_usecs += loop_usecs;
             if (target_total_usecs > actual_total_usecs)  {
                 usleep( (unsigned int)(target_total_usecs - actual_total_usecs) );
@@ -1519,7 +1519,7 @@ sio_doio(dinfo_t *dip)
             if (siop->think_time == RANDOM_DELAY_VALUE) {
                 cur_think_time = (RAND(dip) % 10000);
             } else {
-                cur_think_time = siop->think_time; 
+                cur_think_time = siop->think_time;
             }
             if (cur_think_time) os_msleep(cur_think_time);
         }
@@ -1539,7 +1539,7 @@ sio_doio(dinfo_t *dip)
  *  dip = The device information pointer.
  *
  * Description:
- *  Called from main if -fillonce option is specified. time and threadnumber 
+ *  Called from main if -fillonce option is specified. time and threadnumber
  *  are ignored when -fillonce is specified. One thread is created per device
  *  specified and it takes care of writing to the device from start to end once.
  */
@@ -1767,10 +1767,10 @@ sio_check_pattern_buffer(dinfo_t *dip,
             } else {
                 pattern = (int)PATTERN_A(blk_nbr, word_nbr, target_device);
             }
-            if ( (actual != pattern) && 
+            if ( (actual != pattern) &&
                  ( (instrumentation == False) || ( (instrumentation == True) && (word_nbr != 1) ) ) ) {
-                if (isfirst == 0) { 
-                    firsterror = word_nbr; 
+                if (isfirst == 0) {
+                    firsterror = word_nbr;
                     isfirst = 1;
                 }
 		if (errors == 0) {
@@ -1785,7 +1785,7 @@ sio_check_pattern_buffer(dinfo_t *dip,
             }
             PREtmpP = tmpP;
             tmpP++;
-        }    
+        }
     }
     if ( (dip->di_trigger_control == TRIGGER_ON_ALL) ||
 	 (dip->di_trigger_control == TRIGGER_ON_MISCOMPARE) ) {
@@ -1836,8 +1836,8 @@ sio_check_fixed_val_buffer(dinfo_t *dip,
         if ( THREAD_TERMINATING(dip) ) break;
         actual = *tmpP;
         if (actual != (unsigned)value) {
-            if (isfirst == 0) { 
-                firsterror = (i / 4); 
+            if (isfirst == 0) {
+                firsterror = (i / 4);
                 isfirst = 1;
             }
 	    if (errors == 0) {
@@ -1867,7 +1867,7 @@ sio_report_record(dinfo_t *dip, hbool_t reading, uint64_t record,
 {
     sio_information_t *sip = dip->di_opaque;
     sio_thread_info_t *stip = &sip->sio_thread_info;
-    
+
     /* Note: Omitting buffer address, since it's always the same! */
     // (reading == True) ? (stip->reads + 1) : (stip->writes + 1),
     Printf(dip, "Record #" LUF " - %s " SUF " bytes, block " LUF ", offset " LUF "\n",
@@ -1881,7 +1881,7 @@ sio_report_io_information(dinfo_t *dip, hbool_t reading, BlockNum_t block,
                           void *buffer, Offset_t offset, size_t expected, ssize_t received)
 {
     int flags = (PRT_NOLEVEL|PRT_SYSLOG);
-    
+
     /* Report common device information. */
     if (dip->di_extended_errors == False) {
 	report_device_information(dip);
@@ -1898,7 +1898,7 @@ sio_report_size_mismatch(dinfo_t *dip, hbool_t reading, BlockNum_t block,
                          void *buffer, Offset_t offset, size_t expected, ssize_t received)
 {
     int flags = (PRT_NOLEVEL|PRT_SYSLOG);
-    
+
     ReportErrorNumber(dip);
     LogMsg(dip, dip->di_efp, logLevelError, flags,
            "Actual I/O size doesn't match the requested I/O size!\n");
@@ -1929,9 +1929,9 @@ sio_report_data_compare_error(dinfo_t *dip,
 {
     struct timeval timeval;
     gettimeofday(&timeval, NULL);
-    Fprintf(dip, 
+    Fprintf(dip,
              "Time %ld: DATA COMPARE ERROR device: %s block nbr: " FUF " offset: %d expected: %08x  actual: %08x  recheck: %d\n",
-             timeval.tv_sec, dip->di_dname,  
+             timeval.tv_sec, dip->di_dname,
              blk_nbr, offset, expected, actual, recheck);
 }
 
@@ -2003,7 +2003,7 @@ sio_fill_pattern_buffer(dinfo_t *dip,
  *    dip = The device information pointer.
  *    threadnum = The thread number.
  *    target = The target block number pointer.
- * 
+ *
  * Outputs:
  *    target contains the random block number.
  */
@@ -2019,7 +2019,7 @@ sio_random_block(dinfo_t *dip,
      * of the actual block range, to ensure we don't return a random
      * block number starting at the end of the range, and thus either
      * write past the size specified and/or read an EOF (which fails)!
-     */ 
+     */
     blk_range_size = (stip->end_blk - stip->begin_blk);
     if (blk_range_size) {
 	(*target) = (BlockNum_t)( RAND64(dip) % blk_range_size );
@@ -2083,7 +2083,7 @@ sio_global_sequential_block(dinfo_t *dip,
     }
     *target = curblk;
 
-    /* 
+    /*
      * If another thread wrapped, adjust this thread too!
      */
     if (sgdp->pass_count > dip->di_pass_count) {
@@ -2110,7 +2110,7 @@ sio_global_sequential_block(dinfo_t *dip,
  *
  * Description:
  *  Reads back a block and verifies the data on it.
- * 
+ *
  * Return Value:
  *  Returns SUCCESS / FAILURE
  */
@@ -2212,7 +2212,7 @@ sio_thread(void *arg)
 
     /*
      * Handle setup for multiple slices.
-     */ 
+     */
     if (dip->di_slice_number) {
         status = init_slice(dip, dip->di_slice_number);
     } else if (dip->di_slices) {
@@ -2223,7 +2223,7 @@ sio_thread(void *arg)
     status = setup_thread_names(dip);
     if (status == FAILURE) goto thread_exit;
     handle_file_dispose(dip);
-    
+
     if (dip->di_fsfile_flag == True) {
         /*
          * The file must exist for all reads!
@@ -2260,10 +2260,10 @@ sio_thread(void *arg)
         if (status == FAILURE) goto thread_exit;
         dip->di_open_flags &= ~O_CREAT; /* Only create on first open. */
     }
-    /* 
+    /*
      * Right now, we are creating a file per thread, so ensure the file
      * is extended to the requested size to avoid read failures (EOF).
-     */ 
+     */
     if ( (siop->read_percentage != 0) &&
          (siop->fillonce == False) && (siop->prefill == False) ) {
         status = sio_read_sanity_checks(dip);
@@ -2273,8 +2273,8 @@ sio_thread(void *arg)
     status = sio_post_open_setup(dip);
     if (status == FAILURE) goto thread_exit;
 
-    /* 
-     * Set an end runtime in case fill once takes a long time! 
+    /*
+     * Set an end runtime in case fill once takes a long time!
      */
     if (dip->di_runtime > 0) {
 	dip->di_runtime_end = time((time_t *)NULL) + dip->di_runtime;
@@ -2395,7 +2395,7 @@ sio_thread_setup(dinfo_t *dip)
 		stip->begin_blk, stip->end_blk);
 	return(FAILURE);
     }
-    
+
     /* Divide the number of operations across the threads. (closer to sio's way) */
     if (siop->numops && (dip->di_threads > 1) ) {
         uint64_t resid = (siop->numops % dip->di_threads);
@@ -2404,7 +2404,7 @@ sio_thread_setup(dinfo_t *dip)
         /* It's up to user to ensure sufficient threads exist for the ops specified. */
         if (siop->numops == 0) siop->numops++;  /* Note: sio is not exact about this either! */
     }
-        
+
     /* Show block range per thread, if multiple slices and debug is enabled. */
     if ( (siop->noheader == False) && dip->di_slices && dip->di_debug_flag) {
         Printf(dip, "Read: %d Rand: %d BlkSz: "SUF" BegnBlk: "LUF" EndBlk: "LUF" Secs: "TMF" Thread: %d Dev#: %d  %s\n",
@@ -2422,7 +2422,7 @@ sio_post_open_setup(dinfo_t *dip)
     sio_information_t *sip = dip->di_opaque;
     sio_parameters_t *siop = &sip->sio_parameters;
     int status = SUCCESS;
-    
+
     if ( dip->di_fsfile_flag &&
          (siop->noflock == False) &&
          (dip->di_thread_number == 1) ) {
@@ -2514,7 +2514,7 @@ sio_clone_information(dinfo_t *dip, dinfo_t *cdip, hbool_t new_context)
     if (csip == NULL) return(FAILURE);
     cdip->di_opaque = csip;
     *csip = *sip;           /* Copy the original information. */
-    
+
     /* Do sio thread specific cloning (if any) here... */
 
     return(SUCCESS);
@@ -2552,12 +2552,12 @@ sio_initialize(dinfo_t *dip)
     siop->verify            = SIO_DEFAULT_VERIFY_FLAG;
 
     stip->min_latency       = SIO_DEFAULT_MIN_LATENCY;
-    
+
     dip->di_dispose_mode    = KEEP_FILE;
     dip->di_fileperthread   = siop->fileperthread;
     dip->di_pass_limit      = SIO_DEFAULT_PASS_LIMIT;
-    /* 
-     * Note: Don't set defaults, if options specified already! 
+    /*
+     * Note: Don't set defaults, if options specified already!
      */
     if (dip->di_runtime == 0) {
 	dip->di_runtime = (time_t)SIO_DEFAULT_RUNTIME;
@@ -2632,7 +2632,7 @@ sio_validate_parameters(dinfo_t *dip)
          (siop->fillonce == False) && (siop->numops == 0) ) {
         if ( dip->di_pass_limit && (siop->random_percentage == 100) ) {
             Printf(dip, "Warning: The pass limit is *not* implemented with 100% random I/O.\n");
-        } else if ( (dip->di_runtime <= 0) && 
+        } else if ( (dip->di_runtime <= 0) &&
                     ( (siop->random_percentage == 100) || (dip->di_pass_limit == 0) ) ) {
             Printf(dip, "Warning: No runtime, numops, or pass limit specified, so user must stop this run...\n");
         }
@@ -2769,7 +2769,7 @@ sio_show_parameters(dinfo_t *dip)
            dip->di_runtime, dip->di_threads,
            dip->di_num_devs, dip->di_dname);
     Lflush(dip);
-    
+
     if (dip->di_slices) {
         /* Use sio's notion of a block size for slice ranges! */
         /* FYI: Usually dt uses the device block size (for SAN). */

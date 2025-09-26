@@ -36,7 +36,7 @@
  * 	When checking for file/path existance, on Windows expect an
  * additional error (ERROR_PATH_NOT_FOUND) when a portion of the path
  * does NOT exist. POSIX uses the same error (ENOENT) for both.
- * 
+ *
  * March 17th, 2015 by Robin T. Miller
  * 	Add a deleting files flag, so I/O monitoring does NOT cancel our
  * thread, if this cleanup takes longer than the term wait time.
@@ -48,17 +48,17 @@
  * 	Fixed a bug in process_next_subdir() where the status variable was
  * NOT initialized, which prevented us from processing all subdirectories!
  * My regression tests missed this, since it only occurred when optimized.
- * 
+ *
  * May 7th, 2014 by Robin T. Miller
  * 	Enhanced reopen_after_disconnect() to use new parameters added to
  * error information structure.
- * 
+ *
  * July 15th, 2013 by Robin T Miller
  * 	Moving file system related functions here.
  */
 #include "dt.h"
 #if !defined(WIN32)
-#  if defined(_QNX_SOURCE) 
+#  if defined(_QNX_SOURCE)
 #    include <fcntl.h>
 #  else /* !defined(_QNX_SOURCE) */
 #    include <sys/file.h>
@@ -823,7 +823,7 @@ delete_files(struct dinfo *dip, hbool_t delete_topdir)
 	}
 	/* Fall through to delete top level files/directory. */
     }
- 
+
     /* Delete the top level files. */
     error = delete_subdir_files(dip, NULL);
     if (error && (status == SUCCESS)) {
@@ -1738,7 +1738,7 @@ make_unique_log(dinfo_t *dip)
 	    Free(dip, dip->di_log_file);
 	    dip->di_log_file = path;
 	}
-	if (path) {    
+	if (path) {
 	    if (freopen (dip->di_log_file, (dip->di_logappend_flag) ? "a" : "w", efp) == NULL) {
 		Perror (dip, "freopen() of %s failed, exiting...\n", dip->di_log_file);
 	    }
@@ -1749,13 +1749,13 @@ make_unique_log(dinfo_t *dip)
 
 /*
  * skip_device_prefix() - Simple Utility Function to skip device prefixes.
- * 
+ *
  * Inputs:
  *      device = The device path (may be raw or file system)
- * 
+ *
  * Return Value:
  *      Returns the updated device path past device directory prefix.
- */ 
+ */
 char *
 skip_device_prefix(char *device)
 {
@@ -1881,7 +1881,7 @@ report_filesystem_free_space(dinfo_t *dip)
     }
     return( (dip->di_fs_space_free == 0) ? False : True );
 }
-    
+
 int
 verify_filesystem_space(dinfo_t *dip, hbool_t all_threads_flag)
 {
@@ -1909,7 +1909,7 @@ verify_filesystem_space(dinfo_t *dip, hbool_t all_threads_flag)
 			dip->di_fs_space_free, max_data);
 	    }
 	}
-    }    
+    }
     return(SUCCESS);
 }
 

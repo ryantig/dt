@@ -30,47 +30,47 @@
  *	Display statistics information for generic data test program.
  *
  * Modification History:
- * 
+ *
  * March 31st, 2021 by Robin T. Miller
  *      Add report_file_system_common() to report common information.
  *      Use acquire_free_space flag to acquire updated FS information.
- * 
+ *
  * March 30th, 2021 by Robin T. Miller
  *      Update display of file system free/totoal space for 64-bits.
  *      Previously, these were truncated by 32-bit formatted! :(
- * 
+ *
  * October 10th, 2020 by Robin T. Miller
  *      Add megabytes/second to Average Transfer Rates output.
- * 
+ *
  * March 9th, 2019 by Robin T. Miller
  *      Add displaying Nimble SCSI information.
- * 
+ *
  * December 3rd, 2016 by Robin T. Miller
  *      Expanding job statistics to include the total read/write bytes, and
  * adding Gigabyte since we are using very large and very fast disks nowadays!
  * Note: I have *not* added Gbytes to other statistics for fear of breaking
  * "screen scraping" automation. Added to just read/write % and job stats.
- * 
+ *
  * November 4th, 2016 by Robin T. Miller
  *      Add support for reporting job statistics.
  *      Added support to control the total statistics separately.
  *
  * November 21st, 2015 by Robin T. Miller
  * 	When read percentage is specified, report rhe read/write statistics.
- * 
+ *
  * November 19th, 2015 by Robin T. Miller
  * 	Switch to using higher timer resolution for calculating I/O rates, IOPS,
  * and secs per I/O. Timer is 10x more accurate with gettimeofday() (on Linux)!
  * Previous method used times() in clock cycles, resulting in zero rates/IOPS
  * with short runs seen with FS caches and flash storage which is very fast!
- * 
+ *
  * September 25th, 2014 by Robin T. Miller
  * 	Added warning to indicate the bytes written is less than requested.
  *
  * June 4th, 2014 by Robin T. Miller
  * 	Properly calculate the total files processed when a full pass has
  * not been completed. Previous the total files was reported as zero (0).
- * 
+ *
  * June 20th, 2013 by Robin T Miller
  * 	Mostly a rewrite for multithreaded IO, so starting with new history!
  */
@@ -98,7 +98,7 @@ void report_file_system_common(dinfo_t *dip, hbool_t acquire_free_space);
 /*
  * Functions to Process Statistics:
  */
-/* 
+/*
  * This function is used with multiple devices to propagate the
  * statistics from one device to the reporting device.
  */
@@ -457,7 +457,7 @@ report_stats(struct dinfo *dip, enum stats stats_type)
 	    }
 	}
     } /* end 'if (stats_type == TOTAL_STATS)' */
-    
+
     /* Note: Needless to say, this is getting way to messy, time for a cleanup! */
     /*	     But that said, also trying to keep output backwards compatable! */
     if ( ( (stats_type == JOB_STATS) || (stats_type == TOTAL_STATS) ) ||
@@ -480,7 +480,7 @@ report_stats(struct dinfo *dip, enum stats stats_type)
     } else if ( UseRandomSeed(dip) ) { /* Seed changes on each pass. */
 	Lprintf(dip, DT_FIELD_WIDTH LXF "\n", "Current random seed", dip->di_random_seed);
     }
-    
+
     if (stats_type == TOTAL_STATS) {
 	if (dip->di_io_type == RANDOM_IO) {
 	    Lprintf (dip, DT_FIELD_WIDTH, "Random I/O Parameters");
@@ -756,7 +756,7 @@ report_stats(struct dinfo *dip, enum stats stats_type)
     /* Note: These stats are for all operations, *not* just I/O! Could be misleading!  */
     Lprintf (dip, DT_FIELD_WIDTH "%.3f\n", "Number I/O's per second", ios_sec);
     Lprintf (dip, DT_FIELD_WIDTH "%.4f (%.2fms)\n", "Number seconds per I/O", secs_io, msecs_io);
-    
+
     if ( (stats_type == JOB_STATS) || (stats_type == TOTAL_STATS) ) {
 	/* Accumlate last no-progress (if any). */
 	if (dip->di_cur_max_noprogt) {
@@ -864,7 +864,7 @@ format_buffer_modes(dinfo_t *dip, char *buffer)
 {
     char *bp = buffer;
     int bindex;
-    
+
     *bp = '\0';
     for (bindex = 0; bindex < dip->di_bufmode_count; bindex++) {
 	switch (dip->di_buffer_modes[bindex]) {
@@ -1066,7 +1066,7 @@ report_scsi_summary(dinfo_t *dip, hbool_t print_header)
 #if defined(SCSI)
     if (dip->di_scsi_flag == False) return;
     if (dip->di_scsi_info_flag == False) return;
-    
+
     if (print_header == True) {
 	Lprintf(dip, "\nSCSI Information:\n");
     } else {
@@ -1117,12 +1117,12 @@ report_scsi_summary(dinfo_t *dip, hbool_t print_header)
 
 /*
  * Note: This moves to the I/O behavior structure after this is created for dt.
- * 
- * Inputs: 
+ *
+ * Inputs:
  *      dip = The first threads' device information pointer.
- *  
- * Return Value: 
- * 	Returns SUCCESS (always). 
+ *
+ * Return Value:
+ * 	Returns SUCCESS (always).
  */
 void
 dt_job_finish(dinfo_t *dip, job_info_t *job)

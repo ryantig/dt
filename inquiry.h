@@ -229,7 +229,7 @@ typedef struct {
 		inq_sccs	: 1,	/* Storage Controller Components[5] */
 	        inq_acc		: 1,	/* Access Controls Coordinator.	    */
 		inq_tpgs	: 2,	/* Target Port Group Support.	    */
-		inq_3pc		: 1,	/* 3rd Party Copy Support.	    */ 
+		inq_3pc		: 1,	/* 3rd Party Copy Support.	    */
 		inq_res_5_b1_b2	: 2,	/* Reserved bits (1:2).		    */
 		inq_protect	: 1;	/* Supports Protection Information. */
 #else

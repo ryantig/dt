@@ -34,7 +34,7 @@
  *
  * August 26th, 2010 by Robin T. Miller
  * 	When opening device, on EROFS errno, try opening read-only.
- * 
+ *
  * August 6th, 2007 by Robin T. Miller.
  *	Added OS open and close functions.
  */
@@ -604,7 +604,7 @@ os_spt(scsi_generic_t *sgp)
 
     /*
      * Please Beware: The siop->flags may get altered by the IOCTL!
-     *                For example, SCTL_INIT_SDTR and SCTL_INIT_WDTR 
+     *                For example, SCTL_INIT_SDTR and SCTL_INIT_WDTR
      */
 error:
     if (sgp->debug == True) {
@@ -621,7 +621,7 @@ error:
  * retriable error. Note: The checks performed here are those that are
  * OS specific, such as looking a host, driver, or syscall errors that can
  * be retried automatically, and/or to perform any OS specific recovery.
- * 
+ *
  * Inputs:
  *      sgp = Pointer to the SCSI generic data structure.
  *
@@ -633,7 +633,7 @@ hbool_t
 os_is_retriable(scsi_generic_t *sgp)
 {
     hbool_t is_retriable = False;
-    
+
     return (is_retriable);
 }
 

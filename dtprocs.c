@@ -31,12 +31,12 @@
  *	Functions to handle multiple processes for 'dt' program.
  *
  * Modification History:
- * 
+ *
  * September 5th, 2020 by Robin T. Miller
  *      When initializing a slice, ensure the min/max limit sizes do NOT
  * exceed the data/slice limits. Otherwise, overwrites occur and thus cause
  * false corruptions!
- * 
+ *
  * March 7th, 2015 by Robin T. Miller
  * 	When using slices, always set the random data limit, since variable
  * options such as iodir=vary and/or iotype=vary may be specified, plus it
@@ -49,7 +49,7 @@
  * is incorrect, since its' called before init_slice. Sadly, this means folks
  * using the step option with slices could encounter a false data corruption,
  * since we were writing past the end of the slice! ;( (oh my, dt v19 bug!)
- * 
+ *
  * June 20th, 2013 by Robin T Miller
  * 	Mostly a rewrite for multithreaded IO, so starting with new history!
  */
@@ -225,7 +225,7 @@ await_procs(dinfo_t *dip)
 	    }
 	}
 	dip->di_procs_active--;
-    } 
+    }
     return;
 }
 
@@ -263,7 +263,7 @@ start_process(dinfo_t *dip, char *cmd)
 		         False,      // Handle inheritance flag
 		         0,          // No creation flags
 		         NULL,       // Use parent's environment block
-		         NULL,       // Use parent's starting directory 
+		         NULL,       // Use parent's starting directory
 		         &si,        // Pointer to STARTUPINFO structure
 			 pip ) )     // Pointer to PROCESS_INFORMATION structure
     {
@@ -606,7 +606,7 @@ update_cmd_line(dinfo_t *dip)
 {
     char *device, *bp, *p;
     char *dt_path, *options, *buffer;
-    
+
     bp = buffer = (char *)Malloc(dip, LOG_BUFSIZE);
     device = (dip->di_input_file) ? dip->di_input_file : dip->di_output_file;
     /* Setup pointers to dt path and dt command line. */
@@ -842,7 +842,7 @@ init_slice(struct dinfo *dip, int slice)
     setup_slice(dip, sip);
     /*
      * Initialize the starting data pattern for each slice.
-     * 
+     *
      * TODO: Verify, but this is done in main I/O loop (I think).
      */
     if (dip->di_unique_pattern) {
@@ -904,7 +904,7 @@ setup_slice(struct dinfo *dip, slice_info_t *sip)
 	Lprintf(dip, "\nSlice %d Information:\n", sip->slice);
 
 	lba = (large_t)(dip->di_file_position / dip->di_dsize);
-	Lprintf(dip, DT_FIELD_WIDTH FUF " (lba " LUF ")\n", "Starting offset", 
+	Lprintf(dip, DT_FIELD_WIDTH FUF " (lba " LUF ")\n", "Starting offset",
 		dip->di_file_position, lba);
 
 	lba = (large_t)((dip->di_file_position + sip->slice_length) / dip->di_dsize);

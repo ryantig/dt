@@ -21,7 +21,7 @@ usage:
 
 #
 # Note: The OS type is required for linking to the correct SCSI library.
-#       All builds are done in a subdirectory, to accomodate many builds.
+#       All builds are done in a subdirectory, to accommodate many builds.
 #	The SCSI library symbolic link will be of the form:
 #	    ln -sf ../scsilib-$(OS).c scsilib.c
 #

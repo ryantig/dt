@@ -30,7 +30,7 @@
  *	Read routines for generic data test program.
  *
  * Modification History:
- * 
+ *
  * September 20th, 2023 by Robin T. Miller
  *      For all random access devices, limit the data read to what was
  * written. Previously this was enabled only for file systems, but it's
@@ -39,38 +39,38 @@
  * Capacity during error recovery/disk discovery returning an ENOSPC.
  *     I believe thinly provisioned disks may also return ENOSPC when
  * there's insufficient backend disk space (over provisioned).
- * 
+ *
  * August 5th, 2021 by Robin T. Miller
  *      Added support for NVMe disks.
- * 
+ *
  * March 21st, 2021 by Robin T. Miller
  *      Add support for forcing FALSE data corruptiong for debugging.
- * 
+ *
  * May 5th, 2020 by Robin T. Miller
  *      Use high resolution timer for more accurate I/O timing. This is
  * implemented on Windows, but Unix systems still use gettimeofday() API.
- * 
+ *
  * March 7th, 2020 by Robin T. Miller
  *      Apply new logic in FindCapacity() to properly handle file position.
- * 
+ *
  * March 6th, 2020 by Robin T. Miller
  *      Update SetupCapacityPercentage() to better handle slices with a file
  * position and capacity percentage, Starting offset is for mixed FS/disk test.
- * 
+ *
  * May 28th, 2019 by Robin T. Miller
  *      Don't adjust offset when read error occurs (count is -1), since this
  * causes the wrong offset when we've specified an error limit.
- * 
+ *
  * May 27th, 2019 by Robin T. Miller
  *      Add support for capacity percentage. This is to help exceeding backend
  * storage when volumes are over-provisioned (thin provisioned LUNs).
- * 
+ *
  * December 28th, 2017 by Robin T. Miller
  *      Added support for multiple threads via I/O lock and shared data.
- * 
+ *
  * September 1st, 2017 by Robin T. Miller
  *      Add support for random read percentage only.
- * 
+ *
  * December 21st, 2016 by Robin T. Miller
  *      Only use pread() for random access devices, and normal read() for
  * other device types such as pipes or tapes. This update allows dt to read
@@ -79,23 +79,23 @@
  *
  * November 4th, 2016 by Robin T. Miller
  *      Add support for random percentages.
- * 
+ *
  * February 5th, 2016 by Robin T. Miller
  * 	Update read_record() to initialize the buffer prior to reads.
  * 	This helps diagnose when the actual read data is NOT returned.
  * 	Currently, the previosu read data is reported, can be misleading.
- * 
+ *
  * December 13th, 2015 by Robin T. Miller
  * 	Switch from incr_position() to set_position() now that we are
  * using pread() API, and the internal file offset is *not* updated.
  * Note: This goes away altogether once we cleanup get_position() usage.
  * 	Without this change, the step= option was broken. :-(
- * 
+ *
  * June 13th, 2015 by Robin T. Miller
  * 	Update verify_record() to use the data buffer rather than the
  * pattern buffer for verifying source device data. This is required for
  * block tags (btags), but also to prevent misleading corruption reporting.
- * 
+ *
  * June 9th, 2015 by Robin T. Miller
  * 	Added support for block tags (btags).
  *
@@ -109,13 +109,13 @@
  * Solaris VM w/ESX on NFS is returning short reads and writes, and for
  * reads my analysis indicates the fd offset is incorrect for short read!
  * The offset was updated with the request size, leading to wrong data!
- * 
+ *
  * March 20th, 2014, by Robin T. Miller
  * 	In read_record() see if we're in read or write mode, since this API
  * is used during write mode when doing read-after-write (enable=raw). Also,
  * add a file position argument, which we need for an accurate AIO history.
  * We do not wish to use di_offset, since this points to the next offset.
- * 
+ *
  * June 20th, 2013 by Robin T Miller
  * 	Mostly a rewrite for multithreaded IO, so starting with new history!
  */
@@ -229,7 +229,7 @@ read_data(struct dinfo *dip)
 	    }
 	}
     }
-    
+
     /* Prime the common btag data, except for IOT pattern. */
     if ( (dip->di_btag_flag == True) && (dip->di_iot_pattern == False) ) {
 	update_btag(dip, dip->di_btag, dip->di_offset,
@@ -525,7 +525,7 @@ read_data(struct dinfo *dip)
 	if (dip->di_iops && (dip->di_iops_type == IOPS_MEASURE_EXACT) ) {
 	    highresolutiontime(&loop_end_time, NULL);
 	    loop_usecs = (uint32_t)timer_diff(&loop_start_time, &loop_end_time);
-            dip->di_target_total_usecs += dip->di_iops_usecs; 
+            dip->di_target_total_usecs += dip->di_iops_usecs;
             dip->di_actual_total_usecs += loop_usecs;
             if (dip->di_target_total_usecs > dip->di_actual_total_usecs) {
 		unsigned int usecs = (unsigned int)(dip->di_target_total_usecs - dip->di_actual_total_usecs);
@@ -547,8 +547,8 @@ read_data(struct dinfo *dip)
  *									*
  * read_data_iolock() - Read and optionally verify data read.		*
  *									*
- * Description: 						        * 
- * 	This function supports reading with multiple threads.	        * 
+ * Description: 						        *
+ * 	This function supports reading with multiple threads.	        *
  *									*
  * Inputs:	dip = The device information pointer.			*
  *									*
@@ -712,10 +712,10 @@ read_data_iolock(struct dinfo *dip)
 		    set_Eof(dip);
 		    break;
 		}
-		/* 
+		/*
 		 * This check prevents us from writing past the end of a slice.
 		 * Note: Without slices, we expect to encounter end of file/media.
-		 */ 
+		 */
 		if ( dip->di_slices &&
 		     ((offset + (Offset_t)dsize) >= dip->di_end_position) ) {
 		    set_Eof(dip);
@@ -858,7 +858,7 @@ read_data_iolock(struct dinfo *dip)
 	if (dip->di_iops && (dip->di_iops_type == IOPS_MEASURE_EXACT) ) {
 	    highresolutiontime(&loop_end_time, NULL);
 	    loop_usecs = (uint32_t)timer_diff(&loop_start_time, &loop_end_time);
-            dip->di_target_total_usecs += dip->di_iops_usecs; 
+            dip->di_target_total_usecs += dip->di_iops_usecs;
             dip->di_actual_total_usecs += loop_usecs;
             if (dip->di_target_total_usecs > dip->di_actual_total_usecs) {
 		unsigned int usecs = (unsigned int)(dip->di_target_total_usecs - dip->di_actual_total_usecs);
@@ -1060,13 +1060,13 @@ read_eom(struct dinfo *dip)
  * Inputs:	dip = The device information pointer.			*
  *		buffer = The data buffer to read into.			*
  *		bsize = The number of bytes read.			*
- * 		dsize = The users' requested size.		        * 
- * 		offset = The starting record offset.		        * 
+ * 		dsize = The users' requested size.		        *
+ * 		offset = The starting record offset.		        *
  *		status = Pointer to return status.			*
  *									*
  * Outputs:	status = SUCCESS/FAILURE/WARNING = Ok/Error/Warning	*
  *		Return value is number of bytes from read() request.	*
- * 		The status may also be RETRYABLE for retryable errors.	* 
+ * 		The status may also be RETRYABLE for retryable errors.	*
  *									*
  ************************************************************************/
 ssize_t
@@ -1080,9 +1080,9 @@ read_record (	struct dinfo	*dip,
     ssize_t count;
 
     /*
-     * To catch cases where read data is NOT returned properly, initialize 
-     * the read buffer with a data pattern. 
-     * Note: To avoid the performance hit, this is not always done! 
+     * To catch cases where read data is NOT returned properly, initialize
+     * the read buffer with a data pattern.
+     * Note: To avoid the performance hit, this is not always done!
      */
     if ( (dip->di_compare_flag == True) && (dip->di_prefill_buffer == True) ) {
 	uint32_t pattern = (dip->di_prefill_pattern) ? dip->di_prefill_pattern : (uint32_t)dip->di_thread_number;
@@ -1112,9 +1112,9 @@ retry:
 	/* Note: We may be in write mode, used during read-after-write! */
 	hbool_t read_mode = (dip->di_mode == READ_MODE);
 	long files, records;
-	/* 
-	 * Note: We cannot report read/write records with percentage, otherwise 
-	 * the record numbers will NOT match extended error reporting and btags! 
+	/*
+	 * Note: We cannot report read/write records with percentage, otherwise
+	 * the record numbers will NOT match extended error reporting and btags!
 	 */
 	if ( False /*dip->di_read_percentage*/ ) {
 	    files = (dip->di_files_read + dip->di_files_written) + 1;
@@ -1223,9 +1223,9 @@ verify_record (	struct dinfo	*dip,
     } while (*status == RETRYABLE);
     if ( (*status == FAILURE) || dip->di_end_of_file) return(count);
 
-    /* 
-     * Setup the pattern buffer with the expected data buffer. 
-     *  
+    /*
+     * Setup the pattern buffer with the expected data buffer.
+     *
      * Yea *real* ugly, but required to use existing code.
      * TODO: Create data structure for verify functions to use!
      */
@@ -1245,9 +1245,9 @@ verify_record (	struct dinfo	*dip,
 
 /************************************************************************
  *									*
- * FindCapacity() - Find capacity of a random access device.	        * 
- * 								        * 
- * Description:							        * 
+ * FindCapacity() - Find capacity of a random access device.	        *
+ * 								        *
+ * Description:							        *
  * 	This function is called anytime the disk capacity is required,	*
  * which includes random I/O and multiple slices. If a capacity exists	*
  * from user defined or OS obtained, use this value, otherwise use a	*
@@ -1290,14 +1290,14 @@ FindCapacity(struct dinfo *dip)
     }
 //#endif /* defined(DEBUG) */
 
-    /* 
-     * For disks, ensure we don't exceed the capacity, esp. for slices and random I/O. 
-     *  
-     * Note: This must be done early, esp. to apply capacity percentage, and setup limits. 
-     * But for random I/O and slices, we must be in range of disk blocks to avoid false seek 
-     * failures, due to accessing non-existant offsets! Understood? (Note to self! ;) 
-     *  
-     * Please Note: This is tricky logic, and if not done right, leads to false failures! 
+    /*
+     * For disks, ensure we don't exceed the capacity, esp. for slices and random I/O.
+     *
+     * Note: This must be done early, esp. to apply capacity percentage, and setup limits.
+     * But for random I/O and slices, we must be in range of disk blocks to avoid false seek
+     * failures, due to accessing non-existant offsets! Understood? (Note to self! ;)
+     *
+     * Please Note: This is tricky logic, and if not done right, leads to false failures!
      */
     if ( isDiskDevice(dip) && user_capacity && dip->di_file_position) {
         /* All this setup is done magically by functions in dtinfo.c! */
@@ -1309,8 +1309,8 @@ FindCapacity(struct dinfo *dip)
         user_capacity = min(disk_capacity, user_capacity);
     }
     /*
-     * The user capacity is setup for disk devices, so this appears to be the best common 
-     * location to calculate capacity percentage. 
+     * The user capacity is setup for disk devices, so this appears to be the best common
+     * location to calculate capacity percentage.
      */
     if (dip->di_capacity_percentage && (user_capacity || dip->di_user_capacity) ) {
 	user_capacity = SetupCapacityPercentage(dip, user_capacity);
@@ -1326,7 +1326,7 @@ FindCapacity(struct dinfo *dip)
     /* Note; For SCSI I/O, the user capacity should already be setup! */
     /*
      * Use the user specified capacity (if specified).
-     * 
+     *
      * Note: The user_capacity will be set from the OS specific API's for disks,
      * or with the current file size (if it already exists) for regular files.
      */
@@ -1340,7 +1340,7 @@ FindCapacity(struct dinfo *dip)
     if (dip->di_debug_flag || dip->di_Debug_flag || dip->di_rDebugFlag) {
 	Printf (dip, "Attempting to calculate capacity via seek/read algorithm...\n");
     }
-    
+
     buffer = Malloc(dip, dsize);
     if (buffer == NULL) return(FAILURE);
 

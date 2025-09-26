@@ -42,7 +42,7 @@
   * 	Adding CDB's from libscsi.c to here.
   * 	Updating bitfields for native AIX compiler.
   * 	AIX does NOT like uint8_t or unnamed bit fields!
-  * 
+  *
   * July 31st, 2015 by Robin T. Miller
   * 	Modify/add new SCSI CDB's (16-byte, etc)
   */
@@ -65,7 +65,7 @@
  *									*
  ************************************************************************/
 
-/* 
+/*
  * Test Unit Ready Command Descriptor Block:
  */
 struct TestUnitReady_CDB {
@@ -800,7 +800,7 @@ struct StartStopUnit_CDB {
 #endif /* defined(_BITFIELDS_LOW_TO_HIGH_) */
 };
 
-/* 
+/*
  * Verify Data Command Descriptor Block:
  */
 struct VerifyDirect_CDB {

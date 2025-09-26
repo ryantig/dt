@@ -88,7 +88,7 @@ FreeStr(dinfo_t *dip, void *ptr)
  *
  * Inputs:
  *	bytes = The number of bytes to allocate.
- * 
+ *
  * Return Value:
  *	Returns pointer to buffer allocated, NULL on failure.
  *	Note: We terminate on memory failures, until callers handle!
@@ -158,7 +158,7 @@ static MPA_WS mpa_qhead;	/* local Q head for the malloc stuctures */
  * This is a local allocation routine to alloc and return to the caller a
  * system page aligned buffer.  Enough space will be added, one more page, to
  * allow the pointers to be adjusted to the next page boundry.  A local linked
- * list will keep copies of the original and adjusted addresses.  This list 
+ * list will keep copies of the original and adjusted addresses.  This list
  * will be used by free_palign() to free the correct buffer.
  *
  * Inputs:
@@ -205,7 +205,7 @@ malloc_palign(dinfo_t *dip, size_t bytes, int offset)
     ws->malloc_size = (bytes + page_size + offset);
     /*
      * Using the requested size, from the argument list, and the page size
-     * from the system allocate enough space to page align the requested 
+     * from the system allocate enough space to page align the requested
      * buffer.  The original request will have the space of one system page
      * added to it.  The pointer will be adjusted.
      */

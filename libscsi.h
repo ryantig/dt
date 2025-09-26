@@ -158,7 +158,7 @@ typedef enum scsi_qtag {
     SG_SIMPLE_Q  = 1,                   /* Simple queuing.                  */
     SG_HEAD_OF_Q = 2,                   /* Place at head of device queue.   */
     SG_ORDERED_Q = 3,                   /* Ordered queuing.                 */
-    SG_HEAD_HA_Q = 4			/* Head of HA queue (Solaris has).  */ 
+    SG_HEAD_HA_Q = 4			/* Head of HA queue (Solaris has).  */
 } scsi_qtag_t;
 
 struct scsi_generic;
@@ -169,7 +169,7 @@ typedef struct tool_specific {
     void	  *opaque;		/* Opaque pointer for the caller.   */
     /*
      * This allows overriding the internal libExecuteCdb() function!
-     */ 
+     */
     int		  (*execute_cdb)(void *opaque, struct scsi_generic *sgp);
 					/* Optional execute function.	    */
     void	  *params;		/* Pointer to extra parameters.    */
@@ -216,7 +216,7 @@ typedef struct scsi_generic {
     void	  *opaque;		/* Opaque pointer for the caller.   */
     /*
      * This allows overriding the internal libExecuteCdb() function!
-     */ 
+     */
     int		  (*execute_cdb)(void *opaque, struct scsi_generic *sgp);
 					/* Optional execute function.	    */
     /* Recovery Parameters */
@@ -492,7 +492,7 @@ typedef struct scsi_sense_illegal_request {
 
 /*
  * Copy Aborted Sense Specific Data:
- */ 
+ */
 typedef struct scsi_sense_copy_aborted {
 #if defined(_BITFIELDS_LOW_TO_HIGH_)
     bitfield_t
@@ -519,7 +519,7 @@ typedef struct scsi_sense_copy_aborted {
 
 /*
  * Recovered, Medium, or Hardware Sense Key Specific Data.
- */ 
+ */
 typedef struct scsi_media_error_sense {
 #if defined(_BITFIELDS_LOW_TO_HIGH_)
     bitfield_t
@@ -626,7 +626,7 @@ extern int Seek10(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
 		  scsi_addr_t *sap, scsi_generic_t **sgpp,
 		  unsigned int lba, unsigned int timeout);
 extern int SendAnyCdb(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
-	   scsi_addr_t *sap, scsi_generic_t **sgpp, unsigned int timeout, 
+	   scsi_addr_t *sap, scsi_generic_t **sgpp, unsigned int timeout,
 	   uint8_t *cdb, uint8_t cdb_size);
 
 /* scsidata.c */

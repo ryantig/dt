@@ -32,7 +32,7 @@
 #include <process.h>
 #include <time.h>
 #include <windows.h>
-#include <io.h>                 
+#include <io.h>
 #include <direct.h>
 
 /*
@@ -49,7 +49,7 @@
 /*
  * Define unused POSIX open flags for Windows specific equivalent.
  * Note: These are *only* used to map to Windows file attributes!
- * 
+ *
  * Warning: Ensure these don't conflict with flags in WINNT.H!
  * dt uses a combination of Windows and POSIX flags! (at present)
  */
@@ -95,7 +95,7 @@ typedef DWORD	os_dev_t;
 
 /*
  * OS Specific Functions:
- */ 
+ */
 #define os_sleep(value)		Sleep(value*MSECS)
 #define os_msleep(value)	Sleep(value)
 #define os_usleep(value)	Sleep(value/MSECS)
@@ -110,7 +110,7 @@ typedef DWORD	os_dev_t;
  * POSIX Thread Definitions:
  */
 typedef HANDLE pthread_t;
-/* 
+/*
  * CreateThread() returns a HANDLE, which is a PVOID, so we cannot
  * safely use DWORD for a 64-bit machine/pointer or we'll truncate!
  */
@@ -120,7 +120,7 @@ typedef HANDLE pthread_mutex_t;
 /* For mutex attributes. */
 typedef unsigned long pthread_mutexattr_t;
 
-/* 
+/*
  * Windows CreateThread() returns a HANDLE (PVOID), and also supports
  * a thread ID via GetCurrentThreadId() which returns DWORD thread ID.
  * This format control is for displaying the OS thread ID.
@@ -164,7 +164,7 @@ extern int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type);
 
 extern int pthread_cancel(pthread_t thread);
 extern int pthread_detach(pthread_t thread);
-extern int pthread_create(pthread_t *tid, pthread_attr_t *attr, 
+extern int pthread_create(pthread_t *tid, pthread_attr_t *attr,
 			  void *(*func)(void *), void *arg);
 extern void pthread_exit(void *exit_code);
 extern void pthread_kill(pthread_t tid, int sig);
@@ -182,7 +182,7 @@ extern os_tid_t pthread_self(void);
 
 #define PTHREAD_STACK_MIN	16384
 
-#define PTHREAD_SCOPE_PROCESS	0 
+#define PTHREAD_SCOPE_PROCESS	0
 #define PTHREAD_SCOPE_SYSTEM	1
 #define PTHREAD_NORMAL_EXIT	0
 
@@ -304,7 +304,7 @@ extern char *os_get_protocol_version(HANDLE handle);
 
 typedef int		pid_t;
 typedef unsigned int	speed_t;
-//typedef int		ssize_t; 
+//typedef int		ssize_t;
 
 #define SYSLOG		1
 /*
@@ -356,13 +356,13 @@ struct aiocb {			/* aiocb structure for windows */
     DWORD	last_error;	/* The GetLastError() value */
 };
 
-struct tms {                
-     clock_t  tms_utime;     
-     clock_t  tms_stime;     
-     clock_t  tms_cutime;    
-     clock_t  tms_cstime;    
+struct tms {
+     clock_t  tms_utime;
+     clock_t  tms_stime;
+     clock_t  tms_cutime;
+     clock_t  tms_cstime;
 };
- 
+
 /* Note: We may wish to make default DIRSEP the same as POSIX (Unix). */
 #define DIRSEP		'\\'
 #define DIRSEP_STR	"\\"
@@ -400,7 +400,7 @@ struct tms {
 #define pread	os_pread_file
 #define pwrite	os_pwrite_file
 #define unlink	os_unlink_file
-               
+
 typedef void *caddr_t;
 
 #define SIGKILL SIGINT

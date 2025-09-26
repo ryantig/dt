@@ -33,7 +33,7 @@
  *
  * September 21th, 2023 by Robin T. Miller
  *      When specifying retryable errors, honor user specified error limit.
- * 
+ *
  * August 18th, 2023 by Robin T. Miller
  *      When a thread is hung, report total statistics before cancelling
  * the thread. These hangs often occur when all storage connections are lost
@@ -41,104 +41,104 @@
  *
  * November 15th, 2021 by Robin T. Miller
  *      Add support for dtapp, hammer, and sio I/O behaviors.
- * 
+ *
  * June 16th, 2021 by Robin T. Miller
  *      Add support for separate SCSI trigger device.
- * 
+ *
  * June 14th, 2021 by Robin T. Miller
  *      Add support for "limit=random" to automatically setup random limits.
- * 
+ *
  * May 24th, 2021 by Robin T. Miller
  *      When reporting the no-progress record number with read-after-write
  * enabled, do not include both reads and writes, so the record is accurate.
- * 
+ *
  * March 21st, 2021 by Robin T. Miller
  *      Add support for forcing FALSE data corruptions for debugging.
- * 
+ *
  * March 8th, 2021 by Robin T. Miller
  *      When creating log directories in setup_log_directory(), create the
  * last subdirectory (as required). For user specified log directory, expand
  * format control strings prior to creating the directory (logdir= option).
- * 
+ *
  * February 11th, 2021 by Robin T. Miller
  *      Create master log creation function for use by other tool parsers.
- * 
+ *
  * October 28th, 2020 by Robin T. Miller
  *      Add support for comma separated workload[s]= option.
- * 
+ *
  * October 27th, 2020 by Robin T. Miller
  *      When "trigger=" is specified, no parameters, then remove triggers.
  *      This empty check is consistent with other options, like prefix=, etc.
- * 
+ *
  * October 21st, 2020 by Robin T. Miller
  * 	Add array=string option, esp. for external trigger scripts.
  *      Add --trigger= and --workload= parsing for I/O behavior options.
- * 
+ *
  * September 24th, 2020 by Robin T. Miller
  *      Updated signal handler to avoid exiting with FAILURE on SIGINT (2) or
  * SIGTERM (15), esp. for the latter since automation often sends this signal
  * to kill tools. SIGINT and SIGTERM will now exit with SUCCESS.
- * 
+ *
  * August 5th, 2020 by Robin T. Miller
  *      Add support for starting slice offset.
- * 
+ *
  * July 8th, 2020 by Robin T. Miller
  *      When looking up alternate tool I/O behavior names, do string compare
  * with length, to avoid issues with Windows ".exe" file extension.
- * 
+ *
  * May 11th, 2020 by Robin T. MIller
  *      Add options for date and time field separator used when formatting
  * the log prefix format strings (e.g. "%ymd", "%hms").
- * 
+ *
  * May 7th, 2020 by Robin T. Miller
  *      Apply special step option handling to both disks and files, by setting
  * up and ending offset so I/O loops break reaching this offset.
- * 
+ *
  * April 8th, 2020 by Robin T. Miller
  *      Add flag for output position, so zero offset is handled properly.
  *      Note: This allows copying to a different offset from input file!
- * 
+ *
  * March 31st, 2020 by Robin T. Miller
  *      Add "showvflags=hex" option to show block tag verify flags set.
- * 
+ *
  * March 19th, 2020 by Robin T. Miller
  *      When selecting 100% reads (readp=100), switch output file to input file.
  *      This helps with automation desiring to do read verify only w/of= option!
- * 
+ *
  * March 7th, 2020 by Robin T. Miller
  *      Remove a file position sanity check no longer valid with updates made
  * in FindCapacity() with new logic associated with the file position option.
- * 
+ *
  * February 12th, 2020 by Robin T. Miller
  *      For Unix systems, increase the open file resource limit, now that low
  * limits are imposed on newer Linux distros, to avoid false failures!
- * 
+ *
  * February 11th, 2020 by Robin T. Miller
  *      Added "showfslba" and "showfsmap" commands to show the file system map,
  * for the file specified, assuming we can acquire FS extents to map physical LBAs.
- * 
+ *
  * Decamber 6th, 2019 by Robin T. Miller
  *      When re-enabling stats via "enable=stats", ensure all the stat flags
  * reset when disabled, get enabled once again, esp. since these are sticky.
  * FYI: Found script issue where stats were disabled, but not easily re-enabled!
- * 
+ *
  * November 21st, 2019 by Robin T. Miller
  *      Add a retry data corruption limit option (retryDC_limit=value).
  *      The normal retry limit is used for retrying errors (60 by default).
  *      Added separate retry data corruption delay option (retryDC_delay).
  *      Fix "dir=/var/tmp of=dt-%user-%uuid.data" expansion by updating the
  * base name properly in format_device_name() function. (see comments there).
- * 
+ *
  * November 20th, 2019 by Robin T. Miller
  *      In setup_thread_names(), with multiple threads create a unique directory
  * for each thread under the top level directory. Previously, when the top level
  * directory was a mount point, a new top level directory was created with "-jNtN"
  * so subsequent files and subdirectories were not created under the mount point.
  * So, now instead of say /var/tmp/dtdir-j1t1, it's now /var/tmp/dtdir/j1t1.
- * 
+ *
  * October 6th, 2019 by Robin T. Miller
  *      Change the default dispose mode setting to keep on error.
- * 
+ *
  * July 27th, 2019 by Robin T. Miller
  *	Change the delete error log file default to be true.
  *	For those running multiple processes, beware of this change!
@@ -146,58 +146,58 @@
  * June 14th, 2019 by Robin T. Miller
  *      Fix bug in do_datatest_validate() where the pattern buffer was reset
  * causing pattern=incr and pattern=string not work (only 1st 4 bytes used).
- * 
+ *
  * June 6th, 2019 by Robin T. Miller
  *      Add logdir= option to prepend to job/log file paths.
- * 
+ *
  * May 27th, 2019 by Robin T. Miller
  *      Add support for capacity percentage for thin provisioned LUNs,
  * to help avoid exceeding backend storage for over-provisioned volumes.
- * 
+ *
  * May 20th, 2019 by Robin T. Miller
  *      Add support for appending a default file name to a directory.
- * 
+ *
  * May 21st, 2018 by Robin T. Miller
  *      Fix bug introduced with mounted files system check in copy mode.
  * Only the input file has an output file dinfo pointer, so add this check.
  * Failure to have this check results in a "Segmentation fault (core dumped)".
- * 
+ *
  * April 12th, 2018 by Robin T. Miller
  *      For Linux file systems with direct I/O, get the disk block size.
  * This disk block size is required for later sanity checks for direct I/O.
  * Failure to enforce DIO I/O sizes leads to EINVAL errors, misleading for
  * everyone (including this author). This occurs on disks with 4k sectors!
- * 
+ *
  * March 1st, 2018 by Robin T. Miller
  *      Add mounted file system check when writing to /dev/ disk devices.
  * Note: This is *not* full proof, since LVM devices are not handled, and
  * will not detect /dev/sd* when DM-MP /dev/mapper partitions are mounted.
  * But that said, this is better than what we did before.
  * FYI: This is Linux only right now, since I no longer have other OS's.
- * 
+ *
  * January 21st, 2017 by Robin T. Miller
  *	For Windows, parse <cr><lf> properly for continuation lines.
  *      Allows comments on continuation lines, including leading spaces.
- * 
+ *
  * December 21st, 2016 by Robin T. Miller
  *      Fix bug in MakeArgList() while parsing quoted strings, due to how
  * strcpy() copies overlapping strings. Must use our own copy loop!
- * 
+ *
  * December 13th, 2016 by Robin T. Miller
  *      Ensure the trailing log header and exit status go to the correct
  * output stream, stdout vs. stderr, for scripts separating these two.
- * 
+ *
  * November 4th, 2016 by Robin T. Miller
  *      Add enable/disable options for controlling job statistics.
  *      Added support to control the total statistics separately.
  *      Note: Pass/Total/Job statistics are controlled seperately,
  * making it easier to customize the type of statistics desired.
- * 
+ *
  * September 17th, 2016 by Robin T. Miller
  *      Fix parsing of quoted text in MakeArgList().
  *      Bug was terminaing with a NULL, rather than processing more
  * text in the string. What was I thinking? ;(
- * 
+ *
  * February 2nd, 2016 by Robin T. Miller
  * 	When dumping history, do so for multiple devices.
  *
@@ -211,12 +211,12 @@
  * 	Expand variables in conditional part of ${var:${VAR}} parsing.
  * 	Add support for ${var:?Error text} when variable is not defined.
  * 	Save the workload name, so we can use %workload format string.
- * 
+ *
  * December 12th, 2015 by Robin T. Miller
  * 	When using read percentage, initialize the file once as required.
  * 	Added enable/disable-{fill_always,fill_once} to initialize files
  * prior to writing. This is useful for read percentage and debugging.
- * 
+ *
  * December 11th, 2015 by Robin T. Miller
  *	When direct I/O is enabled, automatically enable FS align flag.
  *	Most file systems require aligned file offsets with direct I/O.
@@ -226,7 +226,7 @@
  *
  * November 19th, 2015 by Robin T. Miller
  * 	Added higher resolution timer (gettimeofday) for start/pass/end times.
- * 
+ *
  * November 17th, 2015 by Robin T. Miller
  * 	When emitting prompt status, use the master thread exit status rather than
  * the global exit status. This avoids incorrect status when threads fail, rather
@@ -238,7 +238,7 @@
  * 	min_limit=value max_limit=value incr_limit=value
  * 	Similar to variable block sizes, except without an increment,
  * the data limit will default to variable.
- * 
+ *
  * June 14th, 2015 by Robin T. Miller
  * 	Fix bug in cleanup_device() preventing freeing data buffers.
  * 	Move dt pattern initialize to do_datatest_initialize(), and perform
@@ -254,7 +254,7 @@
  * April 21st, 2015 by Robin T. Miller
  * 	Add support for an optional error file via errfile=filename option.
  * When specified, this file is open'ed in append mode for writing all errors.
- * 
+ *
  * March 9th, 2015 by Robin T. Miller
  * 	Add additional check when checking for directory exists, to ensure
  * the root failure (e.g. "permission denied") gets reported, and also to
@@ -265,24 +265,24 @@
  * iodir/iotype parameters. Do not overwrite random I/O flag, if vary enabled.
  * Previously, iodir=vary with iotype=sequential, reset the random I/O flag,
  * which in the case of slices, prevented the random limit from being setup!
- * 
+ *
  * January 29th, 2015 by Robin T. Miller
  * 	Allow empty pattern options to undue thier affect, to allow this
  * method to overide previous pattern options. Reverts to their defaults.
- * 
+ *
  * December 19th, 2014 by Robin T. Miller
  * 	Fixed a problem in the dt I/O loop where a runtime=-1 was setting
  * the end runtime (incorrectly), causing dt threads to exit after 1 second.
  * The other I/O behaviors are correct, as are the other dt threads.
- * 
+ *
  * November 19th, 2014 by Robin T. Miller
  * 	Update make_options_string() to do a better job quoting options
  * containing whitespace, now used for defining workloads and dt command
  * line for logging.
- * 
+ *
  * November 4th, 2014 by Robin T. Miller
  * 	Made debug flags persistent ("sticky") for client/server mode.
- * 
+ *
  * October 18th, 2014 by Robin T. Miller
  * 	Add support for maxdatap= option for direct disks.
  *
@@ -298,7 +298,7 @@
  * 	Note; For NFS, unbuffered I/O is enabled to avoid false corruptions.
  * 	Added warning for file systems, when the free space is less than the
  * data limit required for dir(s) and file(s) specified.
- * 
+ *
  * September 7th, 2014 by Robin T. Miller
  * 	Invoke pthread_detach() for threads we wish to detach. This is required
  * for Windows, since to mimic POSIX detached threaads, the thread handle must
@@ -310,12 +310,12 @@
  * June 2nd, 2014 by Robin T. Miller
  * 	When alarm is specified *without* a keepalive time, then enable
  * keepalives, which restores compatablity with older dt's.
- * 
+ *
  * May 29th, 2014 by Robin T. Miller
  * 	Fix bug when the runtime is -1 (infinite), the alarm value was set
  * to this value which caused the monitoring thread to wait forever, thus
  * things serviced by this thread never executed (noprog's, keepalives, etc).
- * 
+ *
  * April 9th, 2014 by Robin T. Miller
  * 	Converted Printf/Fprint's to Eprintf/Wprintf for errors and warning.
  *
@@ -331,7 +331,7 @@
  * January 27th, 2014 by Robin T. Miller
  * 	Moved validation checks *after* common device setup, required so the
  * file system information is setup (required for validation checks like XFS).
- * 
+ *
  * January 22nd, 2014 by Robin T. Miller
  * 	If the error limit was set by a noprog exit status, ensure the thread
  * status is set to FAILURE, so the onerr=abort option will stop other threads.
@@ -349,7 +349,7 @@
 #include <math.h>
 #include <signal.h>
 #if !defined(WIN32)
-#  if !defined(_QNX_SOURCE) 
+#  if !defined(_QNX_SOURCE)
 #    if !defined(sun)
 #      include <sys/ioctl.h>
 #    endif /* !defined(sun) */
@@ -396,7 +396,7 @@ os_tid_t MonitorThreadId;		/* The monitoring thread ID.	*/
 #else /* !defined(WIN32) */
 # define ParentThreadId		ParentThread
 # define iotuneThreadId		iotuneThread
-# define MonitorThreadId	MonitorThread       
+# define MonitorThreadId	MonitorThread
 #endif /* defined(WIN32) */
 
 extern iobehavior_funcs_t dtapp_iobehavior_funcs;
@@ -433,7 +433,7 @@ static lock_mode_t lock_partial[] = {
 volatile unsigned int monitor_interval;
 
 /*
- * Forward References: 
+ * Forward References:
  */
 int ProcessStartupFile(dinfo_t *dip);
 int ProcessStartupScripts(dinfo_t *dip);
@@ -446,7 +446,7 @@ void *docopy(void *arg);
 void *domirror(void *arg);
 void *doio(void *arg);
 
-/* 
+/*
  * Utility Functions:
  */
 void do_sleeps(dinfo_t *dip);
@@ -506,7 +506,7 @@ large_t	do_maxdata_percentage(dinfo_t *dip, large_t data_bytes, int data_percent
 /*
  * Variable Declarations:
  */
-vbool_t CmdInterruptedFlag;		/* User interrupted command.	*/ 
+vbool_t CmdInterruptedFlag;		/* User interrupted command.	*/
 hbool_t	debug_flag = False;		/* Enable debug output flag.	*/
 hbool_t	mDebugFlag = False;		/* Memory related debug flag.	*/
 hbool_t	pDebugFlag = False;		/* Process related debug flag.	*/
@@ -524,7 +524,7 @@ vbool_t	terminating_flag = False;	/* Program terminating flag.	*/
 hbool_t terminate_on_signals = False;	/* Terminate on signals.	*/
 int	page_size = 0;			/* Define number of bytes/page.	*/
 
-/* Note: No longer used, but must retain backwards compatibility! */ 
+/* Note: No longer used, but must retain backwards compatibility! */
 unsigned int cancel_delay = DEFAULT_CANCEL_DELAY;
 					/* Time to delay before cancel.	*/
 unsigned int kill_delay = DEFAULT_KILL_DELAY;
@@ -557,7 +557,7 @@ uint32_t PipeDelay = 250;		/* Pipe mode delay value.	*/
 int max_open_files = 0;			/* The maximum open files.	*/
 
 /*
- * Default alarm message is per pass statistics, user can override. 
+ * Default alarm message is per pass statistics, user can override.
  */
 /* Note: To remain backwards compatable, I am not changing the default. */
 #if defined(Nimble)
@@ -583,16 +583,16 @@ char    *keepalive1 = "%d Stats: mode %i, blocks %L, %M Mbytes, pass %p/%P,"
  */
 char    *pass_msg = "pass %p/%P, %l blocks, %m Mbytes, %c records,"
                     " errors %e/%E, elapsed %t";
-char    *pass_dir_msg = 
+char    *pass_dir_msg =
 		    "pass %p/%P, %l blocks, %m Mbytes, %c records,"
                     " errors %e/%E, iodir=%iodir, elapsed %t";
-char    *pass_type_msg = 
+char    *pass_type_msg =
 		    "pass %p/%P, %l blocks, %m Mbytes, %c records,"
                     " errors %e/%E, iotype=%iotype, elapsed %t";
                                         /* Per pass keepalive message.  */
 char    *totals_msg = "%d Totals: %L blocks, %M Mbytes,"
                       " errors %e/%E, passes %p/%P, elapsed %T";
-                                        /* Totals keepalive message.    */ 
+                                        /* Totals keepalive message.    */
 
 /*
  * Data patterns used for multiple passes.
@@ -723,7 +723,7 @@ ProcessStartupFile(dinfo_t *dip)
 	  continue;	/* EOF or FAILURE! */
       }
       if (dip->argc <= 0) continue;
-    
+
       /*
        * Parse the arguments.
        */
@@ -754,13 +754,13 @@ ProcessStartupScripts(dinfo_t *dip)
     char *script_name;
     char *home_dir;
     int status = WARNING;
-    
+
     /*
      * Script Order: (both are optional)
      * 	1) user defined script
      * 	2) normal startip script
      * This allows #1 to override #2!
-     */ 
+     */
     if ((script_name = getenv(STARTUP_ENVNAME)) == NULL) {
 	script_name = STARTUP_SCRIPT;
 	if ((home_dir = getenv("HOME")) == NULL) {
@@ -818,7 +818,7 @@ main(int argc, char **argv)
 
     efp = stderr;
     ofp = stdout;
-    
+
     /* Note: For Windows we need to check both path separators! (Cygwin) */
     /* Also Note: Newer Windows appear to accept both separaters! really? */
     tmp = strrchr(argv[0], POSIX_DIRSEP);
@@ -916,13 +916,13 @@ main(int argc, char **argv)
 	Printf(dip, "Parent process ID is %d, Thread ID is "OS_TID_FMT"\n",
 	       dip->di_process_id, ParentThreadId);
     }
-    
+
     dip->argc = argc;
     dip->argv = argv;
 
     /*
-     * Try to find the I/O behavior based on the program name. 
-     * Note: The purpose of this is to link tool to dt and map! 
+     * Try to find the I/O behavior based on the program name.
+     * Note: The purpose of this is to link tool to dt and map!
      */
     iobf = find_iobehavior(dip, cmdname);
     /* Note: This check is necessary until we have dt I/O functions! */
@@ -987,10 +987,10 @@ main(int argc, char **argv)
 	gettimeofday(&dip->di_start_timer, NULL);
 
 #if 0
-	/* 
+	/*
 	 * In interactive mode, check for any background jobs finishing.
-	 * In non-interactive mode, we expect folks to wait for jobs! 
-	 * Note: This can be misleading to interactive users, remove? 
+	 * In non-interactive mode, we expect folks to wait for jobs!
+	 * Note: This can be misleading to interactive users, remove?
 	 */
 	if ( (InteractiveFlag == True) && (dip->script_level == 0) ) {
 	    status = jobs_finished(dip);
@@ -1007,7 +1007,7 @@ main(int argc, char **argv)
 	 * Interactive or pipe mode, prompt for more options if device
 	 * or operation type is not specified. Allows "dt enable=pipes"
 	 */
-	if ( ( (dip->di_input_file == NULL) && (dip->di_output_file == NULL) ) && 
+	if ( ( (dip->di_input_file == NULL) && (dip->di_output_file == NULL) ) &&
 	     (InteractiveFlag || PipeModeFlag || dip->script_level) ) {
 	    continue; /* reprompt! */
 	}
@@ -1090,7 +1090,7 @@ main(int argc, char **argv)
 
     /*
      * Jobs may be active if run async (background) and not waited on!
-     */ 
+     */
     if ( jobs_active(dip) ) {
 	/* Wait for threads to start. */
 	while ( threads_starting(dip) ) {
@@ -1121,7 +1121,7 @@ initiate_devs(dinfo_t *dip)
     char *saveptr;
     char *devs_tag = NULL;
     int jstatus, status = SUCCESS;
-    
+
     dip->di_async_job = True;
     if (dip->di_input_file) {
 	devices = dip->di_input_file;
@@ -1148,10 +1148,10 @@ initiate_devs(dinfo_t *dip)
 
     /*
      * Each device will be its' own job with its' own thread(s).
-     */ 
+     */
     /* Remember: strtok() replaces "," with NULL! */
     token = strtok_r(devp, ",", &saveptr);
-    
+
     for (device = 0; (device < dip->di_num_devs); device++) {
 	job_id_t job_id = 0;
 	
@@ -1169,16 +1169,16 @@ initiate_devs(dinfo_t *dip)
 	token = strtok_r(NULL, ",", &saveptr); /* Next device please! */
 	if (token == NULL) break; /* "," without a device name! */
     }
-    
+
     if (async_job == False) {
 	/*
 	 * Now, wait for each job started.
-	 */ 
+	 */
 	for (device = 0; (device < devices_started); device++) {
-    
+
 	    jstatus = wait_for_job_by_id(dip, job_ids[device] );
 	    if (jstatus != SUCCESS) status = jstatus;
-    
+
 	}
     }
     Free(dip, devp);
@@ -1199,7 +1199,7 @@ initiate_job(dinfo_t *mdip, job_id_t *job_id)
     mdip->di_device_number++;	/* Count multiple devices. */
     /*
      * Setup the initial device information & validate options.
-     * 
+     *
      * Note: The original dip is used for parsing. It gets copied to
      * the input and/or output dinfo then updated accordingly.
      */
@@ -1301,7 +1301,7 @@ initiate_job(dinfo_t *mdip, job_id_t *job_id)
 	status = do_common_copy_setup(idip, odip);
 	if (status == FAILURE) goto cleanup_exit;
     }
- 
+
     /*
      * Do the device / test specific initialization.
      *
@@ -1320,9 +1320,9 @@ initiate_job(dinfo_t *mdip, job_id_t *job_id)
     /*
      * If both input and output devices are specified, we operate off
      * the input device information. I/O functions must switch for output.
-     * 
+     *
      * Note: This HACK can be removed once dinfo supports both devices.
-     */ 
+     */
     if (idip) {
 	dip = idip;
     } else {
@@ -1335,7 +1335,7 @@ initiate_job(dinfo_t *mdip, job_id_t *job_id)
 
     /*
      * Finally create a job and execute the threads!
-     */ 
+     */
     status = execute_threads(mdip, &dip, job_id);
     if (dip == NULL) {
 	idip = odip = NULL;	/* We no longer own these! */
@@ -1380,7 +1380,7 @@ do_prejob_start_processing(dinfo_t *mdip, dinfo_t *dip)
 
 /*
  * catch_signals() = Enable Signals we wish to Catch.
- */ 
+ */
 void
 catch_signals(dinfo_t *dip)
 {
@@ -1473,7 +1473,7 @@ int
 do_common_thread_startup(dinfo_t *dip)
 {
     int status = SUCCESS;
- 
+
     /* Note: Now done as part of thread startup to avoid races! */
     if (dip->di_async_job && (dip->di_initial_state == IS_PAUSED) ) {
 	dip->di_thread_state = TS_PAUSED;
@@ -1498,7 +1498,7 @@ do_common_thread_startup(dinfo_t *dip)
 
     status = do_common_file_system_setup(dip);
     if (status == FAILURE) return(status);
-#if 0    
+#if 0
     /* Format the file & directory path based on user control strings. */
     if (dip->di_fsfile_flag == True) {
 	if ( strchr(dip->di_dname, '%') ) {
@@ -1523,7 +1523,7 @@ do_common_thread_startup(dinfo_t *dip)
     }
 
     /*
-     * Note: The SCSI flag must be enabled by users, plus this flag should 
+     * Note: The SCSI flag must be enabled by users, plus this flag should
      * be disabled automatically when the SCSI device cannot be open'ed.
      */
 #if defined(SCSIx)
@@ -1553,7 +1553,7 @@ do_common_startup_logging(dinfo_t *dip)
     dinfo_t *odip = dip->di_output_dinfo;
 
     /* Display OS and/or SCSI information. */
-    
+
     /* Report for 1st thread or all threads with a log file. */
     if ( (dip->di_thread_number == 1) || dip->di_log_file ) {
 	if (dip->di_logheader_flag) {
@@ -1593,10 +1593,10 @@ do_common_startup_logging(dinfo_t *dip)
  * assuming the proper error reporting function is called. This macro
  * is used outside I/O functions, to bump the total errors which each
  * I/O loop used as its' maximum error limit.
- * 
+ *
  * FWIW: I'm thinking both a pass and total error limit is required.
  * TODO: This is currently *very* unclean, sop needs cleaned up soon!
- * 
+ *
  * Note: The total errors are updated when reporting pass statistics!
  */
 #define HANDLE_LOOP_ERROR(dip, error)				\
@@ -1616,7 +1616,7 @@ do_common_startup_logging(dinfo_t *dip)
  * moved to their own data structure to keep this separate, and so
  * the key information can be shared (UUID, logs, error counters, etc).
  * Doing this is a rather large effort, so I've HACK'ed things to work!
- * 
+ *
  * Because of this data is being copied between two dinfo_t structs
  * and errors must be propagated to the input device, very ugly indeed!
  */
@@ -1643,7 +1643,7 @@ docopy(void *arg)
 
     /*
      * Handle setup for multiple slices.
-     */ 
+     */
     if (dip->di_slice_number) {
 	status = init_slice(dip, dip->di_slice_number);
 	if (status == SUCCESS) {
@@ -1879,7 +1879,7 @@ domirror(void *arg)
 
     /*
      * Handle setup for multiple slices.
-     */ 
+     */
     if (idip->di_slice_number) {
 	status = init_slice(idip, idip->di_slice_number);
 	if (status == SUCCESS) {
@@ -2065,9 +2065,9 @@ thread_exit:
     return(NULL);
 }
 
-void *  
+void *
 doio(void *arg)
-{           
+{
     dinfo_t *dip = arg;
     struct dtfuncs *dtf;
     int rc, status = SUCCESS;
@@ -2083,7 +2083,7 @@ doio(void *arg)
 
     /*
      * Handle setup for multiple slices.
-     */ 
+     */
     if (dip->di_slice_number) {
 	status = init_slice(dip, dip->di_slice_number);
     } else if (dip->di_slices) {
@@ -2191,7 +2191,7 @@ doio(void *arg)
 	    /*
 	     * Now verify (read and compare) the data just written.
 	     */
-	    if ( dip->di_verify_flag && do_read_pass && 
+	    if ( dip->di_verify_flag && do_read_pass &&
 		 (!dip->di_raw_flag || (dip->di_raw_flag && dip->di_reread_flag)) ) {
 		int open_mode = (dip->di_read_mode | dip->di_open_flags);
 
@@ -2360,7 +2360,7 @@ doio(void *arg)
     if (dip->di_error_count && (status != FAILURE) ) {
 	status = FAILURE;
     }
-    
+
     if (dip->di_debug_flag || dip->di_tDebugFlag) {
 	Printf(dip, "I/O has completed, thread exiting with status %d...\n", status);
     }
@@ -2404,22 +2404,22 @@ initialize_pattern(dinfo_t *dip)
 	dip->di_pattern_bufptr = dip->di_pattern_buffer;
     }
     /*
-     * Use a different data pattern for each pass. 
+     * Use a different data pattern for each pass.
      */
     if ( (dip->di_user_pattern == False)	    &&
 	 (dip->di_output_file || dip->di_stdin_flag ||
-	  (dip->di_input_file && 
+	  (dip->di_input_file &&
 	   (dip->di_slices || (dip->di_threads > 1) || dip->di_multiple_files)) ) ) {
 	/*
 	 * Logic:
-	 * - Unique patterns are enabled by default (but, can be disabled) 
-	 * - When writing files, factor the slice/thread/pass into pattern selected 
-	 * - When reading files, ensure the same pattern is chosen for each pass. 
-	 *  
-	 * Please Note: When multiple files are selected, we rotate through 
-	 * the data patterns for each file. Therefore, when starting the next 
-	 * read pass (for input files), we must reset the starting pattern. 
-	 * Note: Please see dtfs.c for pattern selection per file. 
+	 * - Unique patterns are enabled by default (but, can be disabled)
+	 * - When writing files, factor the slice/thread/pass into pattern selected
+	 * - When reading files, ensure the same pattern is chosen for each pass.
+	 *
+	 * Please Note: When multiple files are selected, we rotate through
+	 * the data patterns for each file. Therefore, when starting the next
+	 * read pass (for input files), we must reset the starting pattern.
+	 * Note: Please see dtfs.c for pattern selection per file.
 	 */
 	if (dip->di_unique_pattern == True) {
 	    /* When reading multiple files, reset to starting pattern. */
@@ -2460,8 +2460,8 @@ initialize_pattern(dinfo_t *dip)
 void
 setup_random_seeds(dinfo_t *dip)
 {
-    /* 
-     * Set a random seed, for random I/O or variable block sizes. 
+    /*
+     * Set a random seed, for random I/O or variable block sizes.
      */
     if (dip->di_user_rseed == False) {
 	dip->di_random_seed = os_create_random_seed();
@@ -2485,7 +2485,7 @@ do_prepass_processing(dinfo_t *dip)
     if ( UseRandomSeed(dip) ) {
 	setup_random_seeds(dip);
     }
-    /* 
+    /*
      * Vary the I/O Type (if requested)
      */
     if (dip->di_vary_iotype) {
@@ -2581,7 +2581,7 @@ int
 do_deleteperpass(dinfo_t *dip)
 {
     int status = SUCCESS;
-    
+
     if ( dip->di_delete_per_pass && dip->di_fsfile_flag	    		&&
 	 (dip->di_error_count < dip->di_error_limit) 	          	&&
 	 ((dip->di_pass_count < dip->di_pass_limit) || dip->di_runtime) ) {
@@ -2624,17 +2624,17 @@ do_delete_files(dinfo_t *dip)
 
 /*
  * create_master_log() - Create the master log file.
- *  
- * Inputs: 
+ *
+ * Inputs:
  *      dip = The device information pointer.
  *	log_name = The log file name.
- *  
- * Description: 
+ *
+ * Description:
  *      If the file name contains a format control string '%', then the
  * log file will be expanded via those control strings before open'ing.
- * 
- * Return: 
- * 	SUCCESS / FAILURE - log file open'ed or open failed 
+ *
+ * Return:
+ * 	SUCCESS / FAILURE - log file open'ed or open failed
  */
 int
 create_master_log(dinfo_t *dip, char *log_name)
@@ -2676,16 +2676,16 @@ create_master_log(dinfo_t *dip, char *log_name)
 
 /*
  * create_thread_log() - Create the thread log file.
- *  
- * Inputs: 
+ *
+ * Inputs:
  *      dip = The device information pointer.
- *  
- * Description: 
+ *
+ * Description:
  *      If the file name contains a format control string '%', then the
  * log file will be expanded via those control strings before open'ing.
- * 
- * Return: 
- * 	SUCCESS / FAILURE - log file open'ed or open failed 
+ *
+ * Return:
+ * 	SUCCESS / FAILURE - log file open'ed or open failed
  */
 int
 create_thread_log(dinfo_t *dip)
@@ -2831,7 +2831,7 @@ stop_job_on_stop_file(dinfo_t *mdip, job_info_t *job)
  * file disposition is then applied to all files being tested, whether dt
  * created them or they already existed. Needless to say, this can (and does)
  * lead to incorrect assumptions and results. :-(
- */ 
+ */
 void
 handle_file_dispose(dinfo_t *dip)
 {
@@ -2896,7 +2896,7 @@ handle_file_system_full(dinfo_t *dip, hbool_t delete_flag)
     }
 
     /* If this pass is already unbuffered, we can trust the data written! */
-    
+
     if ( is_unbuffered_mode(dip) == True ) return(status);
 
     /* For multiple files, we'll simply discard the last file written. */
@@ -2956,7 +2956,7 @@ do_free_space_wait(dinfo_t *dip, int retries)
     char *dir = (dip->di_topdirpath) ? dip->di_topdirpath : dip->di_dir;
     int retry = 0;
     int status;
-    
+
     if (dir == NULL) return(dip->di_fs_space_free);
     if (retries == 0) {
 	(void)os_get_fs_information(dip, dir);
@@ -3016,7 +3016,7 @@ make_stderr_buffered(dinfo_t *dip)
      * Since stderr is normally unbuffered, we make it buffered here.
      * The reason for this is to keep text from getting fragnmented, esp.
      * with multiple processes or threads all writing to the terminal.
-     * 
+     *
      * Note: Pretty sure this does *not* need to be device specific.
      * In fact, each IO thread will eventually write to it's own log file.
      */
@@ -3041,7 +3041,7 @@ setup_log_directory(dinfo_t *dip, char *path, char *log)
     int status = SUCCESS;
 
     /*
-     * Allow a log file directory to redirect logs easier. 
+     * Allow a log file directory to redirect logs easier.
      * Note: We don't create the full directory path, just last!
      */
     if (dir) {
@@ -3079,10 +3079,10 @@ setup_log_directory(dinfo_t *dip, char *path, char *log)
 
 /*
  * This function creates a unique log file name.
- * 
+ *
  * Inputs:
  * 	dip = The device information pointer.
- * 
+ *
  * Return Value:
  * 	Returns SUCCESS / FAILURE if log open failed.
  */
@@ -3223,7 +3223,7 @@ setup_thread_names(dinfo_t *dip)
 
     /*
      * Make the directory name or file name unique per thread.
-     */ 
+     */
     if (dip->di_multiple_files) {
 	char *path;
 	/* Create a unique directory for each thread. */
@@ -3340,7 +3340,7 @@ finish_test(dinfo_t *dip, int exit_code, hbool_t do_cleanup)
     if ( (dip->di_eof_status_flag == False) && (exit_code == END_OF_FILE) ) {
 	exit_code = SUCCESS;		/* Map end-of-file status to Success! */
     }
-    
+
     finish_test_common(dip, exit_code);
 
     if (exit_code == WARNING) {
@@ -3381,12 +3381,12 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 
     for (i = 0; i < argc; i++) {
 	string = argv[i];
-	/* 
+	/*
          * Note: Skip these characters, which are used by other I/O tool parsers.
-	 * For example: Tool parsers map common options to: --threads=value 
-	 * If this poses a problem, we can control this by tool I/O behavior. 
-	 * BTW: I am not removing the existing "--" options below at this time! 
-	 */ 
+	 * For example: Tool parsers map common options to: --threads=value
+	 * If this poses a problem, we can control this by tool I/O behavior.
+	 * BTW: I am not removing the existing "--" options below at this time!
+	 */
 	if (match(&string, "--") || match(&string, "-")) {  /* Optional (skip). */
 	    ;
 	}
@@ -4991,7 +4991,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 		dip->di_stats_level = STATS_NONE;
 		goto dloop;
 	    }
- 
+
 	    if ( match(&string, "raw") || match(&string, "read_after_write") || match(&string, "read_immed") ) {
 		dip->di_raw_flag = False;
 		goto dloop;
@@ -5689,7 +5689,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 		goto floop;			/* Same as _FILE_OFFSET_BITS=64 */
 	    }
 #endif /* defined(O_LARGEFILE) */
-	    Eprintf(dip, "Invalid flag '%s' specified, please use 'help' for valid flags.\n", string); 
+	    Eprintf(dip, "Invalid flag '%s' specified, please use 'help' for valid flags.\n", string);
 	    return ( HandleExit(dip, FAILURE) );
 	} /* End if "flags=" option. */
 	if (match (&string, "nice=")) { /* Deprecated, but maintain for now! */
@@ -5763,7 +5763,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 		goto oloop;
 	    }
 #endif /* defined(O_TEMP) */
-	    Eprintf(dip, "Invalid output flag '%s' specified, please use 'help' for valid flags.\n", string); 
+	    Eprintf(dip, "Invalid output flag '%s' specified, please use 'help' for valid flags.\n", string);
 	    return ( HandleExit(dip, FAILURE) );
 	} /* End of "oflags=" option. */
 	if ( match(&string, "oncerr=") || match(&string, "onerr=") ) {
@@ -5830,7 +5830,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 		}
 		dip->di_incr_pattern = True;
 		setup_pattern(dip, buffer, pattern_size, True);
-	    } else if ( (size == 3) && 
+	    } else if ( (size == 3) &&
 			(match(&string, "iot") || match(&string, "IOT")) ) {
 		dip->di_iot_pattern = True;
 		if (dip->di_data_format == NONE_FMT) {
@@ -6271,7 +6271,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	    return ( HandleExit(dip, SUCCESS) );
 	}
 	/*
-	 * Implement a few useful commands Scu supports. 
+	 * Implement a few useful commands Scu supports.
 	 */
 	if (match (&string, "eval")) {
 	    char *expr = concatenate_args(dip, argc, argv, ++i);
@@ -6308,7 +6308,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	}
 	/*
 	 * Job Control Options:
-	 */ 
+	 */
 	if (match (&string, "cancelall")) {
 	    job_id_t job_id = 0;
 	    char *job_tag = NULL;
@@ -6415,7 +6415,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	    job_id_t job_id = 0;
 	    char *job_tag = NULL;
 	    char *query_string = NULL;
-	    
+	
 	    if (*string != '\0') {
 		status = parse_job_args(dip, string, &job_id, &job_tag, True);
 	    } else if (++i < argc) {
@@ -6491,7 +6491,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	if (match (&string, "wait")) {
 	    job_id_t job_id = 0;
 	    char *job_tag = NULL;
-	    
+	
 	    status = SUCCESS;
 	    if (*string != '\0') {
 		status = parse_job_args(dip, string, &job_id, &job_tag, True);
@@ -6545,7 +6545,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	    }
 	    /*
 	     * Parse the options to ensure they are valid!
-	     */ 
+	     */
 	    cdip = clone_device(dip, True, False);
 	    status = ParseWorkload(cdip, workload_options);
 	    cleanup_device(cdip, False);
@@ -6687,7 +6687,7 @@ make_options_string(dinfo_t *dip, int argc, char **argv, hbool_t quoting)
     int arg;
     char *bp;
     char *buffer, *options;
-    
+
     bp = buffer = Malloc(dip, LOG_BUFSIZE);
     if (bp == NULL) return(bp);
 
@@ -6728,7 +6728,7 @@ make_options_string(dinfo_t *dip, int argc, char **argv, hbool_t quoting)
  * 	job=value
  * 	tag=string
  * 	={tag|jid} - old format, deprecated!
- */ 
+ */
 int
 parse_job_args(dinfo_t *dip, char *string, job_id_t *job_id, char **job_tag, hbool_t errors)
 {
@@ -6777,7 +6777,7 @@ parse_connection_args(dinfo_t *dip, char **string, char **host, uint32_t *port, 
     }
     return(status);
 }
-    
+
 /*
  * match() - Match a Substring within a String.
  *
@@ -6869,7 +6869,7 @@ show_expression(dinfo_t *dip, large_t value)
  * 	base = The base for numeric conversions.
  * 	status = Pointer to return parse status.
  * 	report_error = Flag to control errors.
- * 
+ *
  * Outputs:
  * 	status = SUCCESS or FAILURE
  *
@@ -7112,7 +7112,7 @@ keepalive_alarm(dinfo_t *dip)
      * Note: Since the monitoring thread is for all jobs (currently), and the interval
      * may get modified dynamically by multiple jobs to a lower value than the specified
      * alarm time, then noprog's will occur more frequently than desired.
-     * 
+     *
      * Therefore, this needs to be revisited at some point! (esp. for the I/O Service)
      * But that said, most folks only create a single job (or a set of jobs via the CLI),
      * so this is not a major issue today.
@@ -7124,7 +7124,7 @@ keepalive_alarm(dinfo_t *dip)
      *
      * Therefore, I document this issue, but have *not* implemented a resolution yet.
      */
-    /* 
+    /*
      * If the monitoring interval changed from our original alarm, check time.
      * FWIW: Best I can tell, this matches the original dt noprogt messages.
      */
@@ -7212,9 +7212,9 @@ keepalive_alarm(dinfo_t *dip)
 	 * monitor progress, then execute the trigger at a higher threshold.
 	 */
 	if (dip->di_noprogttime && (elapsed > dip->di_noprogttime) ) {
-	    
+	
 	    if (dip->di_trigger_active == False) {
-		Printf(dip, "This requests' elapsed time of %d, has exceeded the noprogtt of %d seconds!\n", 
+		Printf(dip, "This requests' elapsed time of %d, has exceeded the noprogtt of %d seconds!\n",
 		       elapsed, dip->di_noprogttime);
 
 		report_times(dip, initiated_time, current_time);
@@ -7292,7 +7292,7 @@ do_iops(dinfo_t *dip)
     int secs;
     large_t records;
     hbool_t pass_stats = False;
-    
+
     records = GetStatsValue(dip, ST_RECORDS, pass_stats, &secs);
     if ( (records == 0) || (secs == 0) ) return(iops);
     iops = ((double)records / (double)secs);
@@ -7312,7 +7312,7 @@ do_iops(dinfo_t *dip)
 	Printf(dip, "  -> actual usecs: "LUF", desired usecs: "LUF", difference: "LUF"\n",
 	       actual_usecs, desired_usecs, difference);
     }
-    /* 
+    /*
      * Note: The goal here is to adjust the I/O delay to dynamically change IOPS.
      * FWIW: This kind of stuff is new to me, so I'm still learning and playing! ;)
      */
@@ -7363,8 +7363,8 @@ SignalHandler(int signal_number)
     }
 
     /*
-     * Note: Since automation often used SIGTERM to kill tools, lets make our 
-     * exit status conditional by signal number. We'll also allow SIGINT (Ctrl/C). 
+     * Note: Since automation often used SIGTERM to kill tools, lets make our
+     * exit status conditional by signal number. We'll also allow SIGINT (Ctrl/C).
      */
     if ( (signal_number == SIGINT) || (signal_number == SIGTERM) ) {
 	exit_status = SUCCESS;
@@ -7486,12 +7486,12 @@ terminate(dinfo_t *dip, int exit_code)
     if ( jobs_active(dip) ) {
 	(void)stop_jobs(dip, (job_id_t) 0, NULL); /* Mark threads as terminating. */
 	if (kill_delay) SleepSecs(dip, kill_delay);
-	/* 
+	/*
 	 * Note: We cannot wait here, due to signal handler, locks, and state.
 	 * if we were waiting for a job, the job state never reaches JS_FINISHED,
 	 * because we interrupted our pthread_join()! So, the best we can do is
 	 * to stop each thread, and wait awhile above. Otherwise, we hang waiting!
-	 */ 
+	 */
 	//(void)wait_for_jobs((job_id_t) 0, NULL);
     }
 
@@ -7501,11 +7501,11 @@ terminate(dinfo_t *dip, int exit_code)
 
 /*
  * finish_exiting() - Finish Exiting the Program.
- * 
+ *
  * Inputs:
  * 	dip = The device information pointer (may be NULL).
  * 	exit_status = The exit status.
- */ 
+ */
 void
 finish_exiting(dinfo_t *dip, int local_exit_status)
 {
@@ -7571,7 +7571,7 @@ int nofunc(struct dinfo *dip)
     return(SUCCESS);
 }
 
-static char *multi_prompt = 
+static char *multi_prompt =
     "\nPlease insert volume #%d in drive %s, press ENTER when ready to proceed: \007";
 static char *multi_nready =
     "The drive is NOT ready or encountered an error, Retry operation (Yes): \007";
@@ -7711,7 +7711,7 @@ RequestMultiVolume (struct dinfo *dip, hbool_t reopen, int oflags)
  * do_monitoring() - Monitoring Thread.
  *
  * Description:
- *      Thie thread monitors all jobs/threads right now.
+ *      This thread monitors all jobs/threads right now.
  *
  * Inputs:
  *	arg = Pointer to device information.
@@ -7752,8 +7752,8 @@ do_monitoring(void *arg)
 	/* TODO: Add an option to control this behavior! */
 	/* Removing for now, since this breaks existing scripts! */
     	/*
-	 * This handles the case where automation killed the connection, but dt is still running! 
-	 * Note: This is happening with NFS hard mounts and may or may not actually stop jobs! 
+	 * This handles the case where automation killed the connection, but dt is still running!
+	 * Note: This is happening with NFS hard mounts and may or may not actually stop jobs!
 	 */
 	if ( os_getppid() == UNIX_INIT_PROCESS ) {
 	    Wprintf(mdip, "The parent process ID is now the INIT process, so stopping all jobs!\n");
@@ -7885,7 +7885,7 @@ setup_thread_attributes(dinfo_t *dip, pthread_attr_t *tattrp, hbool_t joinable_f
     }
 
     /*
-     * Verify the thread stack size (TLS) is NOT too large! (Linux issue). 
+     * Verify the thread stack size (TLS) is NOT too large! (Linux issue).
      */
     status = pthread_attr_getstacksize(tattrp, &currentStackSize);
     if (status == SUCCESS) {
@@ -7982,7 +7982,7 @@ StartMonitorThread(dinfo_t *dip, unsigned int interval)
 
     /*
      * One monitoring thread for all jobs (right now)!
-     */ 
+     */
     if (interval < monitor_interval) {
 	monitor_interval = interval;	/* Dynamically adjust, as required. */
     }
@@ -8015,7 +8015,7 @@ ParseWorkload(dinfo_t *dip, char *workload)
     char	*cmdbufptr;		/* The command buffer pointer.	*/
     size_t	cmdbufsiz;		/* The command buffer size.	*/
     int		status;
-    
+
     if ( (workload == NULL) || (strlen(workload) == 0) ) {
 	Eprintf(dip, "Missing workload definition!\n");
 	return(FAILURE);
@@ -8026,7 +8026,7 @@ ParseWorkload(dinfo_t *dip, char *workload)
     argv = dip->argv;
     cmdbufptr = dip->cmdbufptr;
     cmdbufsiz = dip->cmdbufsiz;
-    
+
     /* Note: Large buffer for expanding variables (if any). */
     dip->cmdbufsiz = ARGS_BUFFER_SIZE;
     if ( !(dip->cmdbufptr = Malloc(dip, dip->cmdbufsiz)) ) {
@@ -8040,7 +8040,7 @@ ParseWorkload(dinfo_t *dip, char *workload)
     if (dip->argv == NULL) {
 	return(FAILURE);
     }
-    
+
     /* Expand variables, make an arg list, then parse options. */
     status = ExpandEnvironmentVariables(dip, dip->cmdbufptr, dip->cmdbufsiz);
     if (status == SUCCESS) {
@@ -8050,10 +8050,10 @@ ParseWorkload(dinfo_t *dip, char *workload)
     if (status == SUCCESS) {
 	status = parse_args(dip, dip->argc, dip->argv);
     }
-    
+
     free(dip->argv);
     free(dip->cmdbufptr);
-    
+
     /* Restore the original command information. */
     dip->argc = argc;
     dip->argv = argv;
@@ -8076,7 +8076,7 @@ SetupCommandBuffers(dinfo_t *dip)
 	/*
 	 * Allocate an array of pointers for parsing arguments.
 	 * Note: This overrides what arrived via the CLI in main()!
-	 */ 
+	 */
 	dip->argv = (char **)Malloc(dip, (sizeof(char **) * ARGV_BUFFER_SIZE) );
 	if (dip->argv == NULL) {
 	    return(FAILURE);
@@ -8111,7 +8111,7 @@ dtGetCommandLine(dinfo_t *dip)
     int status;
 
     /*
-     * Done here, since not required for single CLI commands. 
+     * Done here, since not required for single CLI commands.
      */
     if (dip->cmdbufptr == NULL) {
        	dip->cmdbufsiz = ARGS_BUFFER_SIZE;
@@ -8121,7 +8121,7 @@ dtGetCommandLine(dinfo_t *dip)
 	/*
 	 * Allocate an array of pointers for parsing arguments.
 	 * Note: This overrides what arrived via the CLI in main()!
-	 */ 
+	 */
 	dip->argv = (char **)Malloc(dip, (sizeof(char **) * ARGV_BUFFER_SIZE) );
 	if (dip->argv == NULL) {
 	    return(FAILURE);
@@ -8193,7 +8193,7 @@ read_more:
     }
     /*
      * Handle continuation lines.
-     */ 
+     */
     if ((p = strrchr(bufptr, '\n'))) {
 	--p;
 	/* Handle Windows <cr><lf> sequence! */
@@ -8220,7 +8220,7 @@ read_more:
     /*
      * Display the expanded command line, depending on our mode.
      * TODO: This is rather messy, try to cleanup as time permits!
-     */ 
+     */
     {
 	/* Original dt (complicated) logic for prompt/command display! */
 	if ( ((InteractiveFlag || dip->di_debug_flag) && dip->script_level) ||
@@ -8339,8 +8339,8 @@ ExpandEnvironmentVariables(dinfo_t *dip, char *bufptr, size_t bufsiz)
 
     while (length > 0) {
 	/*
-	 * Parse variables and do limited substitution (see below). 
-	 * TODO: It would be nice to support more of shell expansion. 
+	 * Parse variables and do limited substitution (see below).
+	 * TODO: It would be nice to support more of shell expansion.
 	 */
 	if ( (*from == '$') && (*(from+1) == '{') ) {
 	    hbool_t conditional = False;
@@ -8479,7 +8479,7 @@ MakeArgList(char **argv, char *s)
     for (c = *s++; ; c = *s++) {
 
 	switch (c) {
-	    
+	
 	    case '\t':
 	    case ' ':
 		*(s-1) = '\0';
@@ -8534,7 +8534,7 @@ static dinfo_t *
 init_device_information(void)
 {
     dinfo_t *dip;
-    
+
     dip = (struct dinfo *)malloc( sizeof(*dip) );
     if (dip == NULL) {
 	printf("ERROR: We failed to allocate the initial device information of %u bytes!\n",
@@ -8554,7 +8554,7 @@ init_device_information(void)
 
     init_device_defaults(dip);
 
-    /* 
+    /*
      * These flags get set only once, and are considered "sticky"!
      * That is, changing them from the CLI are retained for future.
      */
@@ -8590,20 +8590,20 @@ init_device_information(void)
 }
 
 /*
- * Note: These defaults get set for each command line. 
- *  
- * BEWARE: When running scripts, it's imperative that ALL options get 
- * reset to their original defaults! Therefore, when adding new options 
- * if you expect a particular default, such as zero (0), then that option 
- * MUST be initialized here! I (the author) have been bite by this more than 
- * once, such as the slice number and/or step offset, and the result is very 
- * difficult and timeconsuming debugging, esp. due to assumptions being made! 
- *  
+ * Note: These defaults get set for each command line.
+ *
+ * BEWARE: When running scripts, it's imperative that ALL options get
+ * reset to their original defaults! Therefore, when adding new options
+ * if you expect a particular default, such as zero (0), then that option
+ * MUST be initialized here! I (the author) have been bite by this more than
+ * once, such as the slice number and/or step offset, and the result is very
+ * difficult and timeconsuming debugging, esp. due to assumptions being made!
+ *
  * FYI: SO, why do this at all?
  * Well, the idea as shown above, is to allow "slicky" options, so all jobs
  * and their associated threads inherit those new settings. While the idea
  * is sound, heed the warning above, or bear the resulting support requests!
- */ 
+ */
 void
 init_device_defaults(dinfo_t *dip)
 {
@@ -8710,7 +8710,7 @@ init_device_defaults(dinfo_t *dip)
 #endif /* !defined(AIO) */
     dip->di_aio_flag = False;
     dip->di_align_offset = 0;
-    
+
     dip->di_dumpall_flag = False;
     dip->di_dump_context_flag = True;
     dip->di_max_bad_blocks = MAXBADBLOCKS;
@@ -8719,7 +8719,7 @@ init_device_defaults(dinfo_t *dip)
     dip->di_bufmode_index = 0;
     dip->di_bufmode_count = 0;
     dip->di_buffer_mode = NONE_SPECIFIED;
-    
+
     dip->di_dump_limit = DEFAULT_DUMP_LIMIT;
     dip->di_bypass_flag = False;
     dip->di_cerrors_flag = True;
@@ -8831,7 +8831,7 @@ init_device_defaults(dinfo_t *dip)
     dip->di_save_corrupted = SAVE_CORRUPTED;
     dip->di_max_capacity = False;
     dip->di_user_capacity = (large_t)0;
-    
+
     /* File System Parameters */
     dip->di_fsmap_flag = True;
     dip->di_fs_block_size = 0;
@@ -8844,7 +8844,7 @@ init_device_defaults(dinfo_t *dip)
     dip->di_volumes_flag = False;
     dip->di_volume_limit = 0;
     dip->di_volume_records = 1;
-    
+
     dip->di_iobf = NULL;
     dip->di_iobehavior = DT_IO;
     dip->di_io_dir  = FORWARD;
@@ -8859,7 +8859,7 @@ init_device_defaults(dinfo_t *dip)
     dip->di_max_data_percentage = 0;
     dip->di_max_data = 0;
     dip->di_max_files = 0;
-    
+
     /* Initialize random I/O variables: */
     dip->di_rdata_limit = 0;
     dip->di_random_align = 0;
@@ -8871,7 +8871,7 @@ init_device_defaults(dinfo_t *dip)
     dip->di_random_wpercentage = 0;
     dip->di_variable_flag = False;
     dip->di_variable_limit = False;
-    
+
     dip->di_trigargs_flag = True;
     dip->di_trigdelay_flag = True;
     dip->di_trigdefaults_flag = True;
@@ -8885,14 +8885,14 @@ init_device_defaults(dinfo_t *dip)
 
 /*
  * cleanup_device() - Free Space Allocated for a Device.
- * 
+ *
  * Inputs:
  * 	dip = The device information pointer.
  * 	master = The master device, so limit cleanup.
- * 
+ *
  * Returns:
  * 	void
- */ 
+ */
 void
 cleanup_device(dinfo_t *dip, hbool_t master)
 {
@@ -8915,7 +8915,7 @@ cleanup_device(dinfo_t *dip, hbool_t master)
     }
     /*
      * Note: This should be done by each I/O thread!
-     */ 
+     */
     if (dip->di_fd != NoFd) {
 	if (dip->di_shared_file == False) {
 	    (void)(*dip->di_funcs->tf_close)(dip);
@@ -9132,8 +9132,8 @@ cleanup_device(dinfo_t *dip, hbool_t master)
 	FreeStr(dip, dip->di_job_log);
 	dip->di_job_log = NULL;
     }
-    /* 
-     * Note: Done last, since may be writing to master log file. 
+    /*
+     * Note: Done last, since may be writing to master log file.
      */
     if (dip->di_log_file) {
 	if (dip->di_log_opened == True) {
@@ -9199,10 +9199,10 @@ clone_device(dinfo_t *dip, hbool_t master, hbool_t new_context)
 	cdip->di_fd = NoFd;
     }
 
-    /* 
+    /*
      * Note: If the master open'ed a log file, then reset stdout/stderr (for now).
      * Reason: We don't wish to fclose() the same file, leading to memory corruption!
-     */ 
+     */
     if ( (master == True) && dip->di_log_file) {
 	cdip->di_ofp = stdout;
 	cdip->di_efp = stderr;
@@ -9367,14 +9367,14 @@ clone_device(dinfo_t *dip, hbool_t master, hbool_t new_context)
 	cdip->di_tkeepalive = strdup(dip->di_tkeepalive);
     }
     /*
-     * History Data: 
-     */ 
+     * History Data:
+     */
     if (dip->di_history_size) {
 	SetupHistoryData(cdip);
     }
     /*
      * Trigger scripts and arguments:
-     */ 
+     */
     for (i = 0; (i < dip->di_num_triggers); i++) {
 	cdip->di_triggers[i].td_trigger = dip->di_triggers[i].td_trigger;
 	if (dip->di_triggers[i].td_trigger_cmd) {
@@ -9405,7 +9405,7 @@ clone_device(dinfo_t *dip, hbool_t master, hbool_t new_context)
 /*
  * This function does validation of options for all I/O behaviours.
  * The expectation is each I/O behavior will have its' own validation.
- */ 
+ */
 int
 do_common_validate(dinfo_t *dip)
 {
@@ -9439,7 +9439,7 @@ do_common_validate(dinfo_t *dip)
     if (dip->di_retry_entries && (dip->di_user_errors == False)) {
 	/*
 	 * Retries are normally logged as errors, so in order to keep I/O
-         * loops from terminating on retries, we adjust the error limit. 
+         * loops from terminating on retries, we adjust the error limit.
          * Note: Retaining this for historic reasons, backwards compatible.
 	 */
 	if ( dip->di_error_limit < dip->di_retry_limit ) {
@@ -9597,7 +9597,7 @@ do_datatest_validate(dinfo_t *dip)
     }
     /*
      * Slices becomes threads, unless a single slice was specified (one thread).
-     */ 
+     */
     if (dip->di_slices && !dip->di_slice_number) {
 	if (dip->di_threads > 1) {
 	    Wprintf(dip, "The slices option (%d) overrides the threads (%d) specified!\n",
@@ -9607,10 +9607,10 @@ do_datatest_validate(dinfo_t *dip)
 	dip->di_threads = dip->di_slices;
     }
     /*
-     * Multiple threads to the same device cannot use random I/O to avoid false corruptions. 
-     * Random I/O with a write/read pass is only possible when the same random seed is used, 
-     * but basically this doesn't make sense since each thread uses the same offset. ;( 
-     * Lots of flags being checked, but I'm trying not to force improper behavior. ;) 
+     * Multiple threads to the same device cannot use random I/O to avoid false corruptions.
+     * Random I/O with a write/read pass is only possible when the same random seed is used,
+     * but basically this doesn't make sense since each thread uses the same offset. ;(
+     * Lots of flags being checked, but I'm trying not to force improper behavior. ;)
      */
     if ( (dip->di_iobehavior == DT_IO) && (dip->di_bypass_flag == False) &&
 	 dip->di_iolock && (dip->di_threads > 1) && dip->di_output_file &&
@@ -9690,7 +9690,7 @@ do_datatest_validate(dinfo_t *dip)
 	return(FAILURE);
     }
 
-    /* 
+    /*
      * Verify Block Tag (btag) options (if enabled).
      */
     if (dip->di_btag_flag == True) {
@@ -9710,9 +9710,9 @@ do_datatest_validate(dinfo_t *dip)
      * Ok, sanity check options that are allowing folks to shoot themselves
      * in the foot (sometimes due to hardcoded automation) when adding options
      * via a pass-through parameter.
-     * 
+     *
      * Note: Done here to avoid multiple messages from each process.
-     */ 
+     */
 #if defined(O_TRUNC)
     if ( (dip->di_slices && (dip->di_write_flags & O_TRUNC)) ) {
 	if (dip->di_verbose_flag) {
@@ -9790,11 +9790,11 @@ do_common_copy_setup(dinfo_t *idip, dinfo_t *odip)
 /*
  * Please Beware: This function is invoked for ALL I/O behaviors right now.
  * Therefore, to bypass certain dt sanity checks, a data limit must be setup.
- * 
+ *
  * Note: Clearly, this function is overloaded, and replaced with an I/O behavior
- * specific function. Still a fair amount of cleanup required, but when? (sigh) 
- *  
- * Note: This function is invoked before I/O Behavior validate function. 
+ * specific function. Still a fair amount of cleanup required, but when? (sigh)
+ *
+ * Note: This function is invoked before I/O Behavior validate function.
  */
 int
 do_common_device_setup(dinfo_t *dip)
@@ -9904,7 +9904,7 @@ do_common_device_setup(dinfo_t *dip)
 	    return(FAILURE);
 	}
 #endif /* defined(SCSI) */
-    } else if (strncmp(device, DEV_PREFIX, sizeof(DEV_PREFIX)-1) == 0) { 
+    } else if (strncmp(device, DEV_PREFIX, sizeof(DEV_PREFIX)-1) == 0) {
 	if (dip->di_mount_lookup) {
 	    if ( isDeviceMounted(dip, device, dip->di_mntDebugFlag) == True ) {
 		if (dip->di_output_file) {
@@ -9980,11 +9980,11 @@ do_common_device_setup(dinfo_t *dip)
 	 * If the the file does *not* exist, and we cannot setup the capacity
 	 * or we'll report this error below:
 	 *   ERROR: You must specify a data limit, a record count, or both.
-	 * 
+	 *
 	 * Note: If the file exists, or a user capacity/data limit was specified,
 	 * then SetupTransferLimits() has already been called from dtinfo.c!
 	 * But that said, please don't forget direct access disks! -Robin
-	 * 
+	 *
 	 * Yea, major league messy, but making due for now, until more cleanup!
 	 */
 	if ( dip->di_user_capacity || isDiskDevice(dip) || os_file_exists(dip->di_dname) ) {
@@ -10136,7 +10136,7 @@ do_common_device_setup(dinfo_t *dip)
      *
      * With a step option and a data limit, we need to set the end offset.
      * The I/O loops will stop when the offset reaches this end offset.
-     * 
+     *
      * For regular files, we must setup an end position (offset), since
      * doing I/O to a file system will NOT encounter an EOF like raw disks.
      * Slices also requires an ending position when step option is used.
@@ -10151,12 +10151,12 @@ do_common_device_setup(dinfo_t *dip)
 	    dip->di_end_position = (dip->di_file_position + (dip->di_record_limit * dip->di_block_size));
 	}
     }
-    
+
     /*
      * Ensure either a data limit and/or a record count was specified.
      *
      * Remember: The record limit is set to INFINITY when a data limit is specified.
-     * 
+     *
      * TODO: More cleanup, add I/O behavior specific function! (too messy)
      */
     if ( (dip->di_io_mode == TEST_MODE) &&
@@ -10167,7 +10167,7 @@ do_common_device_setup(dinfo_t *dip)
 	Eprintf(dip, "You must specify a data limit, a record count, or both.\n");
 	return(FAILURE);
     }
-    
+
     /*
      * Reset the data limit, if specified by the user, as we overwrote it earlier.
      * The data limit gets set to the max data limit in ReadCapacity (needs cleanup!).
@@ -10305,7 +10305,7 @@ do_maxdata_percentage(dinfo_t *dip, large_t data_bytes, int data_percentage)
     }
     return(max_data);
 }
-    
+
 /*
  * do_filesystem_setup() - Do File System Setup.
  *
@@ -10332,8 +10332,8 @@ do_filesystem_setup(dinfo_t *dip)
     int status = SUCCESS;
 
     /*
-     * Note: Do NOT setup the directory name (di_dir) for non-file system 
-     *       devices, without updating all places where this is referenced. 
+     * Note: Do NOT setup the directory name (di_dir) for non-file system
+     *       devices, without updating all places where this is referenced.
      */
 
     /*
@@ -10360,7 +10360,7 @@ do_filesystem_setup(dinfo_t *dip)
 	dip->di_bname = strdup(file);
     }
 
-    /* 
+    /*
      * Create the top directory, if it does not exist.
      */
     if (dip->di_dir && dip->di_output_file) {

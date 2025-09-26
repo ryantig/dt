@@ -34,10 +34,10 @@
  *
  * May 22nd, 2020 by Robin T. Miller
  *      Updates to resolve 64-bit compilation warnings.
- * 
+ *
  * August 26th, 2010 by Robin T. Miller
  * 	When opening device, on EROFS errno, try opening read-only.
- * 
+ *
  * August 6th, 2007 by Robin T. Miller.
  *	Added OS open and close functions.
  *
@@ -629,7 +629,7 @@ os_spt(scsi_generic_t *sgp)
     }
     (void)memcpy(spt->scsi_cdb, sgp->cdb, (size_t)sgp->cdb_size);
 
-    spt->version		= SCSI_VERSION_2; 
+    spt->version		= SCSI_VERSION_2;
     spt->command_length		= sgp->cdb_size;
     spt->flags			= sgp->sflags;
     spt->q_tag_msg              = sgp->qtag_type;
@@ -786,7 +786,7 @@ error:
  * retriable error. Note: The checks performed here are those that are
  * OS specific, such as looking a host, driver, or syscall errors that can
  * be retried automatically, and/or to perform any OS specific recovery.
- * 
+ *
  * Inputs:
  *      sgp = Pointer to the SCSI generic data structure.
  *
@@ -798,7 +798,7 @@ hbool_t
 os_is_retriable(scsi_generic_t *sgp)
 {
     hbool_t is_retriable = False;
-    
+
     return (is_retriable);
 }
 
@@ -1368,7 +1368,7 @@ static int einval_ReasonEntrys =
 static char *
 aix_EinvalReason(unsigned einval_reason, hbool_t report_brief)
 {
-    struct einval_ReasonTable *aer = einval_ReasonTable; 
+    struct einval_ReasonTable *aer = einval_ReasonTable;
     int entrys;
 
     for (entrys = 0; entrys < einval_ReasonEntrys; aer++, entrys++) {
@@ -1417,7 +1417,7 @@ static int adapter_sam_statusEntrys =
 static char *
 AdapterSamStatus(unsigned adapter_status)
 {
-    struct adapter_sam_statusTable *ast = adapter_sam_statusTable; 
+    struct adapter_sam_statusTable *ast = adapter_sam_statusTable;
     int entrys;
 
     for (entrys = 0; entrys < adapter_sam_statusEntrys; ast++, entrys++) {

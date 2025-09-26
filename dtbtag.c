@@ -30,49 +30,49 @@
  *	This file contains functions required for block tags (btag).
  *
  * Modification History:
- * 
+ *
  * November 4th, 2021 by Robin T. Miller
  *      Switch to using device ID page instead of serial numbers.
  *      Note: For NVMe disks, use the global unique identifier instead
  * of the serial number or the device ID.
- * 
+ *
  * March 31st, 2020 by Robin T. Miller
  *      Add function to display block tag verify flags that are set.
- * 
+ *
  * January 8th, 2020 by Robin T. Miller
  *      When verifying the received CRC, also verify against the expected CRC
  * when using read-after-write, since we may read stale (yet valid) btag data,
  * but the expected btag CRC will be incorrect! Yikes, how did I miss this?
  *      When reporting or verifying btags with read-after-write, do *not*
  * overwrite the expected btag CRC, which should be correct from write.
- * 
+ *
  * January 6th, 2020 by Robin T. Miller
  *      For file systems, if a serial number exists, verify the serial number.
  *      Previously this was cleared for files, so we did not verify serial #
  * and mark as incorrect if wrong. The side-by-side compare showed corruption.
  *      Note: We still detected the corruption by other fields or CRC-32.
- * 
+ *
  * December 24th, 2019 by Robin T. Miller
  *      Display file system physical LBA's when this is supported.
- * 
+ *
  * October 6th, 2019 by Robin T. Miller
  *      With variable I/O modes, when switching from random to sequential mode,
  * use the initial btag verify flags, to prevent setting flags not intended.
  * Previously the random disable btag flags were set, enabling several flags
  * which lead to a false corruption. We now honor user set verify flags.
  * Note: This prevents false miscompare on ENOSPC or short record writes.
- * 
+ *
  * May 28th, 2019 by Robin T. Miller
  *      With I/O lock and random percentages, disable btag flags that are not
  * safe to verify since they may get overwritten, which leads to false corruptions.
- * 
+ *
  * December 29th, 2017 by Robin T. Miller
  *      When the I/O lock flag is enabled, don't compare the thread number.
  *	The I/O lock indicates multiple threads are accessing the same file.
  *
  * May 13th, 2015 by Robin T Miller
  * 	Initial creation.
- * 
+ *
  * September 17th, 2015 by Robin T. Miller
  * 	Add support for btag extention for tracking previous writes.
  */
@@ -142,7 +142,7 @@ initialize_btag(dinfo_t *dip, uint8_t opaque_type)
 #  if defined(NVME)
     if (dip->di_nvme_flag && dip->di_namespace_nguid) {
 	(void)strncpy(btag->btag_deviceid, dip->di_namespace_nguid, sizeof(btag->btag_deviceid)-1);
-    } else 
+    } else
 #  endif /* defined(NVME) */
     if (dip->di_device_id) {
 	(void)strncpy(btag->btag_deviceid, dip->di_device_id, sizeof(btag->btag_deviceid)-1);
@@ -197,7 +197,7 @@ char *
 decode_btag_flags(char *out, uint16_t btag_flags)
 {
     char *bp = out;
-    
+
     *bp = '\0';
     if (btag_flags & BTAG_FILE) {
 	bp += sprintf(bp, "file");
@@ -258,7 +258,7 @@ char *
 decode_btag_opaque_type(char *out, uint8_t btag_opaque_type)
 {
     char *bp = out;
-    
+
     switch (btag_opaque_type) {
 	case OPAQUE_NO_DATA_TYPE:
 	    (void)strcpy(bp, "No Data Type");
@@ -293,11 +293,11 @@ report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
     uint32_t btag_index = 0;
     size_t btag_size = getBtagSize(rbtag);
     uint32_t rcrc32 = 0;
-    
+
     Fprintf(dip, "\n");
     Fprintf(dip, "Block Tag (btag) @ "LLPX0FMT" ("SDF" bytes):\n", rbtag, btag_size);
     Fprintf(dip, "\n");
-    
+
     if ( isDiskDevice(dip) ) {
 
 	btag_index = offsetof(btag_t, btag_lba);
@@ -460,7 +460,7 @@ report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
 
     btag_index = offsetof(btag_t, btag_hostname);
     if ( (ebtag && rbtag) &&
-	 (dip->di_btag_vflags & BTAGV_HOSTNAME) && 
+	 (dip->di_btag_vflags & BTAGV_HOSTNAME) &&
 	 memcmp(ebtag->btag_hostname, rbtag->btag_hostname, sizeof(ebtag->btag_hostname)) ) {
 	Fprintf(dip, DT_BTAG_FIELD "%s\n",
 		"Host Name", btag_index, incorrect_str);
@@ -571,11 +571,11 @@ report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
 		: os_ctime(&rwrite_start, dip->di_time_buffer, sizeof(dip->di_time_buffer)) );
     }
 
-    /* 
+    /*
      * We don't compare the write times, since times will be different, esp. usecs!
      * Note: The expected btag is calculated *after* the write completes!
      * The code is conditionalized out, in case we add optimization for expected.
-     */ 
+     */
     btag_index = offsetof(btag_t, btag_write_secs);
     if ( raw_flag && (ebtag && rbtag) &&
 	 (dip->di_btag_vflags & BTAGV_WRITE_SECS) &&
@@ -728,7 +728,7 @@ report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
 	Fprintf(dip, DT_BTAG_FIELD "%u (0x%08x)\n",
 		"Device Size", btag_index, LtoH32(rbtag->btag_device_size), LtoH32(rbtag->btag_device_size) );
     }
-    
+
     btag_index = offsetof(btag_t, btag_record_index);
     if ( (ebtag && rbtag) &&
 	 (dip->di_btag_vflags & BTAGV_RECORD_INDEX) &&
@@ -760,7 +760,7 @@ report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
 	Fprintf(dip, DT_BTAG_FIELD "%u (0x%08x)\n",
 		"Record Size", btag_index, LtoH32(rbtag->btag_record_size), LtoH32(rbtag->btag_record_size) );
     }
-    
+
     btag_index = offsetof(btag_t, btag_record_number);
     if ( (ebtag && rbtag) &&
 	 (dip->di_btag_vflags & BTAGV_RECORD_NUMBER) &&
@@ -827,7 +827,7 @@ report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
 	Fprintf(dip, DT_BTAG_FIELD "%u (0x%04x)\n",
 		"Opaque Data Size", btag_index, LtoH16(rbtag->btag_opaque_data_size), LtoH16(rbtag->btag_opaque_data_size) );
     }
-    
+
     btag_index = offsetof(btag_t, btag_crc32);
     rcrc32 = calculate_btag_crc(dip, rbtag);
     if ( (ebtag && rbtag) &&
@@ -861,7 +861,7 @@ report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
 	Fprintf(dip, DT_BTAG_FIELD "0x%08x\n",
 		"CRC-32", btag_index, LtoH32(rbtag->btag_crc32) );
     }
-    
+
     /*
      * Report or verify the btag extension, if any.
      */
@@ -878,7 +878,7 @@ report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
 }
 
 void
-update_btag(dinfo_t *dip, btag_t *btag, Offset_t offset, 
+update_btag(dinfo_t *dip, btag_t *btag, Offset_t offset,
 	    uint32_t record_index, size_t record_size, uint32_t record_number)
 {
     struct timeval tv, *tvp = &tv;
@@ -970,7 +970,7 @@ update_record_btag(dinfo_t *dip, btag_t *btag, Offset_t offset,
 {
     struct timeval tv, *tvp = &tv;
     uint32_t dsize = dip->di_lbdata_size;
-    
+
     /* Update things changing on each read record. */
     if ( isDiskDevice(dip) ) {
         uint64_t lba = makeLBA(dip, offset);
@@ -1026,7 +1026,7 @@ verify_btags(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, uint32_t *eindex, hbool
     char *strp = str;
     int btag_errors = 0;
     uint32_t btag_index = 0;
-    
+
     if (eindex) *eindex = 0xFFFF;
 
     /* REMEMBER: The btag is in little-endian format! */
@@ -1438,7 +1438,7 @@ int
 parse_btag_verify_flags(dinfo_t *dip, char *string)
 {
     int status = SUCCESS;
-    
+
     while (*string != '\0') {
 	if (match(&string, ",")) {
 	    continue;
@@ -1763,9 +1763,9 @@ int
 verify_btag_options(dinfo_t *dip)
 {
     int status = SUCCESS;
-    
-    /* 
-     * Block Tag (btag) Sanity Checks: 
+
+    /*
+     * Block Tag (btag) Sanity Checks:
      */
     if (dip->di_btag_flag == True) {
 	if (dip->di_block_size < sizeof(btag_t)) {
@@ -1870,7 +1870,7 @@ local void make_crc_table()
   poly = 0L;
   for (n = 0; n < sizeof(p)/sizeof(Byte); n++)
     poly |= 1L << (31 - p[n]);
- 
+
   for (n = 0; n < 256; n++)
   {
     c = (uLong)n;

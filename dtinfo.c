@@ -29,34 +29,34 @@
  *
  * Description:
  *      Setup device and/or system information for 'dt' program.
- * 
+ *
  * Modification History:
- * 
+ *
  * September 20th, 2023 by Robin T. Miller
  *      When setting up device information, beware of overwriting the user
  * specified device type.
- * 
+ *
  * February 4th, 2020 by Robin T. Miller
  *      For Windows and existing file, set the filesize like we do for Unix!
- * 
+ *
  * December 28th, 2019 by Robin T. Miller
  *      For regular files, do NOT override the user specified block sizes
  * for regular files unless Direct I/O is specified, otherwise we cannot
  * perform non-block aligned I/O. In my haste to fix (override) incorrect
  * min/max/incr values for user specified device sizes (dsize=value), I
  * accidently broke this previous (desirable) file system behavior.
- * 
+ *
  * December 20th, 2019 by Robin T. Miller
  *      With changing dispose mode to KEEP_ON_ERROR, ensure existing files
  * do *not* get deleted by setting dispose to KEEP_FILE.
- * 
+ *
  * July 19th, 2019 by Robin T. Miller
  *      When user specifies an alternate device size (dsize=4k), ensure all
  * device size and I/O parameters are updated accordingly.
  * Note: This mismatch caused a false corruption due to I/O sizes NOT being
  * modulo the user device size, and did not enforce aligned I/O on the same.
  * When using block tags, the CRC generated on short reads was incorrect!
- * 
+ *
  * July 8th, 2019 by Robin T. Miller
  *      Update setup_device_info() to always call os_system_device_info() so
  * disk specific information from the OS via IOCTL gets setup properly. This
@@ -64,12 +64,12 @@
  * is less than the actual disk capacity, EINVAL occurs to unreachable offsets.
  * It's not invalid to return less disk capacity, since some may be reserved.
  * Note: Without refactoring code, the user device type may get overwritten!
- * 
+ *
  * April 12th, 2018 by Robin T. Miller
  *      For Linux, add function to set device block size. This is required
  * for file systems when direct I/O is enabled, where I/O sizes muct be
  * modulo the device size, otherwise EINVAL errors occur (misleading).
- * 
+ *
  * June 15th, 2014 by Robin T. Miller
  * 	On Linux for direct disks, ensure the DIO flag is set true, since
  * new logic for handling Direct I/O and buffering mode, requires this!
@@ -79,7 +79,7 @@
  * user capacity for both reads and writes. This is consistent with dt v18,
  * and required so random reads will match random writes. Failure to do this
  * results in the wrong read offsets and thus false data corruptions! :-(
- * 
+ *
  * Auguest 17th, 2013 by Robin T. Miller
  *	Always setup the disk capacity, if we can acquire it, since new tests
  * and sanity checks like copy/verify need this information. Previosuly, the
@@ -276,8 +276,8 @@ setup_device_defaults(struct dinfo *dip)
 		dip->di_fsync_flag = True;
 	    } else if (dtp->dt_dtype == DT_DISK) {
 		/*
-		 * Devices identified as DT_DISK should be the raw (character) device. 
-		 * Since some OS's, such as AIX don't like fsync() to disks, we'll disable 
+		 * Devices identified as DT_DISK should be the raw (character) device.
+		 * Since some OS's, such as AIX don't like fsync() to disks, we'll disable
 		 * it since it really only has meaning to block or regular (FS) files.
 		 */
 		dip->di_fsync_flag = False;
@@ -982,7 +982,7 @@ os_system_device_info(struct dinfo *dip)
  * the initial setup of certain information based on known options.
  * This function is meant to be called prior to opening the device so
  * test specific functions are known for initial processing.
- * 
+ *
  * Inputs:
  *	dip = The device information pointer.
  *	dname = The device name.
@@ -1002,7 +1002,7 @@ setup_device_info(struct dinfo *dip, char *dname, struct dtype *dtp)
 #endif
 
     /*
-     * Don't reset the functions if already set by another I/O behavior. 
+     * Don't reset the functions if already set by another I/O behavior.
      */
     if (dip->di_funcs == NULL) {
 	dip->di_funcs = &generic_funcs;
@@ -1020,7 +1020,7 @@ setup_device_info(struct dinfo *dip, char *dname, struct dtype *dtp)
     }
 
     /*
-     * Setup the user specified device size (if any). 
+     * Setup the user specified device size (if any).
      * By setting here, OS device setup leaves alone!
      */
     if (dip->di_device_size) {
@@ -1125,7 +1125,7 @@ setup_device_info(struct dinfo *dip, char *dname, struct dtype *dtp)
 		if (SetupDiskAttributes(dip, dip->di_fd) != SUCCESS)
 #endif /* defined(DEC) */
 		    dtp = setup_device_type("character");
-	    } 
+	    }
 	}
 #endif /* !defined(WIN32) */
     } /* if (dtp == NULL) */
@@ -1236,7 +1236,7 @@ setup_device_info(struct dinfo *dip, char *dname, struct dtype *dtp)
 	}
     } /* end of (dtp == NULL) */
 #endif /* defined(WIN32) */
-    
+
     if (!dip->di_dtype && dtp) dip->di_dtype = dtp;
     if (!dip->di_dtype && !dtp) {
 	/* Setup a device type to avoid dereferencing a null pointer! */
@@ -1261,7 +1261,7 @@ GetMaxUserCapacity(dinfo_t *dip, hbool_t use_records)
 {
     /* Note: This capacity is from the user or the OS! */
     large_t user_data_capacity = dip->di_user_capacity;
-    
+
     if (user_data_capacity == (large_t) 0) {
 	large_t user_data_limit = 0;
 	large_t user_record_data = 0;
@@ -1276,7 +1276,7 @@ GetMaxUserCapacity(dinfo_t *dip, hbool_t use_records)
     }
     return(user_data_capacity);
 }
-    
+
 void
 SetupRegularFile(struct dinfo *dip, large_t file_size)
 {
@@ -1300,7 +1300,7 @@ SetupRegularFile(struct dinfo *dip, large_t file_size)
              *    ( very important for reverse or random I/O )
              *  - if writing, set to max of existing or user size
              *    ( exceeding the current size allows expansion )
-             */   
+             */
             if (dip->di_data_limit == INFINITY) {
                 dip->di_user_capacity = file_size;
             } else {

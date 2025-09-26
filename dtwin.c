@@ -28,27 +28,27 @@
  *
  * Description:
  *	This module contains *unix OS specific functions.
- * 
+ *
  * Modification History:
- * 
+ *
  * June 5th, 2020 by Robin T. Miller
  *      Update os_pread_file() to detecting overlapped I/O, then wait for
  * accordingly for it to finish. When async I/O is enable, and read after
  * write is enabled, currently reads are done synchonously. While this
  * defeats the purpose of async I/O, we don't wish these reads to fail!
- * 
+ *
  * May 5th, 2020 by Robin T. Miller
  *      Include the high resolution gettimeofday() as highresolutiontime(),
  * which will be used where more accurate timing is desired, such as history
  * entries. The Unix eqivalent gettimeofday() is only accurate to 10-15ms,
  * but is preferred (by some) in block tags (btags) for Epoch write times.
  * Note: Robin often creates large history with timing for tracing I/O's.
- * 
+ *
  * April 6th, 2015 by Robin T. Miller
  * 	In os_rename_file(), do not delete the newpath unless the oldpath
  * exists. Depending on the test, we can delete files that should remain,
  * plus this behavior is closer to POSIX rename() semantics (I believe).
- * 
+ *
  * February 7th, 2015 by Robin T. Miller
  * 	Fixed bug in POSIX flag mapping, O_RDONLY was setting the wrong
  * access (Read and Write), which failed on a read-only file! The author
@@ -58,7 +58,7 @@
  * 	pthread* API's should not report errors, but simply return the
  * error to the caller, so these changes have been made. The caller needs
  * to use OS specific functions to handle *nix vs. Windows error reporting.
- * 
+ *
  * Note: dt has its' own open/close/seek functions, so these may go!
  * 	 Still need to evaluate the AIO functions. and maybe cleanup more
  * error handling, and probably remove unused API's.
@@ -95,7 +95,7 @@ void map_posix_flags(dinfo_t *dip, char *name, int posix_flags,
 /*
  * Fake pthread implementation using Windows threads. Windows threads
  * are generally a superset of pthreads, so there is no lost functionality.
- * 
+ *
  * Note: Lots of Windows documentation/links added by Robin, who does not
  * do sufficient Windows programming to feel confident in his theads knowledge.
  */
@@ -117,7 +117,7 @@ pthread_attr_setdetachstate(pthread_attr_t *attr, int type)
     return( PTHREAD_NORMAL_EXIT );
 }
 
-/* 
+/*
  * Reference:
  * http://msdn.microsoft.com/en-us/library/windows/desktop/ms682453(v=vs.85).aspx
  *
@@ -129,7 +129,7 @@ pthread_attr_setdetachstate(pthread_attr_t *attr, int type)
  * if you create one thread per processor and build queues of requests for which
  * the application maintains the context information. A thread would process all
  * requests in a queue before processing requests in the next queue.
- */ 
+ */
 int
 pthread_attr_getstacksize(const pthread_attr_t *attr, size_t *stacksize)
 {
@@ -160,33 +160,33 @@ pthread_mutexattr_gettype(pthread_mutexattr_t *attr, int *type)
 {
     return( PTHREAD_NORMAL_EXIT );
 }
-    
+
 int
 pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 {
     return( PTHREAD_NORMAL_EXIT );
 }
 
-/* 
+/*
  * Windows Notes from:
  * http://msdn.microsoft.com/en-us/library/windows/desktop/ms682659(v=vs.85).aspx
- * A thread in an executable that is linked to the static C run-time library  
- * (CRT) should use _beginthread and _endthread for thread management rather  
- * than CreateThread and ExitThread. Failure to do so results in small memory  
- * leaks when the thread calls ExitThread. Another work around is to link the  
- * executable to the CRT in a DLL instead of the static CRT.  
- * Note that this memory leak only occurs from a DLL if the DLL is linked to  
- * the static CRT *and* a thread calls the DisableThreadLibraryCalls function.  
- * Otherwise, it is safe to call CreateThread and ExitThread from a thread in  
- * a DLL that links to the static CRT.  
- *  
+ * A thread in an executable that is linked to the static C run-time library
+ * (CRT) should use _beginthread and _endthread for thread management rather
+ * than CreateThread and ExitThread. Failure to do so results in small memory
+ * leaks when the thread calls ExitThread. Another work around is to link the
+ * executable to the CRT in a DLL instead of the static CRT.
+ * Note that this memory leak only occurs from a DLL if the DLL is linked to
+ * the static CRT *and* a thread calls the DisableThreadLibraryCalls function.
+ * Otherwise, it is safe to call CreateThread and ExitThread from a thread in
+ * a DLL that links to the static CRT.
+ *
  * Robin's Note: September 2012
- * Since we are NOT calling DisableThreadLibraryCalls(), I'm assuming we  
+ * Since we are NOT calling DisableThreadLibraryCalls(), I'm assuming we
  * do not need to worry about using these alternate thread create/exit API's!
  * Note: The code has left, but not enabled since _MT changes to _MTx.
  * Update: Reenabling _MT method for threads, otherwise hangs occur!
  * Note: The hangs occur while waiting for the parent thread to exit.
- *  
+ *
  * A different warning...
  * If you are going to call C run-time routines from a program built
  * with Libcmt.lib, you must start your threads with the _beginthread
@@ -208,8 +208,8 @@ pthread_create(pthread_t *tid, pthread_attr_t *attr,
 {
     DWORD dwTid;
 #if defined(_MT)
-    /* 
-     * uintptr_t _beginthreadex( 
+    /*
+     * uintptr_t _beginthreadex(
      *   void *security,
      *   unsigned stack_size,
      *   unsigned ( *start_address )( void * ),
@@ -245,7 +245,7 @@ void
 pthread_exit(void *status)
 {
 #if defined(_MT)
-    /* 
+    /*
      * void _endthreadex(unsigned retval);
      */
     _endthreadex( (unsigned)status );
@@ -321,7 +321,7 @@ pthread_cancel(pthread_t thread)
 	return PTHREAD_NORMAL_EXIT;
     }
 }
-    
+
 void
 pthread_kill(pthread_t thread, int sig)
 {
@@ -360,7 +360,7 @@ pthread_mutex_destroy(pthread_mutex_t *mutex)
     }
 }
 
-/* 
+/*
  * the diff b/w this and mutex_lock is that this one returns
  * if any thread including itself has the mutex object locked
  * (man pthread_mutex_trylock on Solaris)
@@ -381,7 +381,7 @@ pthread_mutex_lock(pthread_mutex_t *lock)
 
     switch (result) {
 	case WAIT_ABANDONED:
-	case WAIT_TIMEOUT:  
+	case WAIT_TIMEOUT:
 	    break;
 	case WAIT_FAILED:
 	    return (int)GetLastError();
@@ -407,10 +407,10 @@ pthread_mutex_unlock(pthread_mutex_t *lock)
 int
 pthread_cond_init(pthread_cond_t * cv, const void *dummy)
 {
-    /* 
-     * I'm not sure the broadcast thang works - untested 
+    /*
+     * I'm not sure the broadcast thang works - untested
      * I had to tweak this to use SetEvent when signalling
-     * the SIGNAL event 
+     * the SIGNAL event
      */
 
     /* Create an auto-reset event */
@@ -444,7 +444,7 @@ pthread_self(void)
  *        This isn't strictly pthread_cond_wait, but it works
  *        for this program without any race conditions.
  *
- */ 
+ */
 int
 pthread_cond_wait(pthread_cond_t *cv, pthread_mutex_t *lock)
 {
@@ -457,16 +457,16 @@ pthread_cond_wait(pthread_cond_t *cv, pthread_mutex_t *lock)
 	case WAIT_ABANDONED:
 	    //printf("SignalObjectAndWait - Wait Abandoned \n");
 	    return -1;
-    
+
 	    /* MSDN says this is one of the ret values, but I get compile errors */
 	//case WAIT_OBJECT_O:
 	//	printf("SignalObjectAndWait thinks object is signalled\n");
 	//	break;
-    
+
 	case WAIT_TIMEOUT:
 	    //printf("SignalObjectAndWait timed out\n");
 	    break;
-    
+
 	case 0xFFFFFFFF:
 	    //os_perror(NULL, "SignalObjectAndWait failed");
 	    return -1;
@@ -478,8 +478,8 @@ pthread_cond_wait(pthread_cond_t *cv, pthread_mutex_t *lock)
     return ret;
 }
 
-/* 
- * Try to release one waiting thread. 
+/*
+ * Try to release one waiting thread.
  */
 int
 pthread_cond_signal(pthread_cond_t *cv)
@@ -491,8 +491,8 @@ pthread_cond_signal(pthread_cond_t *cv)
     }
 }
 
-/* 
- * Try to release all waiting threads. 
+/*
+ * Try to release all waiting threads.
  */
 int
 pthread_cond_broadcast(pthread_cond_t *cv)
@@ -513,7 +513,7 @@ map_posix_flags(dinfo_t *dip, char *file, int posix_flags,
     *CreationDisposition = 0;
     *FlagsAndAttributes = 0;
     *ShareMode = 0;
-     
+
     /*
      * FILE_SHARE_DELETE = 0x00000004
      *   Enables subsequent open operations on a file or device to request
@@ -534,17 +534,17 @@ map_posix_flags(dinfo_t *dip, char *file, int posix_flags,
 
     /*
      * We map Unix style flags to the Windows equivalent (as best we can).
-     * 
+     *
      * Note: Changed FILE_READ_DATA/FILE_WRITE_DATA to GENERIC methods, to
      * match what dt has always used and most other tools. Only cruisio and
      * sio/nassio use the FILE*DATA method. dwim, crud, & netmist use GENERIC.
      * At this point, I see no harm in switching, but add this note nonetheless!
-     * 
+     *
      * References: (Amazing what one can do on Windows!)
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa365432(v=vs.85).aspx
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa379607(v=vs.85).aspx
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa364399(v=vs.85).aspx
-     * 
+     *
      */
     if (posix_flags & O_WRONLY) {
 	*DesiredAccess = GENERIC_WRITE;
@@ -910,7 +910,7 @@ win32_getuncpath(char *path, char **uncpathp)
 	drive[2] = '\0';
 	/*
 	 * http://msdn.microsoft.com/en-us/library/windows/desktop/aa385453(v=vs.85).aspx
-	 * 
+	 *
 	 * DWORD WNetGetConnection(
 	 *  _In_     LPCTSTR lpLocalName,
 	 *  _Out_    LPTSTR lpRemoteName,
@@ -932,10 +932,10 @@ win32_dup(HANDLE handle)
 
     /* http://msdn.microsoft.com/en-us/library/ms724251(VS.85).aspx */
 
-    if ( !DuplicateHandle(GetCurrentProcess(), 
-			  handle, 
+    if ( !DuplicateHandle(GetCurrentProcess(),
+			  handle,
 			  GetCurrentProcess(),
-			  &hDup, 
+			  &hDup,
 			  0,
 			  False,
 			  DUPLICATE_SAME_ACCESS) ) {
@@ -1079,7 +1079,7 @@ os_getaddrinfo(dinfo_t *dip, char *host, int family, void **sa, socklen_t *salen
 	free(*sa);
 	*sa = NULL;
     }
-    /* 
+    /*
      * A value of AF_UNSPEC for ai_family indicates the caller will
      * accept only the AF_INET and AF_INET6 address families.
      * Note: May need a flag to control which family to query!
@@ -1109,14 +1109,14 @@ os_getaddrinfo(dinfo_t *dip, char *host, int family, void **sa, socklen_t *salen
     for (aip = addrinfop; (aip != NULL); aip = aip->ai_next) {
 
         if (aip->ai_family == AF_INET) {
-	    /* 
+	    /*
 	     * struct sockaddr_in {
 	     *   short   sin_family;
 	     *   u_short sin_port;
 	     *   struct  in_addr sin_addr;
 	     *   char    sin_zero[8];
 	     * };
-	     */ 
+	     */
 	    struct sockaddr_in *sainp = (struct sockaddr_in *)(aip->ai_addr);
 	    char *p;
             p = inet_ntoa(sainp->sin_addr);
@@ -1160,7 +1160,7 @@ os_getaddrinfo(dinfo_t *dip, char *host, int family, void **sa, socklen_t *salen
 	     *  _Inout_   LPDWORD lpdwAddressStringLength
 	     * );
 	     */
-	    status = WSAAddressToString(sockaddr_ip, (DWORD)aip->ai_addrlen, NULL, 
+	    status = WSAAddressToString(sockaddr_ip, (DWORD)aip->ai_addrlen, NULL,
 					address_str, &ipbufferlength);
 	    if (status) {
 		;
@@ -1191,7 +1191,7 @@ os_getaddrinfo(dinfo_t *dip, char *host, int family, void **sa, socklen_t *salen
 	}
 	/*
 	 * My Windows client returns multiple IP addresses:
-	 * 
+	 *
 	 * host IP: fe80::fc0b:aa83:2e17:4db3%15
 	 *  host IP: fe80::40fe:ea75:dbdb:e7d6%13
 	 *  host IP: fe80::a5ba:f5bb:cfbb:7a07%10
@@ -1201,9 +1201,9 @@ os_getaddrinfo(dinfo_t *dip, char *host, int family, void **sa, socklen_t *salen
 	 *  host IP: 4.9.30.102
 	 *  host IP: 4.9.14.102
 	 *  host IP: 10.229.136.138
-	 * 
+	 *
 	 * How to choose? We need to filter undesirables out!
-	 * 
+	 *
 	 * Here's what these IP's are:
 	 *
 	 * H:\Windows>ipconfig
@@ -1304,7 +1304,7 @@ os_getnameinfo(dinfo_t *dip, struct sockaddr *sa, socklen_t salen)
 			 server, sizeof(server), NI_NAMEREQD);
     WSACleanup();
     if (status == FAILURE) {
-	return(NULL); 
+	return(NULL);
     } else {
 	return( (strlen(host)) ? strdup(host) : NULL );
     }
@@ -1322,8 +1322,8 @@ os_getosinfo(void)
 
     osversion[0] = '\0';
 
-    /* 
-     * See this link for deprecated GetVersionEx() API: 
+    /*
+     * See this link for deprecated GetVersionEx() API:
      *   warning C4996: 'GetVersionExA': was declared deprecated
      *   https://docs.microsoft.com/en-us/windows/desktop/w8cookbook/operating-system-version-changes-in-windows-8-1
      *      OR
@@ -1548,7 +1548,7 @@ syslog(int priority, char *format, ...)
     LPCSTR sourceName = "System";	// The event source name.
     DWORD dwEventID = 999;              // The event identifier.
     WORD cInserts = 1;                  // The count of insert strings.
-    HANDLE h; 
+    HANDLE h;
     char msgbuf[LOG_BUFSIZE];
     LPCSTR bp = msgbuf;
     va_list ap;
@@ -1560,8 +1560,8 @@ syslog(int priority, char *format, ...)
     /*
      * Get a handle to the event log.
      */
-    h = RegisterEventSource(NULL,        // Use local computer. 
-                            sourceName); // Event source name. 
+    h = RegisterEventSource(NULL,        // Use local computer.
+                            sourceName); // Event source name.
     if (h == NULL) {
 	if (debug_flag) {
 	    Fprintf(NULL, "RegisterEventSource() failed, error %d\n", GetLastError());
@@ -1572,21 +1572,21 @@ syslog(int priority, char *format, ...)
     /*
      * Report the event.
      */
-    if (!ReportEvent(h,           // Event log handle. 
-            priority,             // Event type. 
-            0,                    // Event category.  
-            dwEventID,            // Event identifier. 
-            (PSID) 0,             // No user security identifier. 
-            cInserts,             // Number of substitution strings. 
-            0,                    // No data. 
-            &bp,                  // Pointer to strings. 
-            NULL))                // No data. 
+    if (!ReportEvent(h,           // Event log handle.
+            priority,             // Event type.
+            0,                    // Event category.
+            dwEventID,            // Event identifier.
+            (PSID) 0,             // No user security identifier.
+            cInserts,             // Number of substitution strings.
+            0,                    // No data.
+            &bp,                  // Pointer to strings.
+            NULL))                // No data.
     {
 	if (debug_flag) {
 	    Fprintf(NULL, "ReportEvent() failed, error %d\n", GetLastError());
 	}
     }
-    DeregisterEventSource(h); 
+    DeregisterEventSource(h);
     return;
 }
 
@@ -1618,7 +1618,7 @@ highresolutiontime(struct timeval *tv, struct timezone *tz)
 }
 
 /*
- * Taken from URL: 
+ * Taken from URL:
  *  http://social.msdn.microsoft.com/Forums/vstudio/en-US/430449b3-f6dd-4e18-84de-eebd26a8d668/gettimeofday
  */
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
@@ -1626,7 +1626,7 @@ highresolutiontime(struct timeval *tv, struct timezone *tz)
 #else
 # define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
 #endif
- 
+
 int
 gettimeofday(struct timeval *tv, struct timezone *tz)
 {
@@ -1643,7 +1643,7 @@ gettimeofday(struct timeval *tv, struct timezone *tz)
 
 	/* Converting file time to UNIX epoch. */
 	tmpres /= 10;  /* convert to microseconds from nanoseconds */
-	tmpres -= DELTA_EPOCH_IN_MICROSECS; 
+	tmpres -= DELTA_EPOCH_IN_MICROSECS;
 	tv->tv_sec = (long)(tmpres / 1000000UL);
 	tv->tv_usec = (long)(tmpres % 1000000UL);
     }
@@ -1661,9 +1661,9 @@ gettimeofday(struct timeval *tv, struct timezone *tz)
 
 /*
  * localtime_r() - Get Local Time.
- * 
+ *
  * The arguments are reversed and the return value is different.
- * 
+ *
  * Unix:
  *  struct tm *localtime_r(const time_t *timep, struct tm *result);
  *
@@ -1793,10 +1793,10 @@ os_file_information(char *file, large_t *filesize, hbool_t *is_dir, hbool_t *is_
     if (filesize) *filesize = 0;
 
     /*
-     * See if the file exists, and what it's size is. 
-     *  
+     * See if the file exists, and what it's size is.
+     *
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa364946(v=vs.85).aspx
-     * 
+     *
      * BOOL WINAPI GetFileAttributesEx(
      *  _In_   LPCTSTR lpFileName,
      *  _In_   GET_FILEEX_INFO_LEVELS fInfoLevelId,
@@ -1811,7 +1811,7 @@ os_file_information(char *file, large_t *filesize, hbool_t *is_dir, hbool_t *is_
 	}
 	if ( is_dir && (fadp->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) {
 	    *is_dir = True;
-	} 
+	}
 	/* Assume regular file for now! */
 	if ( is_file && !(fadp->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) {
 	    *is_file = True;
@@ -1833,12 +1833,12 @@ os_isdir(char *dirpath)
 hbool_t
 os_isdisk(HANDLE handle)
 {
-    /* 
-     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa364960(v=vs.85).aspx 
-     * 
+    /*
+     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa364960(v=vs.85).aspx
+     *
      * DWORD WINAPI GetFileType( _In_  HANDLE hFile );
      */
-    return( (GetFileType(handle) == FILE_TYPE_DISK) ? True : False ); 
+    return( (GetFileType(handle) == FILE_TYPE_DISK) ? True : False );
 }
 
 /*
@@ -1851,10 +1851,10 @@ os_file_exists(char *file)
     WIN32_FILE_ATTRIBUTE_DATA fad, *fadp = &fad;
 
     /*
-     * See if the file exists, and what it's size is. 
-     *  
+     * See if the file exists, and what it's size is.
+     *
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa364946(v=vs.85).aspx
-     * 
+     *
      * BOOL WINAPI GetFileAttributesEx(
      *  _In_   LPCTSTR lpFileName,
      *  _In_   GET_FILEEX_INFO_LEVELS fInfoLevelId,
@@ -1869,16 +1869,16 @@ dt_get_file_attributes(dinfo_t *dip, char *file, DWORD *FileAttributes)
 {
     int status = SUCCESS;
     int	rc = SUCCESS;
-    
+
     dip->di_retry_count = 0;
     do {
 	/*
 	 * http://msdn.microsoft.com/en-us/library/windows/desktop/aa364944(v=vs.85).aspx
-	 * 
-	 * DWORD WINAPI GetFileAttributes( _In_ LPCTSTR lpFileName ); 
-	 * 
+	 *
+	 * DWORD WINAPI GetFileAttributes( _In_ LPCTSTR lpFileName );
+	 *
 	 * If the function fails, the return value is INVALID_FILE_ATTRIBUTES.
-	 * 
+	 *
 	 * Returns: http://msdn.microsoft.com/en-us/library/windows/desktop/gg258117(v=vs.85).aspx
 	 */
 	*FileAttributes = GetFileAttributes(file);
@@ -1930,7 +1930,7 @@ os_get_fileID(char *path, HANDLE handle)
     }
     /*
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa364952(v=vs.85).aspx
-     * 
+     *
      * BOOL WINAPI GetFileInformationByHandle(
      *  _In_   HANDLE hFile,
      *  _Out_  LPBY_HANDLE_FILE_INFORMATION lpFileInformation
@@ -1971,7 +1971,7 @@ os_get_protocol_version(HANDLE handle)
      *  _In_   FILE_INFO_BY_HANDLE_CLASS FileInformationClass,
      *  _Out_  LPVOID lpFileInformation,
      *  _In_   DWORD dwBufferSize
-     * ); 
+     * );
      */
     if ( GetFileInformationByHandleEx(handle, FileInformationClass, rpip, sizeof(*rpip)) == True ) {
 	if (rpip->Protocol == WNNC_NET_SMB) {
@@ -2031,7 +2031,7 @@ os_get_fs_information(dinfo_t *dip, char *dir)
     int status = SUCCESS;
 
     if (dip->di_volume_path_name == NULL) {
-	/* 
+	/*
 	 * Get the specified or current directory information.
 	 */
 	if (dir) {
@@ -2045,7 +2045,7 @@ os_get_fs_information(dinfo_t *dip, char *dir)
     }
     dip->di_universal_name = os_get_universal_name(dip->di_volume_path_name);
 
-    /* 
+    /*
      * BOOL WINAPI GetDiskFreeSpace(
      *  _In_   LPCTSTR lpRootPathName,
      *  _Out_  LPDWORD lpSectorsPerCluster,
@@ -2109,17 +2109,17 @@ os_get_universal_name(char *drive_letter)
     } else {
 	return(NULL);
     }
-//    _tprintf(TEXT("Universal Name: \t%s\n\n"), puni->lpUniversalName); 
+//    _tprintf(TEXT("Universal Name: \t%s\n\n"), puni->lpUniversalName);
 #if 0
-    if ( (res = WNetGetUniversalName((LPTSTR)drive_letter, 
-				     REMOTE_NAME_INFO_LEVEL, 
+    if ( (res = WNetGetUniversalName((LPTSTR)drive_letter,
+				     REMOTE_NAME_INFO_LEVEL,
 				     (LPVOID)&szBuff,
 				     &cbBuff)) != NO_ERROR) {
 	return(NULL);
     }
 //    _tprintf(TEXT("Universal Name: \t%s\nConnection Name:\t%s\nRemaining Path: \t%s\n"),
-//          prni->lpUniversalName, 
-//          prni->lpConnectionName, 
+//          prni->lpUniversalName,
+//          prni->lpConnectionName,
 //          prni->lpRemainingPath);
     return(NULL);
 #endif
@@ -2144,7 +2144,7 @@ dt_get_volume_path_name(dinfo_t *dip, char *path)
 
     return(RootPathName);
 }
-    
+
 char *
 os_get_volume_path_name(char *path)
 {
@@ -2153,7 +2153,7 @@ os_get_volume_path_name(char *path)
 
     /*
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa364996(v=vs.85).aspx
-     * 
+     *
      * BOOL WINAPI GetVolumePathName(
      *  _In_   LPCTSTR lpszFileName,
      *  _Out_  LPTSTR lpszVolumePathName,
@@ -2206,13 +2206,13 @@ os_get_volume_information(dinfo_t *dip)
      *  _Out_opt_  LPDWORD lpFileSystemFlags,
      *  _Out_opt_  LPTSTR lpFileSystemNameBuffer,
      *  _In_       DWORD nFileSystemNameSize
-     * ); 
-     *  
+     * );
+     *
      * lpRootPathName [in, optional]
      * A pointer to a string that contains the root directory of the volume to be described.
-     * If this parameter is NULL, the root of the current directory is used. 
-     * A trailing backslash is required. For example, you specify 
-     *   \\MyServer\MyShare as "\\MyServer\MyShare\", or the C drive as "C:\". 
+     * If this parameter is NULL, the root of the current directory is used.
+     * A trailing backslash is required. For example, you specify
+     *   \\MyServer\MyShare as "\\MyServer\MyShare\", or the C drive as "C:\".
      */
     dip->di_retry_count = 0;
     do {
@@ -2249,7 +2249,7 @@ os_set_priority(dinfo_t *dip, HANDLE hThread, int priority)
 
     /*
      * BOOL WINAPI SetThreadPriority(_In_ HANDLE hThread, _In_ int nPriority);
-     */ 
+     */
     if ( SetThreadPriority(hThread, priority) == False ) {
 	status = FAILURE;
     }
@@ -2386,7 +2386,7 @@ ReportOpenInformation(dinfo_t *dip, char *FileName, char *Operation,
  *	oflags = The POSIX open flags.
  *	CreateDisposition = Creation disposition flags pointer.
  * 	File Attributes = File attributes pointer.
- * 
+ *
  * Outputs:
  *	CreateDisposition = Creation disposition flags.
  * 	File Attributes = File attributes.
@@ -2541,7 +2541,7 @@ SetSparseFile(dinfo_t *dip, HANDLE hDevice, BOOL is_overlapped)
     if (dip->di_debug_flag) {
         Printf(dip, "Enabling sparse file attribute via FSCTL_SET_SPARSE...\n");
     }
-    
+
     //dip->di_retry_count = 0;		/* Assume we're being called after open! */
     do {
 	status = os_set_sparse_file(dip, file, hDevice, is_overlapped);
@@ -2564,7 +2564,7 @@ os_set_sparse_file(dinfo_t *dip, char *file, HANDLE hDevice, BOOL is_overlapped)
     DWORD BytesReturned;
     BOOL bStatus;
     int status = SUCCESS;
-    
+
     memset(&Overlapped, '\0', sizeof(Overlapped));
     bStatus = DeviceIoControl( hDevice,	FSCTL_SET_SPARSE, NULL,	0,
 			       NULL, 0,	&BytesReturned,	&Overlapped);
@@ -2670,10 +2670,10 @@ hbool_t
 os_isEof(ssize_t count, int error)
 {
     if ( (count == 0) ||
-	 ( (count < 0) && 
+	 ( (count < 0) &&
 	   ( (error == ERROR_DISK_FULL)		||
 	     (error == ERROR_HANDLE_EOF)	||
-	     (error == ERROR_SECTOR_NOT_FOUND) ) ) ) { 
+	     (error == ERROR_SECTOR_NOT_FOUND) ) ) ) {
 	return(True);
     } else {
 	return(False);
@@ -2715,7 +2715,7 @@ os_xlock_file(HANDLE fh, Offset_t start, Offset_t length, int type, hbool_t excl
 {
     OVERLAPPED ol;
     DWORD flags = 0;
-    
+
     memset(&ol, sizeof(ol), '\0');
     ol.Offset = ((PLARGE_INTEGER)(&start))->LowPart;
     ol.OffsetHigh = ((PLARGE_INTEGER)(&start))->HighPart;
@@ -2724,7 +2724,7 @@ os_xlock_file(HANDLE fh, Offset_t start, Offset_t length, int type, hbool_t excl
 
     /*
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa365203(v=vs.85).aspx
-     * 
+     *
      * BOOL WINAPI LockFileEx(
      *  _In_        HANDLE hFile,
      *  _In_        DWORD dwFlags,
@@ -2741,14 +2741,14 @@ __inline int
 os_xunlock_file(HANDLE fh, Offset_t start, Offset_t length)
 {
     OVERLAPPED ol;
-    
+
     memset(&ol, sizeof(ol), '\0');
     ol.Offset = ((PLARGE_INTEGER)(&start))->LowPart;
     ol.OffsetHigh = ((PLARGE_INTEGER)(&start))->HighPart;
 
     /*
      * http://msdn.microsoft.com/en-us/library/windows/desktop/aa365716(v=vs.85).aspx
-     * 
+     *
      * BOOL WINAPI UnlockFileEx(
      *  _In_        HANDLE hFile,
      *  _Reserved_  DWORD dwReserved,
@@ -2763,9 +2763,9 @@ os_xunlock_file(HANDLE fh, Offset_t start, Offset_t length)
 __inline int
 os_move_file(char *oldpath, char *newpath)
 {
-    /* 
-     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa365239(v=vs.85).aspx 
-     *  
+    /*
+     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa365239(v=vs.85).aspx
+     *
      * BOOL WINAPI MoveFile(
      *  _In_  LPCTSTR lpExistingFileName,
      *  _In_  LPCTSTR lpNewFileName
@@ -2778,11 +2778,11 @@ __inline int
 os_rename_file(char *oldpath, char *newpath)
 {
     /*
-     * Unix rename() behavior is different than Windows: 
+     * Unix rename() behavior is different than Windows:
      *    If newpath already exists it will be atomically replaced (subject to
      * a few conditions), so that there is no point at which another process
-     * attempting to access newpath will find it missing. 
-     *  
+     * attempting to access newpath will find it missing.
+     *
      * Therefore, for Windows we must remove the newpath first!
      */
     if ( os_file_exists(oldpath) && os_file_exists(newpath) ) {
@@ -2790,9 +2790,9 @@ os_rename_file(char *oldpath, char *newpath)
 	if (status == FAILURE) return(status);
     }
 
-    /* 
-     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa365239(v=vs.85).aspx 
-     *  
+    /*
+     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa365239(v=vs.85).aspx
+     *
      * BOOL WINAPI MoveFile(
      *  _In_  LPCTSTR lpExistingFileName,
      *  _In_  LPCTSTR lpNewFileName
@@ -2810,7 +2810,7 @@ os_set_lock_flags(lock_type_t lock_type, int *lock_type_flag,
     *exclusive = True;
     *immediate = True;
     *unlock_flag = False;
-    
+
     switch (lock_type) {
 	
 	case LOCK_TYPE_READ:
@@ -2836,9 +2836,9 @@ os_set_lock_flags(lock_type_t lock_type, int *lock_type_flag,
 __inline int
 os_link_file(char *oldpath, char *newpath)
 {
-    /* 
-     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa363866(v=vs.85).aspx 
-     *  
+    /*
+     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa363866(v=vs.85).aspx
+     *
      * BOOL WINAPI CreateHardLink(
      *  _In_        LPCTSTR lpFileName,
      *  _In_        LPCTSTR lpExistingFileName,
@@ -2861,7 +2861,7 @@ os_symlink_supported(void)
 
     /*
      * URL: http://msdn.microsoft.com/en-us/library/windows/desktop/aa379180(v=vs.85).aspx
-     * 
+     *
      * BOOL WINAPI LookupPrivilegeValue(
      *  _In_opt_  LPCTSTR lpSystemName,
      *  _In_      LPCTSTR lpName,
@@ -2904,12 +2904,12 @@ os_symlink_supported(void)
      *  DWORD               PrivilegeCount;
      *  LUID_AND_ATTRIBUTES Privileges[ANYSIZE_ARRAY];
      * } TOKEN_PRIVILEGES, *PTOKEN_PRIVILEGES;
-     * 
+     *
      * typedef struct _LUID_AND_ATTRIBUTES {
      *  LUID  Luid;
      *  DWORD Attributes;
      * } LUID_AND_ATTRIBUTES, *PLUID_AND_ATTRIBUTES;
-     * 
+     *
      * typedef struct _LUID {
      *  DWORD LowPart;
      *  LONG  HighPart;
@@ -2943,15 +2943,15 @@ __inline int
 __inline int
 os_symlink_file(char *oldpath, char *newpath)
 {
-    /* 
-     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa363860(v=vs.85).aspx 
-     *  
+    /*
+     * http://msdn.microsoft.com/en-us/library/windows/desktop/aa363860(v=vs.85).aspx
+     *
      * BOOLEAN WINAPI CreateSymbolicLink(
      *  _In_  LPTSTR lpSymlinkFileName,
      *  _In_  LPTSTR lpTargetFileName,
      *  _In_  DWORD dwFlags
      * );
-     * 
+     *
      * Note: Requires SE_CREATE_SYMBOLIC_LINK_NAME privilege.
      * This function requires the SE_CREATE_SYMBOLIC_LINK_NAME (defined as
      * "SeCreateSymbolicLinkPrivilege" in <WinNT.h>), otherwise the function
@@ -2975,7 +2975,7 @@ os_file_trim(HANDLE handle, Offset_t offset, uint64_t length)
     FILE_LEVEL_TRIM_OUTPUT trim_output;
     PFILE_LEVEL_TRIM_OUTPUT pto = &trim_output;
     DWORD bytesReturned = 0;
-    
+
     pth->Key = 0;
     pth->NumRanges = 1;
     ptr->Offset = (ULONGLONG)offset;
@@ -2983,11 +2983,11 @@ os_file_trim(HANDLE handle, Offset_t offset, uint64_t length)
     pto->NumRangesProcessed = (ULONG)0;
     //printf("ranges = %u, offset = %llu, length = %llu\n", pth->NumRanges, ptr->Offset, ptr->Length);
 
-    /* 
+    /*
      * URL: http://msdn.microsoft.com/en-us/library/windows/desktop/hh447306(v=vs.85).aspx
-     * 
-     * BOOL 
-     * WINAPI 
+     *
+     * BOOL
+     * WINAPI
      * DeviceIoControl( (HANDLE) hDevice,              // handle to device
      *     	        (DWORD) FSCTL_FILE_LEVEL_TRIM, // dwIoControlCode
      *     	        (LPVOID) lpInBuffer,           // input buffer
@@ -2996,7 +2996,7 @@ os_file_trim(HANDLE handle, Offset_t offset, uint64_t length)
      *     	        (DWORD) nOutBufferSize,        // size of output buffer
      *     	        (LPDWORD) lpBytesReturned,     // number of bytes returned
      *     	        (LPOVERLAPPED) lpOverlapped ); // OVERLAPPED structure
-     * 
+     *
      */
     result = DeviceIoControl( (HANDLE)handle,               // handle to device
 			      (DWORD)FSCTL_FILE_LEVEL_TRIM, // dwIoControlCode
@@ -3141,7 +3141,7 @@ typedef struct {
     BOOL closeFileHandle;			/* Close file handle if True. */
     HANDLE hVolume;				/* The volume handle (e.g. C:\). */
     MIRRORED_DISK_EXTENT volumeExtents;
-    /* 
+    /*
      * typedef struct {
      *   LARGE_INTEGER VolumeSerialNumber;
      *   LARGE_INTEGER NumberSectors;
@@ -3157,14 +3157,14 @@ typedef struct {
      *   LARGE_INTEGER Mft2StartLcn;
      *   LARGE_INTEGER MftZoneStart;
      *   LARGE_INTEGER MftZoneEnd;
-     * } NTFS_VOLUME_DATA_BUFFER, *PNTFS_VOLUME_DATA_BUFFER;  
-     */ 
+     * } NTFS_VOLUME_DATA_BUFFER, *PNTFS_VOLUME_DATA_BUFFER;
+     */
     NTFS_VOLUME_DATA_BUFFER volumeData;
     LONGLONG volStartSector;
     /*
      * typedef struct {
      *   LARGE_INTEGER StartingVcn;
-     * } STARTING_VCN_INPUT_BUFFER, *PSTARTING_VCN_INPUT_BUFFER; 
+     * } STARTING_VCN_INPUT_BUFFER, *PSTARTING_VCN_INPUT_BUFFER;
      */
     STARTING_VCN_INPUT_BUFFER inputVcn;
     /*
@@ -3190,11 +3190,11 @@ typedef struct {
 typedef void (*IterateAction)(dinfo_t *dip, LONGLONG vcn, LONGLONG lcn, LONGLONG clusters);
 
 /*
- * Forward References: 
- *  
- * Good Reference: http://timr.probo.com/wd3/121503/luserland.htm 
- *  
- * Please Note: None of this works on compressed files or volumes or NTFS sparse allocated files. 
+ * Forward References:
+ *
+ * Good Reference: http://timr.probo.com/wd3/121503/luserland.htm
+ *
+ * Please Note: None of this works on compressed files or volumes or NTFS sparse allocated files.
 
  * Maybe someone more knowledge of Windows, can provide methods to overcome these limitations?
  * FYI: I have found the inability to handle sparse files the biggest issue, since folks using
@@ -3609,7 +3609,7 @@ getNextTranslation(
 	    /* Fall through... */
 	case NO_ERROR: {
 	    /*
-	     * This has to be scaled by the cluster factor and offset by the volume extent 
+	     * This has to be scaled by the cluster factor and offset by the volume extent
 	     * starting offset, and everything normalized to sectors.
 	     */
 	    LONGLONG lengthInClusters = (translation->rpBuf.Extents[0].NextVcn.QuadPart - translation->rpBuf.StartingVcn.QuadPart);
@@ -3620,7 +3620,7 @@ getNextTranslation(
 	     */
 	    VOLUME_LOGICAL_OFFSET logicalOffset;
 	    struct {
-		/* 
+		/*
 		 * typedef struct _VOLUME_PHYSICAL_OFFSETS {
 		 *   ULONG                  NumberOfPhysicalOffsets;
 		 *   VOLUME_PHYSICAL_OFFSET PhysicalOffset[ANYSIZE_ARRAY];
@@ -3705,7 +3705,7 @@ getLBAandLengthByOffset(
     LONGLONG nSectors = 0;
 
     resetTranslation(translation);
-    /* 
+    /*
      * Loop until we find translation or we fail.
      */
     while (foundRun == False) {
@@ -4004,8 +4004,8 @@ os_report_file_map(dinfo_t *dip, HANDLE fd, uint32_t dsize, Offset_t offset, int
 	if (firstTime) {
 	    firstTime = False;
 	    /*
-	     * Example: 
-	     *  
+	     * Example:
+	     *
 	     * File: dt.data, LBA Size: 512, Cluster Size: 4096 on \\.\C: [NTFS]
 	     *     File Offset    Start LBA      End LBA     Blocks      VCN        LCN
 	     *               0     27827936     27828064        128        0    3189724

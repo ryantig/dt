@@ -29,13 +29,13 @@
  *
  * Description:
  *      dt's history functions.
- * 
+ *
  * Modification History:
- * 
+ *
  * May 5th, 2020 by Robin T. Miller
  *      Use high resolution timer for more accurate history timing. This is
  * implemented on Windows, but Unix systems still use gettimeofday() API.
- * 
+ *
  * February 2nd, 2016 by Robin T. Miller
  * 	Display device name when dumping history, needed for multiple devices.
  */
@@ -117,7 +117,7 @@ dump_history_data(struct dinfo *dip)
 	Printf(dip, "No history entries to report!\n");
 	return;
     }
-    
+
     dip->di_history_dumping = True;
     lock_status = AcquirePrintLock(dip);
 
@@ -304,7 +304,7 @@ save_history_data(
     size_t data_index;
     uint32_t bsize;
     int buf, i;
-    
+
     if (dip->di_history_bsize) {
 	bsize = dip->di_history_bsize;
     } else {

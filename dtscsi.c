@@ -30,33 +30,33 @@
  *
  * Description:
  *      dt's SCSI functions.
- * 
+ *
  * Modification History:
- * 
+ *
  * July 30th, 2021 by Robin T. Miller
  *      Adding initial support for NVMe disks.
- * 
+ *
  * June 16th, 2021 by Robin T. Miller
  *      Add support for separate SCSI trigger device.
- * 
+ *
  * October 28th, 2020 by Robin T. Miller
  *      When setting up SCSI information, only update user capacity for disks.
  *      The user capacity must only be setup for disk devices, not files!
- * 
+ *
  * May 19th, 2020 by Robin T. Miller
  *      For spt commands add "logprefix=" to disable the spt log prefix.
  *      The ExecuteCommand() API was updated to apply dt's log prefix.
- * 
+ *
  * January 25th, 2019 by Robin T. Miller
  *      Add support for unmapping blocks via token based xcopy zero ROD method.
- * 
+ *
  * January 23rd, 2019 by Robin T. Miller
  *      Change default path for spt to be /usr/local/bin, also drop ".last".
- * 
+ *
  * April 26th, 2018 by Robin T. Miller
  *      If the serial number contains spaces, copy serial number without spaces.
  *      Note: This is limited to HGST compile right now, where this is prevalent.
- * 
+ *
  * July 14th, 2014 by Robin T. Miller
  * 	Add support for SCSI I/O.
  *
@@ -69,7 +69,7 @@
 
 /*
  * Forward Reference:
- */ 
+ */
 void add_common_spt_options(dinfo_t *dip, char *cmd);
 ssize_t	scsiRequestSetup(dinfo_t *dip, scsi_generic_t *sgp, void *buffer,
 			 size_t bytes, Offset_t offset, uint64_t *lba, uint32_t *blocks);
@@ -251,7 +251,7 @@ init_sg_info(dinfo_t *dip, char *scsi_dsf, scsi_generic_t **sgpp, scsi_generic_t
     sap->scsi_path  = -1;	/* Indicates no path specified. */
     /*
      * Recovery (retry) Parameters:
-     */ 
+     */
     if (dip->di_scsi_recovery == True) {
 	sgp->recovery_flag  = dip->di_scsi_recovery;       // ScsiRecoveryFlagDefault;
 	sgp->recovery_delay = dip->di_scsi_recovery_delay; // ScsiRecoveryDelayDefault;
@@ -304,7 +304,7 @@ init_scsi_info(dinfo_t *dip, char *scsi_dsf, scsi_generic_t **sgpp, scsi_generic
 {
     scsi_generic_t *sgp;
     int status;
-    
+
 #if defined(__linux__)
     /* Note: Piggy back on SCSI for the time being. */
     status = init_nvme_info(dip, scsi_dsf);
@@ -344,7 +344,7 @@ init_scsi_trigger(dinfo_t *dip, char *scsi_dsf, scsi_generic_t **sgpp)
     scsi_generic_t *tsgp;
     inquiry_t *inquiry = NULL;
     int status;
- 
+
     if ( (tsgp = *sgpp) == NULL) {
 	status = init_sg_info(dip, scsi_dsf, sgpp, NULL);
 	if (status == FAILURE) {
@@ -422,7 +422,7 @@ get_standard_scsi_information(dinfo_t *dip, scsi_generic_t *sgp)
 	dip->di_serial_number = GetSerialNumber(sgp->fd, sgp->dsf, dip->di_sDebugFlag, errlog,
 						NULL, &sgp, inquiry, dip->di_scsi_timeout);
 	/*
-	 * Some vendors like HGST and Sandisk right justify their serial number and pad with spaces. 
+	 * Some vendors like HGST and Sandisk right justify their serial number and pad with spaces.
 	 * Since this causes the btag serial numbers to be truncated, I'm stripping spaces here!
 	 * Note: This is because I don't wish to expand btag serial number just for extra spaces.
 	 */
@@ -533,7 +533,7 @@ get_lba_status(dinfo_t *dip, Offset_t starting_offset, large_t data_bytes)
     char cmd[STRING_BUFFER_SIZE];
     uint32_t block_length = dip->di_block_length;
     int status;
-    
+
     if (block_length == 0) block_length = BLOCK_SIZE;
     /* Note: The starting block and limit is converted to SCSI sized blocks! */
     /* Also Note: Beware of using single quotes ('), Windows shell does NOT strip them! ;( */
@@ -619,7 +619,7 @@ unmap_blocks(dinfo_t *dip, Offset_t starting_offset, large_t data_bytes)
     char cmd[STRING_BUFFER_SIZE];
     uint32_t block_length = dip->di_block_length;
     int status;
-    
+
     if (block_length == 0) block_length = BLOCK_SIZE;
     /* Note: The starting block and limit is converted to SCSI sized blocks! */
     (void)sprintf(cmd, "%s dsf=%s cdb=0x42 starting="FUF" limit="FUF"b enable=sense,recovery",
@@ -646,7 +646,7 @@ write_same_unmap(dinfo_t *dip, Offset_t starting_offset, large_t data_bytes)
     char cmd[STRING_BUFFER_SIZE];
     uint32_t block_length = dip->di_block_length;
     int status;
-    
+
     if (block_length == 0) block_length = BLOCK_SIZE;
     /* Note: The starting block and limit is converted to SCSI sized blocks! */
     (void)sprintf(cmd, "%s dsf=%s cdb=\"93 08\" starting="FUF" blocks=%u limit="FUF"b enable=sense,recovery",
@@ -672,7 +672,7 @@ xcopy_zerorod(dinfo_t *dip, Offset_t starting_offset, large_t data_bytes)
     char cmd[STRING_BUFFER_SIZE];
     uint32_t block_length = dip->di_block_length;
     int status;
-    
+
     if (block_length == 0) block_length = BLOCK_SIZE;
     /* Note: The starting block and limit is converted to SCSI sized blocks! */
     (void)sprintf(cmd, "%s dsf=%s cdb=\"83 11\" starting="FUF" limit="FUF"b enable=sense,recovery,zerorod",
@@ -711,7 +711,7 @@ do_scsi_triage(dinfo_t *dip)
     dip->di_scsi_errors = True;
 
     /* Note: SCSI recovery is enabled by default, so requests will be retried! */
- 
+
     /* Note: We don't have an Inquiry buffer per thread. */
     inquiry = Malloc(dip, sizeof(*inquiry));
     if (inquiry == NULL) return(FAILURE);
@@ -744,7 +744,7 @@ scsiRequestSetup(dinfo_t *dip, scsi_generic_t *sgp, void *buffer,
     /* Note: This should be set by Read Capacity when init'ing SCSI! */
     block_length = dip->di_block_length;
     if (block_length == 0) block_length = BLOCK_SIZE;
-    /* 
+    /*
      * Note: This should *never* happen if sanity checks are correct!
      * We cannot set a OS error easily, so for now report errors here.
      */
@@ -783,7 +783,7 @@ scsiRequestSetup(dinfo_t *dip, scsi_generic_t *sgp, void *buffer,
     return(iosize);
 }
 
-/* 
+/*
  * Note: These API parameters match the Unix pread/pwrite API's! (except for dip)
  */
 ssize_t
@@ -794,7 +794,7 @@ scsiReadData(dinfo_t *dip, void *buffer, size_t bytes, Offset_t offset)
     uint32_t blocks;
     ssize_t iosize;
     int status;
-    
+
     iosize = scsiRequestSetup(dip, sgp, buffer, bytes, offset, &lba, &blocks);
     if (iosize <= 0) return(iosize);
 

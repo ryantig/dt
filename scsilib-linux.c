@@ -34,7 +34,7 @@
  *
  * May 13th, 2020 by Robin T. Miller
  *      Fix parameters for sending SG_SCSI_RESET_TARGET (device reset) ioctl().
- * 
+ *
  * August 14th, 2012 by Robin T. Miller
  *	Added new host status codes introduced for multipathing.
  *
@@ -43,7 +43,7 @@
  *
  * August 26th, 2010 by Robin T. Miller
  * 	When opening device, on EROFS errno, try opening read-only.
- * 
+ *
  * August 6th, 2007 by Robin T. Miller.
  *	Added OS open and close functions.
  */
@@ -92,7 +92,7 @@ os_open_device(scsi_generic_t *sgp)
     int status = SUCCESS;
     int oflags = (O_RDWR|O_NONBLOCK);
 
-    /* 
+    /*
      * /dev/sg devices do NOT like the direct I/O flag!
      * Results in: errno = 22 - Invalid argument
      */
@@ -632,7 +632,7 @@ error:
 #define DID_PARITY      0x06 /* Parity error                            */
 #define DID_ERROR       0x07 /* Internal error                          */
 #define DID_RESET       0x08 /* Reset by somebody.                      */
-#define DID_BAD_INTR    0x09 /* Got an interrupt we weren't expecting.  */ 
+#define DID_BAD_INTR    0x09 /* Got an interrupt we weren't expecting.  */
 #define DID_PASSTHROUGH 0x0a /* Force command past mid-layer            */
 #define DID_SOFT_ERROR  0x0b /* The low level driver just wish a retry  */
 #define DID_IMM_RETRY   0x0c /* Retry without decrementing retry count  */
@@ -648,10 +648,10 @@ error:
 				      * retry or fail IO */
 #define DID_TRANSPORT_FAILFAST	0x0f /* Transport class fastfailed the io */
 
-/* 
+/*
  * More status codes:
  * URL: http://lxr.free-electrons.com/source/include/scsi/scsi.h#L450
- */ 
+ */
 #define DID_TARGET_FAILURE 0x10 /* Permanent target failure, do not retry on
 				 * other paths */
 #define DID_NEXUS_FAILURE 0x11 /* Permanent nexus failure, retry on other
@@ -729,11 +729,11 @@ linux_HostStatus(unsigned short host_status)
     return("???");
 }
 
-#define DRIVER_OK	    0x00 
+#define DRIVER_OK	    0x00
 #define DRIVER_BUSY         0x01
 #define DRIVER_SOFT         0x02
 #define DRIVER_MEDIA        0x03
-#define DRIVER_ERROR        0x04    
+#define DRIVER_ERROR        0x04
 
 #define DRIVER_INVALID      0x05
 #define DRIVER_TIMEOUT      0x06
@@ -750,7 +750,7 @@ struct DriverStatusTable {
     unsigned short  driver_status;
     char            *driver_msg;
 } driver_StatusTable[] = {
-    {   DRIVER_OK,      "DRIVER_OK"	}, 
+    {   DRIVER_OK,      "DRIVER_OK"	},
     {   DRIVER_BUSY,    "DRIVER_BUSY"	},
     {   DRIVER_SOFT,    "DRIVER_SOFT"	},
     {   DRIVER_MEDIA,   "DRIVER_MEDIA"	},
@@ -778,7 +778,7 @@ linux_DriverStatus (unsigned short driver_status)
 }
 
 #define SUGGEST_RETRY       0x10
-#define SUGGEST_ABORT       0x20 
+#define SUGGEST_ABORT       0x20
 #define SUGGEST_REMAP       0x30
 #define SUGGEST_DIE         0x40
 #define SUGGEST_SENSE       0x80
@@ -916,7 +916,7 @@ os_driver_status_msg(scsi_generic_t *sgp)
  * retriable error. Note: The checks performed here are those that are
  * OS specific, such as looking a host, driver, or syscall errors that can
  * be retried automatically, and/or to perform any OS specific recovery.
- * 
+ *
  * Inputs:
  *      sgp = Pointer to the SCSI generic data structure.
  *
@@ -928,12 +928,12 @@ hbool_t
 os_is_retriable(scsi_generic_t *sgp)
 {
     hbool_t is_retriable = False;
-    
+
     /*
      * The MPIO driver is returning EAGAIN when the current path has
      * disappeared. Furthermore, due to a driver bug, once must do I/O
      * to force a path change, thus the read below.
-     */ 
+     */
     if ( (sgp->os_error == EAGAIN)		      ||
 	 (sgp->host_status == DID_TRANSPORT_FAILFAST) ||
 	 (sgp->host_status == DID_TRANSPORT_DISRUPTED) ) {

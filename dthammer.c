@@ -23,16 +23,16 @@
 
 /*
  * dthammer.c - I/O Behavior for hammer tool.
- * 
+ *
  * Author: Robin T. Miller
  * Date Created: April 30th, 2014
- * 
+ *
  * Modification History:
- * 
+ *
  * February 4th, 2023 by Robin T. Miller, Chris Nelson, & John Hollowell
  *      Fix segmentation fault when overwriting a file encounters a file
  * system full condition, due to writefile() freeing the file structure.
- * 
+ *
  * November 9, 2021 by Chris Nelson (nelc@netapp.com)
  *  Add MIT license, in order to distribute to FOSS community so it can
  *  be used and maintained by a larger audience, particularly for the
@@ -41,14 +41,14 @@
  * March 30th, 2016 by Robin T. Miller
  * 	Add hammer mapping function. This gets called when the program name is
  * "hammer" to map hammer options to dts' hammer I/O behavior options.
- * 
+ *
  * March 27th, 2016 by Robin T. Miller
  * 	Adding support for maxdata option to avoid file system full conditions.
  * 	Also adding support for maxfiles option to provide this flexibility.
- * 
+ *
  * December 10th, 2015 by Robin T. Miller
  *      Adding help examples.
- * 
+ *
  * July 31st, 2015 by Robin T. Miller
  * 	Fix logic issue when bufmodes=unbuffered and -maxfsize is specifed.
  * Whence DIO is enabled, a later sanity check improperly set maxfsize!
@@ -74,26 +74,26 @@
  * May 30th, 2014 by Robin T. Miller
  * 	Make changes to free the full file path, and recreate it when that
  * file entry is used. With many files, this will help conserve memory!
- * 
+ *
  * May 28th, 2014 by Robin T. Miller
  * 	Make changes so I/O monitoring will report the correct file name.
  * Basically setup dt's di_dname field with the file name being operated on.
  * Note: The full file path is setup, since multiple hammer threads use the
  * same file names.
  *
- * May 23rd, 2014 by Robin T. Miller  
+ * May 23rd, 2014 by Robin T. Miller
  * 	Removed change directory API's, since this is NFS for multiple threads.
  * Sadly, these API's set the global current directory for the process, and no
  * API exists to allow this per thread (too bad). This required adding full
  * paths for files, but thankfully the impact is minimized by the change below
  * to optimize memory. But behold, we can now run multiple hammer threads! ;)
  * Note: If memory does pose an issue, we can dynamically create full paths.
- * 
+ *
  * May 22nd, 2014 by Robin T. Miller
  * 	Update allocfile() to dynamically allocate memory for the file path,
  * rather than use hardcoded 64 byte path array (saves memory), and ensure
  * this	memory is freed in freefile().
- * 
+ *
  * May 21st, 2014 by Robin T. Miller
  * 	When creating the directory, clearly indicate disk full conditions.
  * 	When removing the base streams file, honor the "hasdir" flag, since
@@ -171,10 +171,10 @@
 # define O_BINARY 0
 #endif
 
-/* 
+/*
  * Note: This format *only* displays the low 8 hex digits (with leading zeros),
  * 	 of the 64-bit value, which is Ok for the way hammer uses it!
- */ 
+ */
 #define LL0XFMT	"0x"LLHXFMT
 
 #define KILOBYTE ((int64_t)1024)
@@ -231,7 +231,7 @@ typedef struct hammer_file {
 } hammer_file_t;
 
 /*
- * Inodes allocated to/freed from hammer. 
+ * Inodes allocated to/freed from hammer.
  * (Assume that nothing else is running on the target volume.)
  */
 #define INODE_HASHTABLE_SIZE	65521
@@ -247,7 +247,7 @@ typedef struct hammer_mode {
 } hammer_mode_t;
 
 /*
- * hammer Specific Parameters (options): 
+ * hammer Specific Parameters (options):
  */
 typedef struct hammer_parameters {
     hbool_t	disk_filled;
@@ -284,7 +284,7 @@ typedef struct hammer_parameters {
 
 /*
  * hammer Thread Specific Information:
- * 
+ *
  * Note: There's only one hammer thread, but keeping this consistent with
  * other I/O behaviors (parameters vs. thread data).
  */
@@ -435,7 +435,7 @@ int api_lockfile(dinfo_t *dip, HANDLE *fd, hammer_file_t *f, char lock_type, Off
 /* ---------------------------------------------------------------------- */
 
 /*
- * Forward References: 
+ * Forward References:
  */
 void hammer_help(dinfo_t *dip);
 int hammer_thread_setup(dinfo_t *dip);
@@ -475,8 +475,8 @@ iobehavior_funcs_t hammer_iobehavior_funcs = {
     NULL,			/* iob_thread_keepalive */
     &hammer_show_parameters,	/* iob_show_parameters */
     &hammer_validate_parameters	/* iob_validate_parameters */
-};     
- 
+};
+
 void
 hammer_set_iobehavior_funcs(dinfo_t *dip)
 {
@@ -485,7 +485,7 @@ hammer_set_iobehavior_funcs(dinfo_t *dip)
     dip->di_uuid_dashes = False;
     return;
 }
-     
+
 /* ---------------------------------------------------------------------- */
 
 #if _BIG_ENDIAN_
@@ -606,7 +606,7 @@ hammer_map_options(dinfo_t *dip, int argc, char **argv)
 	     match(&optp, "-blocksize") || match(&option, "-bsize") ||
 	     match(&optp, "-minfsize") || match(&optp, "-maxfsize") ||
 	     match(&optp, "-minbsize") || match(&optp, "-maxbsize") ||
-	     match(&optp, "-runtime") || match(&optp, "-seed") || 
+	     match(&optp, "-runtime") || match(&optp, "-seed") ||
 	     match(&optp, "-lockmode") || match(&optp, "-unlockchance") ||
 	     match(&optp, "-trigger") || match(&optp, "-ontap_cserver") ||
 	     match(&optp, "-ontap_nodes") || match(&optp, "-ontap_username") ||
@@ -1028,8 +1028,8 @@ hammer_doio(dinfo_t *dip)
 	}
 
 	/*
-	 * Honor the max data, if specified by the user. 
-	 * Note: We use disk full logic to control this limit. 
+	 * Honor the max data, if specified by the user.
+	 * Note: We use disk full logic to control this limit.
 	 */
 	if ( dip->di_max_data &&
 	     (dip->di_maxdata_reached == False) &&
@@ -1146,7 +1146,7 @@ hammer_clone_information(dinfo_t *dip, dinfo_t *cdip, hbool_t new_context)
     if (chip == NULL) return(FAILURE);
     cdip->di_opaque = chip;
     *chip = *hip;           /* Copy the original information. */
-    
+
     /* Do hammer thread specific cloning (if any) here... */
 
     return(SUCCESS);
@@ -1175,8 +1175,8 @@ hammer_initialize(dinfo_t *dip)
 	dip->di_output_file = strdup(".");
 	// dip->di_output_file = strdup("hammer");
     }
-    /* 
-     * Note: Don't set hammer defaults, if options specified already! 
+    /*
+     * Note: Don't set hammer defaults, if options specified already!
      */
     if (dip->di_runtime == 0) {
 	dip->di_runtime = HAMMER_DEFAULT_RUNTIME;
@@ -1194,7 +1194,7 @@ hammer_initialize(dinfo_t *dip)
 
     /* Note: This is necessary to bypass dt sanity checks! */
     dip->di_data_limit = DEFAULT_FILE_SIZE_MAX;
-    
+
     hmrp->wantcore = False;
     hmrp->nofilercore = False;
     hmrp->testfilercore = False;
@@ -1205,7 +1205,7 @@ hammer_initialize(dinfo_t *dip)
     hmrp->halt_on_file_errors = DEFAULT_HALT_ON_FILE_ERRORS;
     hmrp->halt_on_lock_errors = DEFAULT_HALT_ON_LOCK_ERRORS;
     hmrp->halt_on_data_corruption = DEFAULT_HALT_ON_CORRUPTIONS;
-    
+
     hmrp->keep_disk_full = DEFAULT_KEEP_DISK_FULL;
     hmrp->next_action = INVALID_ACTION;
     hmrp->disk_filled = False;
@@ -1225,7 +1225,7 @@ hammer_initialize(dinfo_t *dip)
     hmrp->minbsize = DEFAULT_BLOCK_SIZE_MIN;
     hmrp->maxbsize = DEFAULT_BLOCK_SIZE_MAX;
     hmrp->nostreams = DEFAULT_NOSTREAMS;
-    
+
     dip->di_retry_disconnects = DEFAULT_RETRY_DISC;
     if (dip->di_retry_disconnects == True) {
 	os_set_disconnect_errors(dip);
@@ -1245,7 +1245,7 @@ hammer_thread_setup(dinfo_t *dip)
     int status;
 
     tip->dip = dip;
-    
+
     /* Note: These may get updated for DIO based on min/max and file system (XFS). */
     if ( (dip->di_bypass_flag == False) && (dip->di_dio_flag == True) ) {
 	if ((int)dip->di_min_size != hmrp->minbsize) {
@@ -1282,11 +1282,11 @@ hammer_thread_setup(dinfo_t *dip)
 	if (dip->di_dir) {
 	    char buffer[PATH_BUFFER_SIZE];
 	    os_error_t error;
-	    /* 
+	    /*
 	     * Run systeminfo on Windows clients. This file can then be submitted
 	     * along with the hammer log so that we'll usually know everything we
 	     * need to know about the client without having to ask.
-	     * 
+	     *
 	     * Note: Beware of this stupid CMD.EXE restriction!
 	     * '\\10.63.8.66\robin\hammer\b4c839439c7347238435db864766c2b3'
 	     * CMD.EXE was started with the above path as the current directory.
@@ -1295,7 +1295,7 @@ hammer_thread_setup(dinfo_t *dip)
 	     */
 	    sprintf(buffer, "systeminfo > %s%csysinfo.txt", dip->di_dir, dip->di_dir_sep);
 	    ExecuteCommand(dip, buffer, LogPrefixDisable, dip->di_pDebugFlag);
-    
+
 	    /* Get the UNC path, if the directory includes a drive letter.*/
 	    error = win32_getuncpath(dip->di_dir, &tip->uncpath);
 	    if ( (error != NO_ERROR) && (error != ERROR_NOT_CONNECTED) ) {
@@ -1371,7 +1371,7 @@ hammer_startup(dinfo_t *dip)
 	    hmrp->nocleanup ? "true" : "false",
 	    dip->di_retry_disconnects ? "true" : "false",
 	    dip->di_random_seed);
-    Lprintf(dip, "logfile=%s timezone=%s\n", 
+    Lprintf(dip, "logfile=%s timezone=%s\n",
 	    (dip->di_log_file) ? dip->di_log_file : "(none)", mktimezone(tip));
     time(&now);
     Lprintf(dip, "num_iterations="LUF" max_iterations="LUF" cur_runtime=%d max_runtime=%d\n",
@@ -1571,7 +1571,7 @@ hammer_help(dinfo_t *dip)
     P(dip, "\t                         [NOTE: hammer will stop on other critical errors.\n");
     P(dip, "\t                          that can prevent it from functioning properly].\n");
 
-    
+
     P(dip, "\n");
     P(dip, "    Lock Control Options:\n");
     P(dip, "\t-nolockdebug             Exclude file lock/unlock debug output (it's chatty).\n");
@@ -1613,7 +1613,7 @@ char *
 makefullpath(dinfo_t *dip, char *path)
 {
     char fpath[PATH_BUFFER_SIZE];
-    
+
     (void)sprintf(fpath, "%s%c%s", dip->di_dir, dip->di_dir_sep, path);
     return( strdup(fpath) );
 }
@@ -1628,7 +1628,7 @@ update_dname(dinfo_t *dip, char *file)
     }
     return;
 }
-	     
+	
 /*
  * Allocates a datablock and initializes it with the constant stuff
  * that we know about at hammer initialization time.
@@ -1882,7 +1882,7 @@ start_copy(dinfo_t *dip, hammer_file_t *f, int64_t fsize)
 
     /*
      * Write bad data to file in same directory as logfile.
-     * Note that this copy will begin with the 
+     * Note that this copy will begin with the
      */
     if (f->colon != NULL) {
 	*f->colon = '_';
@@ -2094,7 +2094,7 @@ freefiles(dinfo_t *dip)
 
 hammer_file_t *
 getrndfile(dinfo_t *dip)
-{  
+{
     hammer_information_t *hip = dip->di_opaque;
     hammer_thread_info_t *tip = &hip->hammer_thread_info;
     hammer_file_t *f;
@@ -2238,10 +2238,10 @@ updatesize(dinfo_t *dip, hammer_file_t *f)
 {
     HANDLE fd;
     large_t filesize;
-    
+
     fd = dt_open_file(dip, f->fpath, O_RDONLY, 0, NULL, NULL, EnableErrors, EnableRetries);
     if (fd == NoFd) return(FAILURE);
-    
+
     filesize = dt_get_file_size(dip, f->fpath, &fd, EnableErrors);
     if (filesize != (large_t)FAILURE) {
 	f->size = filesize;
@@ -2282,12 +2282,12 @@ writefile(dinfo_t *dip, hammer_file_t **fp)
 	if (dip->di_dio_flag || dip->di_bufmode_count) {
 	    fsize = roundup(fsize, dip->di_dsize);
 	}
-	/* 
+	/*
 	 * For Windows streams, 50% of the time create streams directory/file.
 	 * URL: http://msdn.microsoft.com/en-us/library/windows/desktop/aa364404(v=vs.85).aspx
-	 * 
+	 *
 	 * Note: For Unix, -streams will enable *testing* this code path! (no actual streams)
-	 */ 
+	 */
 	if ( f->colon && (f->base == NULL) && (rnd(dip, 1, 100) > 50) ) {
 	    char *fpath;
 	    *f->colon = '\0';
@@ -2295,7 +2295,7 @@ writefile(dinfo_t *dip, hammer_file_t **fp)
 	    /* Note: This message was added by Robin for debug! */
 	    Printf(dip, "%s MKDIR   %s", mklogtime(tip), f->path);
 	    start_timer(dip);
-mkdiragain:	    
+mkdiragain:	
 	    status = dt_create_directory(dip, fpath, &f->is_disk_full, &isFileExists, EnableErrors);
 	    if (status == SUCCESS) {
 		f->hasdir = True;
@@ -2433,9 +2433,9 @@ openagain:
 	    setdiskisfull(hmrp, tip);
 	}
 #if defined(WIN32)
-	/* 
+	/*
 	 * Why Windows only? Why not all OS's?
-	 * 
+	 *
 	 * Our request failed because the disk is full. Since
 	 * we might be using Write Raw, this means we shouldn't
 	 * believe lastwrittenfile->size anymore, because Write
@@ -2531,10 +2531,10 @@ again:
     }
 
     /* open file */
-    
-    dip->di_oflags = ( fopen_mode | O_BINARY | writethroughflag | 
+
+    dip->di_oflags = ( fopen_mode | O_BINARY | writethroughflag |
 		       ( (do_overwrite) ? O_TRUNC : (O_CREAT|O_TRUNC)) );
-	      
+	
     fd = dt_open_file(dip, f->fpath, dip->di_oflags, FILE_CREATE_MODE,
 		      &f->is_disk_full, &isDirectory, EnableErrors, EnableRetries);
     if ( (dip->di_retry_disconnects == True) && dip->di_retry_count) {
@@ -2582,10 +2582,10 @@ again:
 
     /* Before writing, try to obtain a lock: fcntl() */
     if (hmrp->lock_files == True) {
-	/* 
+	/*
 	 * Randomly decide whether to lock the full byte range across the file,
 	 * or lock specific bytes as we write (code in WRITE block below).
-	 */ 
+	 */
 	if (test_lock_mode(dip, hmrp, LOCK_FULL_RANGE)) {
 	    /* LOCK_FULL_RANGE = True */
 	    lock_full_range = True;    /* else, keep default = False */
@@ -2804,7 +2804,7 @@ api_readfile(dinfo_t *dip, hammer_file_t *f, int bsize)
 
     /* Before reading, try to obtain a read lock. */
     if (hmrp->lock_files == True) {
-	/* 
+	/*
 	 * Randomly decide whether to lock the full byte range across the file,
 	 * or lock specific bytes as we read.
 	 */
@@ -2819,10 +2819,10 @@ api_readfile(dinfo_t *dip, hammer_file_t *f, int bsize)
 	    }
 	} else {
 	    /* LOCK_PARTIAL_RANGE = TRUE */
-	    /* 
+	    /*
 	     * Before reading, try to obtain a byte range lock on the first few bytes
 	     * that we wish to read.
-	     */ 
+	     */
 	    if (bsize < f->size) {
 		read_lock_size = bsize;
 	    } else {
@@ -2871,7 +2871,7 @@ api_readfile(dinfo_t *dip, hammer_file_t *f, int bsize)
 	    }
 	    /* keep going, copying the data out */
 	}
-	if ( (copyfd != NoFd) && 
+	if ( (copyfd != NoFd) &&
 	     (dt_write_file(dip, tip->corrupted_file, &copyfd, tip->filebuf, n, &f->is_disk_full, True, True) != n) ) {
 	    Printf(dip, "error copying corruption\n");
 	    (void)dt_close_file(dip, tip->corrupted_file, &copyfd, NULL, EnableErrors, EnableRetries);
@@ -3005,7 +3005,7 @@ truncatefile(dinfo_t *dip, hammer_file_t *f)
 
     time_taken = stop_timer(dip);
     Print(dip, " %gsec", time_taken);
-    
+
     if (status == SUCCESS) {
 	if (dip->di_max_data && (newsize < f->size) ) {
 	    dip->di_maxdata_written -= (f->size - newsize);

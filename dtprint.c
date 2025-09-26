@@ -31,10 +31,10 @@
  *	Various printing functions.
  *
  * Modification History:
- * 
+ *
  * November 30th, 2020 by Robin T. Miller
  *      When reporting records, add Physical/Relative for file system LBAs.
- * 
+ *
  * May 19th, 2020 by Robin T. Miller
  *      Remove check for the error file being open, when acquiring/releasing
  * the global print lock (only use this when master log file is open).
@@ -42,10 +42,10 @@
  *     1) releasing wrong (print) mutex, thus the job lock is not released.
  *     2) threads waiting on the job lock get stuck (hung) waiting on lock.
  * Note: This happens when an error is logged while holding the job lock!
- * 
+ *
  * December 27th, 2019 by Robin T. Miller
  *      Update report_record() to report physical LBA's, when available.
- * 
+ *
  * April 23rd, 2015 by Robin T. Miller
  * 	Updated report_record() to report proper partial block percentage.
  * 	The partial number of blocks is also reported properly.
@@ -75,7 +75,7 @@
 
 /*
  * Local Definitions:
- */ 
+ */
 int DisplayWidth = DEFAULT_WIDTH;
 
 /*
@@ -119,7 +119,7 @@ ReportError(dinfo_t *dip, error_info_t *eip)
 
     (void)time(&dip->di_error_time);
     os_ctime(&dip->di_error_time, time_buffer, sizeof(time_buffer));
-    
+
     if ( !(eip->ei_rpt_flags & RPT_WARNING) ) {
 	PrintDecimal(dip, "Error Number", dip->di_error_count, PNL);
 	PrintAscii(dip, "Time of Current Error", time_buffer, PNL);
@@ -148,19 +148,19 @@ ReportError(dinfo_t *dip, error_info_t *eip)
 
 /*
  * ReportRetryableError() - Report and Retry Errors.
- * 
+ *
  * Description:
  *    This function will determine if an error is retryable, and if the
  * the error should be counted, based on the retry session disconnects flag.
  * An ignore errors flag exists, but has *not* been fully implemented.
- * 
+ *
  * Inputs:
  *  dip = The device information pointer.
  *  op = The name of the operation.
  *  file = The file name (if any).
  *  bytes = The number of bytes in the request.
  *  error = The last error encountered.
- * 
+ *
  * Return Value:
  *      FAILURE or RETRYABLE if error is deemed retyable.
  */
@@ -172,7 +172,7 @@ ReportRetryableError(dinfo_t *dip, error_info_t *eip, char *format, ...)
     int status = FAILURE;
     char *emsg = buffer;
     va_list ap;
-    
+
     dip->di_error = eip->ei_error;
     /* Clean this up after all callers format a useful error message! */
     if (format) {
@@ -182,7 +182,7 @@ ReportRetryableError(dinfo_t *dip, error_info_t *eip, char *format, ...)
     } else {
         emsg = NULL;
     }
-    
+
     if ( eip->ei_fd && (*eip->ei_fd == NoFd) ) {
 	eip->ei_rpt_flags |= RPT_NODEVINFO;
     }
@@ -247,7 +247,7 @@ ReportRetryableError(dinfo_t *dip, error_info_t *eip, char *format, ...)
  *      error = The operating system error number.
  *      error_info = Additional error info for perror.
  *	record_error = Controls reporting error/time info.
- * 
+ *
  * Outputs:
  *      dip->di_error gets the last error number. (don't use errno!)
  */
@@ -261,7 +261,7 @@ ReportErrorInfo( dinfo_t   *dip,
 {
     INIT_ERROR_INFO(eip, file, error_info, optype, &dip->di_fd, dip->di_oflags, dip->di_offset,
 		    (size_t)0, error, logLevelError, PRT_SYSLOG, RPT_NOFLAGS);
-    
+
     if (record_error == False) {
         eip->ei_rpt_flags = (RPT_NOERRORNUM|RPT_NOHISTORY);
     }
@@ -276,7 +276,7 @@ ReportErrorInfo( dinfo_t   *dip,
  *      dip = The device information pointer.
  *      eip = The error information pointer.
  *      format = The variable argument message.
- * 
+ *
  * Outputs:
  *      dip->di_error gets the last error number.
  *      Return FAILURE indicating an error occurred.
@@ -303,7 +303,7 @@ ReportErrorInfoX(dinfo_t *dip, error_info_t *eip, char *format, ...)
 	fp = dip->di_ofp;
     }
     dip->di_error = eip->ei_error;
-    
+
     if (format) {
         va_start(ap, format);
         vsprintf(emsg, format, ap);
@@ -367,12 +367,12 @@ ReportErrorInfoX(dinfo_t *dip, error_info_t *eip, char *format, ...)
  * ReportExtendedErrorInfo() - Report Error Informaion.
  *
  * Note: This is used in conjunction with ReportErrorInfoX() right now!
- * 
+ *
  * Inputs:
  *      dip = The device information pointer.
  *      eip = The error information pointer.
  *      format = The variable argument message. (not currently used)
- * 
+ *
  * Outputs:
  *      dip->di_error gets the last error number.
  *      Return FAILURE indicating an error occurred.
@@ -383,7 +383,7 @@ ReportExtendedErrorInfo(dinfo_t *dip, error_info_t *eip, char *format, ...)
     char time_buffer[TIME_BUFFER_SIZE];
     HANDLE fd = (eip->ei_fd) ? *eip->ei_fd : dip->di_fd;
     hbool_t error_flag;
-    
+
     if ( (eip->ei_log_level == logLevelCrit) ||
 	 (eip->ei_log_level == logLevelError) ) {
 	error_flag = True;
@@ -479,7 +479,7 @@ ReportExtendedErrorInfo(dinfo_t *dip, error_info_t *eip, char *format, ...)
     }
 
     /*
-     * For miscompares, report the file offset map to LBAs (if supported). 
+     * For miscompares, report the file offset map to LBAs (if supported).
      */
     if ( isFileSystemFile(dip) && dip->di_fsmap_flag && EQ(eip->ei_op, miscompare_op) ) {
 	Printf(dip, "\n");
@@ -568,9 +568,9 @@ report_io(dinfo_t *dip, test_mode_t io_mode, void *buffer, size_t bytes, Offset_
 	iopos = (Offset_t)(dip->di_volume_bytes + offset);
 	iolba = make_lbdata(dip, iopos);
     }
-    /* 
-     * Note: We cannot report read/write records with percentage, otherwise 
-     * the record numbers will NOT match extended error reporting and btags! 
+    /*
+     * Note: We cannot report read/write records with percentage, otherwise
+     * the record numbers will NOT match extended error reporting and btags!
      */
     if ( False /*dip->di_read_percentage*/ ) {
 	files = (dip->di_files_read + dip->di_files_written) + 1;
@@ -751,7 +751,7 @@ fmtmsg_prefix(dinfo_t *dip, char *bp, int flags, logLevel_t level)
     if (dip == NULL) dip = master_dinfo;
     /*
      * The logging prefix can be user defined, NATE, or standard.
-     */ 
+     */
     if (dip->di_log_prefix) {
         log_prefix = FmtLogPrefix(dip, dip->di_log_prefix, False);
     } else {
@@ -1039,7 +1039,7 @@ Lprintf(dinfo_t *dip, char *format, ...)
 	    dip->di_log_bufptr += strlen(bp);
 	    dip->di_log_bufsize = new_log_bufsize;
 	} else {
-	    Fprintf(dip, "Oops, we've exceeded the log buffer size, "SDF" > "SDF"!\n", 
+	    Fprintf(dip, "Oops, we've exceeded the log buffer size, "SDF" > "SDF"!\n",
 		    size, (dip->di_log_bufsize - 256));
 	    Fprintf(dip, "AND could not allocate "SDF" bytes for a new log buffer!\n",
 		    dip->di_log_bufsize);
@@ -1268,7 +1268,7 @@ PrintLines(dinfo_t *dip, hbool_t error_flag, char *buffer)
     size_t buffer_length = strlen(buffer);
     char *end = (buffer + buffer_length);
     int lock_status;
-    
+
     if (buffer_length == 0) return;
 
     lock_status = AcquirePrintLock(dip);
@@ -1515,10 +1515,10 @@ PrintFields(dinfo_t *dip, uint8_t *bptr, int length)
 	    if (count < length)	PrintAscii(dip, "", "", DNL);
 	} else {
 	    Lprintf(dip, "%02x ", *bptr++);
-	}               
-    }                       
+	}
+    }
     if (count % field_entrys) Lprintf(dip, "\n");
-}                                     
+}
 
 void
 PrintHAFields(dinfo_t *dip, uint8_t *bptr, int length)

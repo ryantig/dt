@@ -35,10 +35,10 @@
  * May 28th, 2020 by Robin T. Miller
  *      Add "The requested resource is in use." (ERROR_BUSY) as retriable
  * error, since this is being returned during path failovers due to faults.
- * 
+ *
  * August 26th, 2010 by Robin T. Miller
  * 	When opening device, on EROFS errno, try opening read-only.
- * 
+ *
  * August 6th, 2007 by Robin T. Miller.
  *	Added OS open and close functions.
  */
@@ -90,8 +90,8 @@
 typedef struct _SPTDWB {
     SCSI_PASS_THROUGH_DIRECT spt;
     ULONG filler;
-    UCHAR senseBuf[256]; 
-} SPTWB, *PSPTWB;  
+    UCHAR senseBuf[256];
+} SPTWB, *PSPTWB;
 
 #endif /* !defined(SCSILIB_H) */
 
@@ -120,7 +120,7 @@ os_open_device(scsi_generic_t *sgp)
 
     /*
      * Automatically add the hidden device directory (for ease of use).
-     */ 
+     */
     if (strncmp(sgp->dsf, DEV_DIR_PREFIX, DEV_DIR_LEN) != 0) {
 	wdsf = Malloc(sgp->opaque, DEV_DEVICE_LEN);
 	if (wdsf) {
@@ -137,7 +137,7 @@ os_open_device(scsi_generic_t *sgp)
 			 (FILE_SHARE_READ | FILE_SHARE_WRITE), NULL,
 			 OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     /*
-     * If write protected, try open'ing read-only. 
+     * If write protected, try open'ing read-only.
      */
     if ( (sgp->fd == INVALID_HANDLE_VALUE) &&
 	 (GetLastError() == ERROR_WRITE_PROTECT) ) {
@@ -285,7 +285,7 @@ os_reset_bus(scsi_generic_t *sgp)
 {
     int error = SUCCESS;
     STORAGE_BUS_RESET_REQUEST sbr;
-    DWORD bc; 
+    DWORD bc;
 
     sbr.PathId = sgp->scsi_addr.scsi_bus;
     if (DeviceIoControl(sgp->fd,
@@ -296,7 +296,7 @@ os_reset_bus(scsi_generic_t *sgp)
 			0,
 			&bc,
 			NULL) == 0) {
-	error = FAILURE; 
+	error = FAILURE;
 	sgp->os_error = GetLastError();
 	if (sgp->errlog == True) {
 	    os_perror(sgp->opaque, "SCSI reset bus (IOCTL_STORAGE_RESET_BUS) failed on %s", sgp->dsf);
@@ -608,9 +608,9 @@ os_spt(scsi_generic_t *sgp)
     if (pspt->ScsiStatus == SCSI_GOOD) {
 	sgp->error = False;	  /* Show SCSI command was successful. */
     } else {
-	sgp->error = True;	  /* Tell caller we've had some sort of error */ 
+	sgp->error = True;	  /* Tell caller we've had some sort of error */
 	if ( (sgp->errlog == True) && (pspt->ScsiStatus != SCSI_CHECK_CONDITION)) {
-	    Fprintf(sgp->opaque, "%s failed, SCSI Status = %d (%s)\n",sgp->cdb_name, 
+	    Fprintf(sgp->opaque, "%s failed, SCSI Status = %d (%s)\n",sgp->cdb_name,
 		    pspt->ScsiStatus, ScsiStatus(pspt->ScsiStatus));
 	}
     }
@@ -621,7 +621,7 @@ os_spt(scsi_generic_t *sgp)
     }
 
     sgp->scsi_status = pspt->ScsiStatus;
-    sgp->data_resid = (sgp->data_length - pspt->DataTransferLength);     
+    sgp->data_resid = (sgp->data_length - pspt->DataTransferLength);
     /*
      * Interesting, our resid can be greater than our data length if the CDB
      * length is larger than the specified data length (at least on Linux).
@@ -647,7 +647,7 @@ error:
  * retriable error. Note: The checks performed here are those that are
  * OS specific, such as looking a host, driver, or syscall errors that can
  * be retried automatically, and/or to perform any OS specific recovery.
- * 
+ *
  * Inputs:
  *      sgp = Pointer to the SCSI generic data structure.
  *
@@ -659,7 +659,7 @@ hbool_t
 os_is_retriable(scsi_generic_t *sgp)
 {
     hbool_t is_retriable = False;
-    
+
     if (sgp->os_error == ERROR_DEV_NOT_EXIST) {
 	//
 	// MessageId: ERROR_DEV_NOT_EXIST
@@ -721,7 +721,7 @@ os_is_retriable(scsi_generic_t *sgp)
 	//
 	// This error is occurring intermittently, so we will retry since we
 	// believe this is a transient error. (resources should become available)
-	// 
+	//
 	// MessageId: ERROR_NO_SYSTEM_RESOURCES
 	//
 	// MessageText:
@@ -745,7 +745,7 @@ DumpScsiCmd(scsi_generic_t *sgp, SPTWB sptwb)
     char buf[128];
     char *bp = buf;
     char *msgp = NULL;
-    PSCSI_PASS_THROUGH_DIRECT pspt = &sptwb.spt; 
+    PSCSI_PASS_THROUGH_DIRECT pspt = &sptwb.spt;
 
     Printf(sgp->opaque, "SCSI I/O Structure\n");
 
@@ -762,7 +762,7 @@ DumpScsiCmd(scsi_generic_t *sgp, SPTWB sptwb)
     Printf(sgp->opaque, "    Data Direction ........................... DataIn: %#x (%s)\n", pspt->DataIn,
 	   msgp);
     Printf(sgp->opaque, "    SCSI CDB Status ...................... ScsiStatus: %#x (%s)\n", pspt->ScsiStatus,
-	   ScsiStatus(pspt->ScsiStatus));  
+	   ScsiStatus(pspt->ScsiStatus));
     Printf(sgp->opaque, "    Command Timeout .................... TimeOutValue: %lu\n", pspt->TimeOutValue);
 
     for (i = 0; (i < pspt->CdbLength); i++) {
@@ -770,7 +770,7 @@ DumpScsiCmd(scsi_generic_t *sgp, SPTWB sptwb)
     }
     Printf(sgp->opaque, "    Command Descriptor Block .................... Cdb: %s (%s)\n",buf, sgp->cdb_name);
     Printf(sgp->opaque, "    I/O Buffer .............................. dataBuf: 0x%p\n", sgp->data_buffer);
-    Printf(sgp->opaque, "    I/O Buffer Length ................... data_length: %u\n", pspt->DataTransferLength);     
+    Printf(sgp->opaque, "    I/O Buffer Length ................... data_length: %u\n", pspt->DataTransferLength);
     Printf(sgp->opaque, "    Request Sense Buffer ................... senseBuf: 0x%p\n", sptwb.senseBuf);
     Printf(sgp->opaque, "    Request Sense Length ............... sense_length: %u\n", pspt->SenseInfoLength);
     /* Note: Windows SPT alters DataTransferLength to be the bytes actually transferred. */

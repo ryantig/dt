@@ -28,44 +28,44 @@
  *
  * Description:
  *	Utility routines for generic data test program.
- * 
+ *
  * Modification History:
- * 
+ *
  * June 16th, 2021 by Robin T. Miller
  *      Update execute triggers to handle the SCSI trigger device.
- * 
+ *
  * March 16th, 2021 by Robin T. Miller
  *      Add corrupt_buffer() in support of forcing corruptions for debug.
- * 
+ *
  * October 27th, 2020 by Robin T. Miller
  *      Add functions in support for additional trigger functionality.
- * 
+ *
  * September 6th, 2020 by Robin T. Miller
  *      For disk devices, when multiple threads are chosen, convert threads
  * to slices to avoid *false* data corruptions, due to thread overwrites.
  * This is happening due to folks selecting FS workloads instead of disk!
- * 
+ *
  * May 20th, 2020 by Robin T. Miller
  *      Update API's using popen to capture stderr along with stdout!
- * 
+ *
  * May 19th, 2020 by Robin T. Miller
  *      Update ExecuteCommand() to add prefix flag to control log prefix.
- * 
+ *
  * May 19th, 2020 by Robin T. Miller
  *      When not compiled with SCSI library, use dt's spt path as default.
- * 
+ *
  * May 13th, 2020 by Robin T. Miller
  *      Add the thread number to the pass command, since oftentimes we only
  * wish to perform an action on the first thread, and not all threads.
- * 
+ *
  * August 17th, 2019 by Robin T. Miller
  *      Update OS block tick conversion to avoid negative values, seen after
  * ~597 hours on Windows, calculated values went negative for "%et" format.
  * The new format is dayshoursminutessecondsfraction or ddhhmmss.ff
- * 
+ *
  * September 1st, 2017 by Robin T. Miller
  *      Update get_data_size() to handle separate read/write block sizes.
- * 
+ *
  * June 9th, 2015 by Robin T. Miller
  * 	Added support for block tags (btags).
  *
@@ -81,19 +81,19 @@
  * This caused invalid requests when using 4 byte data patterns (IOT Ok).
  *
  * February 20th, 2014 by Robin T. Miller
- * 	For triggers panic'ing *all* nodes, set the return status to  
+ * 	For triggers panic'ing *all* nodes, set the return status to
  * TRIGACT_TERMINATE, so jobs/threads will get stopped. This is not done
  * for all triggers, since we may wish to continue on one node panic'ing
  * and/or when performing triage. Note: Triage will use its' own status.
  * Note: This is *only* used for noprog's, errors have their own limit.
- * 
+ *
  * December 13th, 2013 by Robin T. Miller
  * 	Simplify and fix random offset calculations in do_random(). The bug
  * was rounding up the offset to the random limit, so writes would encounter
  * a premature end of media (ENOSPC) with raw disks. The rounding also caused
  * occasional short writes, which could result in reading too much and causing
  * a false data corrruption (reading more than written, will do that! :-().
- * 
+ *
  * June 20th, 2013 by Robin T Miller
  * 	Mostly a rewrite for multithreaded IO, so starting with new history!
  */
@@ -155,7 +155,7 @@ mySleep(dinfo_t *dip, unsigned int sleep_time)
     unsigned int ms, timeout;
 
     /*
-     * Allow a random delay. 
+     * Allow a random delay.
      */
     if (sleep_time == RANDOM_DELAY_VALUE) {
 	/* Note: Not using get_random() to avoid our random generator. */
@@ -207,7 +207,7 @@ SleepSecs(dinfo_t *dip, unsigned int sleep_time)
     unsigned int ms, timeout;
 
     /*
-     * Allow a random delay. 
+     * Allow a random delay.
      */
     if (sleep_time == RANDOM_DELAY_VALUE) {
 	sleep_time = (unsigned int)os_random();
@@ -268,7 +268,7 @@ timer_now(struct timeval *timer)
  *	If a pattern_buffer exists, then this data is used to fill the	*
  * buffer instead of the data pattern specified.			*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  *	dip = The device information pointer.				*
  * 	buffer = Pointer to buffer to fill.				*
  *	byte_count = Number of bytes to fill.				*
@@ -356,7 +356,7 @@ fill_buffer (   dinfo_t     *dip,
  *									*
  * init_buffer() - Initialize Buffer with a Data Pattern.		*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	buffer = Pointer to buffer to init.				*
  *	count = Number of bytes to initialize.				*
@@ -394,7 +394,7 @@ init_buffer(    dinfo_t     *dip,
  *									*
  * corrupt_buffer() - Corrupt Buffer.					*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	buffer = Pointer to buffer to corrupt.				*
  *	length = The data buffer length.				*
@@ -463,7 +463,7 @@ corrupt_buffer( dinfo_t *dip, void *buffer, int32_t length, uint64_t record)
  *									*
  * poision_buffer() - Poison Buffer with a Data Pattern.		*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	buffer = Pointer to buffer to init.				*
  *	count = Number of bytes to initialize.				*
@@ -512,7 +512,7 @@ poison_buffer(  dinfo_t     *dip,
  *									*
  * init_swapped() - Initialize Buffer with a Swapped Data Pattern.	*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	buffer = Pointer to buffer to init.				*
  *	count = Number of bytes to initialize.				*
@@ -556,14 +556,14 @@ init_swapped (  dinfo_t         *dip,
  * inserts it every logical block size bytes, overwriting the first 4	*
  * bytes of each logical block with its' address.			*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	buffer = The data buffer to initialize.				*
  *	count = The data buffer size (in bytes).			*
  *	lba = The starting logical block address.			*
  *	lbsize = The logical block size (in bytes).			*
  *									*
- * Outputs:							        * 
+ * Outputs:							        *
  * 	Returns the next lba to use.					*
  *									*
  ************************************************************************/
@@ -615,7 +615,7 @@ init_lbdata (
  *	This function places a timestamp in the first 4 bytes of each   *
  * data block.                                                          *
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	buffer = The data buffer to initialize.				*
  *	count = The data buffer size (in bytes).			*
@@ -768,7 +768,7 @@ copy_prefix( dinfo_t *dip, u_char *buffer, size_t bcount )
  *									*
  * process_pfile() - Process a pattern file.				*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	file = Pointer to pattern file name.				*
  *									*
@@ -952,17 +952,17 @@ copy_pattern (u_int32 pattern, u_char *buffer)
 }
 
 /*
- * convert_clock_ticks() - Convert OS clock ticks to time values. 
- *  
- * Note: clock_ticks is defined as long on Linux and Windows, but this 
- * value is in system click ticks from sysconf(_SC_CLK_TCK), which on 
- * Linux is 100 while on Windows is 1000, so wrapping occurs sooner on 
- * Windows causing tme values to become negative. Therefore, the signed 
- * clock_t os cast to an unsigned long to avoid negative time values. 
- * In fact, the times() API used will return -1 when it fails. 
- *  
+ * convert_clock_ticks() - Convert OS clock ticks to time values.
+ *
+ * Note: clock_ticks is defined as long on Linux and Windows, but this
+ * value is in system click ticks from sysconf(_SC_CLK_TCK), which on
+ * Linux is 100 while on Windows is 1000, so wrapping occurs sooner on
+ * Windows causing tme values to become negative. Therefore, the signed
+ * clock_t os cast to an unsigned long to avoid negative time values.
+ * In fact, the times() API used will return -1 when it fails.
+ *
  * Clearly using times() needs replaced with a better method (see below):
- *  
+ *
  * On Linux, the "arbitrary point in the past" from which the return value of times()
  * is measured has varied across kernel versions. On Linux 2.4 and earlier this point
  * is the moment the system was booted. Since Linux 2.6, this point is (2^32/HZ) - 300
@@ -970,14 +970,14 @@ copy_pattern (u_int32 pattern, u_char *buffer)
  * kernel versions (and across UNIX implementations), combined with the fact that the
  * returned value may overflow the range of clock_t, means that a portable application
  * would be wise to avoid using this value.
- * To measure changes in elapsed time, use clock_gettime(2) instead. 
- *  
+ * To measure changes in elapsed time, use clock_gettime(2) instead.
+ *
  * TODO:
  *     int clock_getres(clockid_t clk_id, struct timespec *res);
  *     int clock_gettime(clockid_t clk_id, struct timespec *tp);
- *  
- * The above API's do not exist on Windows, see this URL for guideance: 
- *     https://stackoverflow.com/questions/5404277/porting-clock-gettime-to-windows 
+ *
+ * The above API's do not exist on Windows, see this URL for guideance:
+ *     https://stackoverflow.com/questions/5404277/porting-clock-gettime-to-windows
  */
 void
 convert_clock_ticks(clock_t ticks, clock_t *days, clock_t *hours,
@@ -1056,14 +1056,14 @@ format_time(dinfo_t *dip, clock_t ticks)
 }
 
 /*
- * Format the elapsed time. 
- *  
- * Inputs: 
+ * Format the elapsed time.
+ *
+ * Inputs:
  *      buffer = Buffer for time string.
  *      ticks = The elapsed time in ticks.
- *  
- * Return Value: 
- * 	Length of time string. 
+ *
+ * Return Value:
+ * 	Length of time string.
  */
 int
 FormatElapstedTime(char *buffer, clock_t ticks)
@@ -1610,7 +1610,7 @@ skip_records(   struct dinfo    *dip,
  *									*
  * CvtStrtoValue() - Converts ASCII String into Numeric Value.		*
  *									*
- * Inputs:							        * 
+ * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	nstr = String to convert.					*
  *	eptr = Pointer for terminating character pointer.		*
@@ -1624,7 +1624,7 @@ skip_records(   struct dinfo    *dip,
  *	Returns converted number or -1 for FAILURE.			*
  *									*
  ************************************************************************/
-unsigned long 
+unsigned long
 CvtStrtoValue (dinfo_t *dip, char *nstr, char **eptr, int base)
 {
     unsigned long n = 0, val;
@@ -1651,7 +1651,7 @@ CvtStrtoValue (dinfo_t *dip, char *nstr, char **eptr, int base)
     for (;;) {
 
 	switch (*nstr++) {
-	    
+	
 	    case 'k':
 	    case 'K':			    /* Kilobytes */
 		n *= KBYTE_SIZE;
@@ -1795,7 +1795,7 @@ CvtStrtoValue (dinfo_t *dip, char *nstr, char **eptr, int base)
  *									*
  * CvtStrtoLarge() - Converts ASCII String into Large Value.		*
  *									*
-  * Inputs:							        * 
+  * Inputs:							        *
  * 	dip = The device information pointer.			        *
  *	nstr = String to convert.					*
  *	eptr = Pointer for terminating character pointer.		*
@@ -1828,7 +1828,7 @@ CvtStrtoLarge (dinfo_t *dip, char *nstr, char **eptr, int base)
 # else /* All other OS's */
     if ( (n = strtoull(nstr, eptr, base)) == (large_t) 0) {
 # endif /* defined(SCO) || defined(__QNXNTO__) || defined(SOLARIS) || defined(AIX) || defined(_NT_SOURCE) */
-#else 
+#else
   #error "Define 64-bit string conversion API!"
 #endif /* defined(WIN32) */
 	/* TODO: Add error checking AFTER standardizing on API! */
@@ -1845,7 +1845,7 @@ CvtStrtoLarge (dinfo_t *dip, char *nstr, char **eptr, int base)
     for (;;) {
 
 	switch (*nstr++) {
-	    
+	
 	    case 'k':
 	    case 'K':			    /* Kilobytes */
 		n *= KBYTE_SIZE;
@@ -2017,7 +2017,7 @@ CvtTimetoValue (char *nstr, char **eptr)
     for (;;) {
 
 	switch (*nstr++) {
-	    
+	
 	    case 'd':
 	    case 'D':			    /* Days */
 		n *= SECS_PER_DAY;
@@ -2153,7 +2153,7 @@ Fputs(char *str, FILE *stream)
  *	Is this confusing or what?  I'm doing the best I can here :-)	*
  *									*
  * Inputs:	dip = The device information pointer.			*
- *      	count = The count from the last I/O request.            * 
+ *      	count = The count from the last I/O request.            *
  *      	size = The original request size (for error reporting)	*
  *		status = Optional pointer to return status.		*
  *									*
@@ -2260,7 +2260,7 @@ report_EofMsg(dinfo_t *dip, ssize_t count, os_error_t error)
 	       endofmsg, count, error,
 	       (read_mode) ? (dip->di_files_read + 1) : (dip->di_files_written + 1),
 	       (read_mode) ? (dip->di_records_read + 1) : (dip->di_records_written + 1),
-	       (read_mode) ? "read" : "wrote", 
+	       (read_mode) ? "read" : "wrote",
 	       (read_mode) ? dip->di_fbytes_read : dip->di_fbytes_written,
 	       (read_mode) ? dip->di_dbytes_read : dip->di_dbytes_written);
     }
@@ -2602,7 +2602,7 @@ remove_triggers(dinfo_t *dip)
     int i;
     /*
      * Trigger scripts and arguments:
-     */ 
+     */
     for (i = 0; (i < dip->di_num_triggers); i++) {
 	dip->di_triggers[i].td_trigger = TRIGGER_NONE;
 	if (dip->di_triggers[i].td_trigger_cmd) {
@@ -2745,16 +2745,16 @@ StartupShell(dinfo_t *dip, char *shell)
 
 /*
  * ExecuteCommand() - Execute an external OS Command.
- * 
+ *
  * Inputs:
  *	dip = The device information pointer.
  *      cmd = The command line to execute.
  *      prefix = The log prefix control flag.
  * 	verbose = Verbose control flag.
- * 
+ *
  * Return Value:
  * 	The exit status of the executed command line.
- */ 
+ */
 int
 ExecuteCommand(dinfo_t *dip, char *cmd, hbool_t prefix, hbool_t verbose)
 {
@@ -2797,16 +2797,16 @@ ExecuteCommand(dinfo_t *dip, char *cmd, hbool_t prefix, hbool_t verbose)
 
 /*
  * ExecuteBuffered() - Execute Cmd and Return Data.
- * 
+ *
  * Inputs:
  *	dip = The device information pointer.
  *	cmd = The command line to execute.
  *	buffer = Buffer for returned data.
  *	bufsize = The buffer size.
- * 
+ *
  * Return Value:
  *	The exit status of the execute command line.
- */ 
+ */
 int
 ExecuteBuffered(dinfo_t *dip, char *cmd, char *buffer, int bufsize)
 {
@@ -2855,11 +2855,11 @@ ExecutePassCmd(dinfo_t *dip)
     } else if (dip->di_data_limit && (dip->di_data_limit != INFINITY)) {
 	data_bytes = dip->di_data_limit;
     }
-    
-    /* 
+
+    /*
      * Format:
      * 	 pass_cmd device_name device_size starting_offset data_limit pass_count thread_number
-     */ 
+     */
     (void)sprintf(cmd, "%s %s %u "FUF" "LUF" %lu %d",
 		  dip->di_pass_cmd,
 		  dip->di_dname, dip->di_dsize,
@@ -2876,15 +2876,15 @@ ExecutePassCmd(dinfo_t *dip)
 
 /*
  * ExecuteTrigger() - Execute the User Requested Trigger.
- * 
+ *
  * Inputs:
  *	dip = The device information pointer.
  *	plus variable argument list for some triggers.
  *	For trigger script, the operation type is passed!
- * 
+ *
  * Return Value:
  *	Returns the exit status of the executed trigger.
- */ 
+ */
 int
 ExecuteTrigger(struct dinfo *dip, ...)
 {
@@ -3008,8 +3008,8 @@ ExecuteTrigger(struct dinfo *dip, ...)
 		op = va_arg(ap, char *);
 		va_end(ap);
 		/*
-		 * The tester has the option of disabling standard trigger args, since 
-		 * the external command/script may not desire our default arguments. 
+		 * The tester has the option of disabling standard trigger args, since
+		 * the external command/script may not desire our default arguments.
 		 */
 		if (dip->di_trigargs_flag) {
 		    Offset_t offset = getFileOffset(dip);

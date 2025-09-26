@@ -163,7 +163,7 @@
 #define OS_WRITEONLY_MODE	O_WRONLY
 #define OS_READWRITE_MODE	O_RDWR
 
-/* 
+/*
  * POSIX pthread_create() returns a pthread_t for the thread ID.
  * For most POSIX implementations, this is a "void *".
  * This format control is for displaying the OS thread ID.

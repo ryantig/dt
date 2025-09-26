@@ -30,34 +30,34 @@
  *	This file contains functions to handle dt's jobs.
  *
  * Modification History:
- * 
+ *
  * March 8th, 2021 by Robin T. Miller
  *      Add resume_job_thread() to resume current job thread.
- * 
+ *
  * June 7th, 2019 by Robin T. Miller
  *      Add support for log directory (logdir=).
- * 
+ *
  * November 4th, 2016 by Robin T. Miller
  *      Add support for dt job statistics.
- * 
+ *
  * December 17th, 2015 by Robin T. Miller
  * 	Fix problem in remove_job(), causing previous jobs to be lost.
- * 
+ *
  * September 15th, 2015 by Robin T. Miller
  * 	Update execute_threads() (once again), to use the device information
  * passed in, since this is already a clone of the master, as saves memory!
  * Previous breakge was with async threads due to overwriting the thread ID.
- * 
+ *
  * June 25th, 2015 by Robin T. Miller
  * 	Revert code in execute_threads() where I tried to opimize the use
  * of the 1st threads to save memory. This is not safe (today), since the
  * initial dip is later used when cleaning up jobs, so we corrupt memory.
  * This initialize device is expected to require freeing when jobs complete.
- * 
+ *
  * June 14th, 2015 by Robin T. Miller
  * 	In execute_threads(), use the device information passed in for
  * the 1st thread to avoid an extra clone and extra memory resources.
- * 
+ *
  * May 19th, 2015 by Robin T. Miller
  * 	For multiple device support, ensure the thread state is set for
  * both the primary (source) device, and the output (destination) device.
@@ -75,7 +75,7 @@
 
 /*
  * Globals for Tracking Job Information:
- */ 
+ */
 uint16_t job_id = 0;		/* The next job ID. */
 job_info_t jobsList;		/* The jobs list header. */
 job_info_t *jobs = NULL;	/* List of active jobs. */
@@ -104,7 +104,7 @@ int create_job_log(dinfo_t *dip, job_info_t *job);
 
 /*
  * Start of Job Functions:
- */ 
+ */
 int
 initialize_jobs_data(dinfo_t *dip)
 {
@@ -136,7 +136,7 @@ initialize_jobs_data(dinfo_t *dip)
      * that it has already locked, an error will be returned. If  a
      * thread  attempts to unlock a mutex that it has not locked or
      * a mutex which is unlocked, an error will be returned.
-     * 
+     *
      * If the mutex  type  is   PTHREAD_MUTEX_RECURSIVE,  then  the
      * mutex   maintains the concept of a lock count. When a thread
      * successfully acquires a mutex for the first time,  the  lock
@@ -154,7 +154,7 @@ initialize_jobs_data(dinfo_t *dip)
      * calling  thread results in undefined behavior. Attempting to
      * unlock the mutex if it is not locked  results  in  undefined
      * behavior.
-     * 
+     *
      */
     /* Note: This does *not* work for Windows! Still working on equivalent! */
     //if ( (status = pthread_mutexattr_settype(attrp, PTHREAD_MUTEX_RECURSIVE)) != SUCCESS) {
@@ -429,7 +429,7 @@ insert_job(dinfo_t *dip, job_info_t *job)
 {
     job_info_t *jhdr = jobs, *jptr;
     int status;
-    
+
     /*
      * Note: Job threads started, so queue even if lock fails!
      *       May revert later, but recent bug was misleading! ;(
@@ -546,7 +546,7 @@ remove_job_by_id(dinfo_t *dip, job_id_t job_id)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if ((job = find_job_by_id(dip, job_id, True))) {
 	status = remove_job(dip, job, False);
 	(void)release_jobs_lock(dip);
@@ -804,7 +804,7 @@ cancel_job_by_id(dinfo_t *dip, job_id_t job_id)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if ((job = find_job_by_id(dip, job_id, True))) {
 	status = cancel_job(dip, job);
 	(void)release_jobs_lock(dip);
@@ -820,7 +820,7 @@ cancel_job_by_tag(dinfo_t *dip, char *job_tag)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if ((job = find_job_by_tag(dip, job_tag, True))) {
 	status = cancel_job(dip, job);
 	(void)release_jobs_lock(dip);
@@ -838,7 +838,7 @@ cancel_jobs_by_tag(dinfo_t *dip, char *job_tag)
     int jobs_found = 0;
     int status = SUCCESS;
     hbool_t lock_jobs = True;
-    
+
     while ((job = find_jobs_by_tag(dip, job_tag, job, lock_jobs))) {
 	int cstatus;
 	jobs_found++;
@@ -907,7 +907,7 @@ pause_job_by_id(dinfo_t *dip, job_id_t job_id)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if ((job = find_job_by_id(dip, job_id, True))) {
 	if (job->ji_job_state == JS_RUNNING) {
 	    status = pause_job(dip, job);
@@ -929,7 +929,7 @@ pause_job_by_tag(dinfo_t *dip, char *job_tag)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if ((job = find_job_by_tag(dip, job_tag, True))) {
 	if (job->ji_job_state == JS_RUNNING) {
 	    status = pause_job(dip, job);
@@ -955,7 +955,7 @@ pause_jobs_by_tag(dinfo_t *dip, char *job_tag)
     int jobs_found = 0;
     int status = SUCCESS;
     hbool_t lock_jobs = True;
-    
+
     while ((job = find_jobs_by_tag(dip, job_tag, job, lock_jobs))) {
 	jobs_found++;
 	if (job->ji_job_state == JS_RUNNING) {
@@ -1048,7 +1048,7 @@ resume_job_by_id(dinfo_t *dip, job_id_t job_id)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_id(dip, job_id, True)) {
 	if (job->ji_job_state == JS_PAUSED) {
 	    status = resume_job(dip, job);
@@ -1070,7 +1070,7 @@ resume_job_by_tag(dinfo_t *dip, char *job_tag)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_tag(dip, job_tag, True)) {
 	if (job->ji_job_state == JS_PAUSED) {
 	    status = resume_job(dip, job);
@@ -1096,7 +1096,7 @@ resume_jobs_by_tag(dinfo_t *dip, char *job_tag)
     int jobs_found = 0;
     int status = SUCCESS;
     hbool_t lock_jobs = True;
-    
+
     while (job = find_jobs_by_tag(dip, job_tag, job, lock_jobs)) {
 	jobs_found++;
 	if (job->ji_job_state == JS_PAUSED) {
@@ -1167,7 +1167,7 @@ modify_job_by_id(dinfo_t *dip, job_id_t job_id, modify_params_t *modp)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_id(dip, job_id, True)) {
 	Printf(dip, "Job %u is being modified (%d thread%s)\n",
 	       job->ji_job_id, job->ji_tinfo->ti_threads,
@@ -1186,7 +1186,7 @@ modify_job_by_tag(dinfo_t *dip, char *job_tag, modify_params_t *modp)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_tag(dip, job_tag, True)) {
 	Printf(dip, "Job %u (%s) is being modified (%d thread%s)\n",
 	       job->ji_job_id, job->ji_job_tag, job->ji_tinfo->ti_threads,
@@ -1207,7 +1207,7 @@ modify_jobs_by_tag(dinfo_t *dip, char *job_tag, modify_params_t *modp)
     int jobs_found = 0;
     int status = SUCCESS;
     hbool_t lock_jobs = True;
-    
+
     while (job = find_jobs_by_tag(dip, job_tag, job, lock_jobs)) {
 	jobs_found++;
 	Printf(dip, "Job %u (%s) is being modified (%d thread%s)\n",
@@ -1227,7 +1227,7 @@ modify_jobs_by_tag(dinfo_t *dip, char *job_tag, modify_params_t *modp)
 
 /*
  * Note: This is not very clean, may wish to use a real parser!
- */ 
+ */
 int
 parse_modify_parameters(dinfo_t *dip, char *buffer, modify_params_t *modp)
 {
@@ -1394,7 +1394,7 @@ set_thread_parameters(threads_info_t *tip, modify_params_t *modp)
 void
 set_modify_parameters(dinfo_t *dip, modify_params_t *modp)
 {
-    
+
     if (modp->odelay_parsed) {
 	dip->di_open_delay = modp->open_delay;
     }
@@ -1478,7 +1478,7 @@ query_job_by_id(dinfo_t *dip, job_id_t job_id, char *query_string)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_id(dip, job_id, True)) {
 	query_threads_info(dip, job->ji_tinfo, query_string);
 	(void)release_jobs_lock(dip);
@@ -1494,7 +1494,7 @@ query_job_by_tag(dinfo_t *dip, char *job_tag, char *query_string)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_tag(dip, job_tag, True)) {
 	query_threads_info(dip, job->ji_tinfo, query_string);
 	(void)release_jobs_lock(dip);
@@ -1512,7 +1512,7 @@ query_jobs_by_tag(dinfo_t *dip, char *job_tag, char *query_string)
     int jobs_found = 0;
     int status = SUCCESS;
     hbool_t lock_jobs = True;
-    
+
     while (job = find_jobs_by_tag(dip, job_tag, job, lock_jobs)) {
 	jobs_found++;
 	query_threads_info(dip, job->ji_tinfo, query_string);
@@ -1603,7 +1603,7 @@ show_job_by_id(dinfo_t *dip, job_id_t job_id)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_id(dip, job_id, True)) {
 	show_job_info(dip, job, True);
 	(void)release_jobs_lock(dip);
@@ -1619,7 +1619,7 @@ show_job_by_tag(dinfo_t *dip, char *job_tag)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_tag(dip, job_tag, True)) {
 	show_job_info(dip, job, True);
 	(void)release_jobs_lock(dip);
@@ -1637,7 +1637,7 @@ show_jobs_by_tag(dinfo_t *dip, char *job_tag)
     int jobs_found = 0;
     int status = SUCCESS;
     hbool_t lock_jobs = True;
-    
+
     while (job = find_jobs_by_tag(dip, job_tag, job, lock_jobs)) {
 	jobs_found++;
 	show_job_info(dip, job, True);
@@ -1781,7 +1781,7 @@ stop_job_by_id(dinfo_t *dip, job_id_t job_id)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_id(dip, job_id, True)) {
 	status = stop_job(dip, job);
 	(void)release_jobs_lock(dip);
@@ -1797,7 +1797,7 @@ stop_job_by_tag(dinfo_t *dip, char *job_tag)
 {
     job_info_t *job = NULL;
     int status = SUCCESS;
-    
+
     if (job = find_job_by_tag(dip, job_tag, True)) {
 	status = stop_job(dip, job);
 	(void)release_jobs_lock(dip);
@@ -1815,7 +1815,7 @@ stop_jobs_by_tag(dinfo_t *dip, char *job_tag)
     int jobs_found = 0;
     int status = SUCCESS;
     hbool_t lock_jobs = True;
-    
+
     while (job = find_jobs_by_tag(dip, job_tag, job, lock_jobs)) {
 	int sstatus;
 	jobs_found++;
@@ -1836,7 +1836,7 @@ stop_jobs_by_tag(dinfo_t *dip, char *job_tag)
 
 /*
  * wait_for_job() - Wait for job running in the foreground.
- */ 
+ */
 int
 wait_for_job(dinfo_t *mdip, job_info_t *job)
 {
@@ -1860,7 +1860,7 @@ wait_for_job(dinfo_t *mdip, job_info_t *job)
 
 /*
  * wait_for_jobs() - Wait for all jobs.
- */ 
+ */
 int
 wait_for_jobs(dinfo_t *dip, job_id_t job_id, char *job_tag)
 {
@@ -1900,7 +1900,7 @@ wait_for_job_by_id(dinfo_t *dip, job_id_t job_id)
     int status = SUCCESS;
     hbool_t first_time = True;
     int job_found = 0, job_finished = 0;
-    
+
     while (job = find_job_by_id(dip, job_id, True)) {
 	job_found++;
 	if (job->ji_job_state != JS_FINISHED) {
@@ -1937,7 +1937,7 @@ wait_for_job_by_tag(dinfo_t *dip, char *job_tag)
     int status = SUCCESS;
     hbool_t first_time = True;
     int job_found = 0, job_finished = 0;
-    
+
     while (job = find_job_by_tag(dip, job_tag, True)) {
 	job_found++;
 	if (job->ji_job_state != JS_FINISHED) {
@@ -1974,7 +1974,7 @@ wait_for_jobs_by_tag(dinfo_t *dip, char *job_tag)
     int status = SUCCESS;
     hbool_t first_time = True;
     int jobs_found = 0, jobs_finished = 0;
-    
+
     /* Find first or next job. */
     while (job = find_job_by_tag(dip, job_tag, True)) {
 	jobs_found++;
@@ -2009,15 +2009,15 @@ wait_for_jobs_by_tag(dinfo_t *dip, char *job_tag)
 }
 
 /*
- * do_wait_for_threads_done() - Wait for all job threads to complete. 
- *  
- * Description: 
+ * do_wait_for_threads_done() - Wait for all job threads to complete.
+ *
+ * Description:
  *      This function is used to wait for dt I/O threads when the I/O lock
- * for multiple concurrent threads to same file/device is enabled. This is 
- * required for multiple passes or runtime so thread global data can be reset. 
- * The job lock is used to synchronize the I/O threads, just like startup time! 
- *  
- * Inputs: 
+ * for multiple concurrent threads to same file/device is enabled. This is
+ * required for multiple passes or runtime so thread global data can be reset.
+ * The job lock is used to synchronize the I/O threads, just like startup time!
+ *
+ * Inputs:
  * 	arg = The device information pointer.
  */
 void *
@@ -2134,8 +2134,8 @@ wait_for_threads_done(dinfo_t *dip)
 
 /*
  * a_job() - Wait for an async (background) job.
- */ 
-void *  
+ */
+void *
 a_job(void *arg)
 {
     job_info_t *job = arg;
@@ -2334,7 +2334,7 @@ execute_threads(dinfo_t *mdip, dinfo_t **initial_dip, job_id_t *job_id)
 
     job->ji_tinfo = tip;
     (void)insert_job(dip, job);
-    
+
     /*
      * All commands are executed by thread(s).
      */

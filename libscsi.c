@@ -31,16 +31,16 @@
  *	This module contains common SCSI functions, which are meant to be
  * a front-end to calling the underlying OS dependent SCSI functions,
  * when appropriate, to send a SCSI CDB (Command Descriptor Block).
- * 
+ *
  * Modification History:
- * 
+ *
  * November 4th, 2021 by Robin T. Miller
  *      Merge DecodeDeviceIdentifier() from spt for hythen control.
- * 
+ *
  * July 18th, 2019 by Robin T. Miller
  *      Do not retry "target port in standby state" sense code/qualifier,
  * otherwise we loop forever, since we do not have retry limit on this error.
- * 
+ *
  * January 23rd, 2013 by Robin T. Miller
  * 	Update libExecuteCdb() to allow a user defined execute CDB function.
  * 	Added command retries, including OS specific error recovery.
@@ -65,7 +65,7 @@
 
 /*
  * Forward Declarations:
- */ 
+ */
 hbool_t	isSenseRetryable(scsi_generic_t *sgp, int scsi_status, scsi_sense_t *ssp);
 void ReportCdbScsiInformation(scsi_generic_t *sgp);
 
@@ -88,7 +88,7 @@ init_scsi_defaults(scsi_generic_t *sgp)
 {
     scsi_addr_t *sap;
     /*
-     * Initial Defaults: 
+     * Initial Defaults:
      */
     sgp->fd             = INVALID_HANDLE_VALUE;
     sgp->sense_length   = RequestSenseDataLength;
@@ -102,7 +102,7 @@ init_scsi_defaults(scsi_generic_t *sgp)
 
     /*
      * Recovery Parameters:
-     */ 
+     */
     sgp->recovery_flag  = ScsiRecoveryFlagDefault;
     sgp->recovery_delay = ScsiRecoveryDelayDefault;
     sgp->recovery_limit = ScsiRecoveryRetriesDefault;
@@ -134,7 +134,7 @@ libIsRetriable(scsi_generic_t *sgp)
     if (sgp->recovery_retries++ < sgp->recovery_limit) {
 	/*
 	 * Try OS specific first, then check for common retriables.
-	 */ 
+	 */
 	retriable = os_is_retriable(sgp);
 	if (retriable == False) {
 	    scsi_sense_t *ssp = sgp->sense_data;
@@ -418,7 +418,7 @@ Inquiry(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
 	unsigned int sflags, unsigned int timeout)
 {
     scsi_generic_t *sgp;
-    struct Inquiry_CDB *cdb; 
+    struct Inquiry_CDB *cdb;
     int error;
 
     /*
@@ -458,7 +458,7 @@ Inquiry(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
     if (sap) {
 	sgp->scsi_addr = *sap;	/* Copy the SCSI address info. */
     }
-    
+
     error = libExecuteCdb(sgp);
 
     /*
@@ -491,11 +491,11 @@ verify_inquiry_header(inquiry_t *inquiry, inquiry_header_t *inqh, unsigned char 
 
 /*
  * GetDeviceIdentifier() - Gets Inquiry Device ID Page.
- * 
+ *
  * Description:
  *      This function decodes each of the device ID descriptors and applies
  * and precedence algorthm to find the *best* device identifier (see table).
- * 
+ *
  * Note: This API is a wrapper around Inquiry, originally designed to simply
  * return an identifier string. Therefore, a buffer and length are omitted.
  *
@@ -521,7 +521,7 @@ GetDeviceIdentifier(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
 {
     void *opaque = NULL;
     inquiry_t *inquiry = inqp;
-    inquiry_page_t inquiry_data;  
+    inquiry_page_t inquiry_data;
     inquiry_page_t *inquiry_page = &inquiry_data;
     inquiry_header_t *inqh = &inquiry_page->inquiry_hdr;
     unsigned char page = INQ_DEVICE_PAGE;
@@ -538,13 +538,13 @@ GetDeviceIdentifier(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
 }
 
 /*
- * DecodeDeviceIdentifier() - Decode the Inquiry Device Identifier. 
- *  
- * Note: We allow separate decode, since we may be extracting different parts 
- * of the device ID page, such as LUN device ID and target port address, and we 
- * wish to avoid multiple Inquiry page requests (we may have lots of devices). 
- *  
- * Return Value: 
+ * DecodeDeviceIdentifier() - Decode the Inquiry Device Identifier.
+ *
+ * Note: We allow separate decode, since we may be extracting different parts
+ * of the device ID page, such as LUN device ID and target port address, and we
+ * wish to avoid multiple Inquiry page requests (we may have lots of devices).
+ *
+ * Return Value:
  *      The LUN device identifier string or NULL if none found.
  *      The buffer is dynamically allocated, so caller must free it.
  */
@@ -575,7 +575,7 @@ DecodeDeviceIdentifier(void *opaque, inquiry_t *inquiry,
 	unsigned char *fptr = (unsigned char *)iid + sizeof(*iid);
 
 	switch (iid->iid_code_set) {
-	    
+	
 	    case IID_CODE_SET_ASCII: {
 		/* Only accept Vendor ID's of Type 1. */
 		if ( (pid_type > TY1_VID) &&
@@ -599,7 +599,7 @@ DecodeDeviceIdentifier(void *opaque, inquiry_t *inquiry,
 		 * This is the preferred (unique) identifier.
 		 */
 		switch (iid->iid_ident_type) {
-		    
+		
 		    case IID_ID_TYPE_NAA: {
 			enum pidt npid_type;
 			int i = 0;
@@ -746,7 +746,7 @@ GetSerialNumber(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
 		void *inqp, unsigned int timeout)
 {
     inquiry_t *inquiry = inqp;
-    inquiry_page_t inquiry_data;  
+    inquiry_page_t inquiry_data;
     inquiry_page_t *inquiry_page = &inquiry_data;
     inquiry_header_t *inqh = &inquiry_page->inquiry_hdr;
     unsigned char page = INQ_SERIAL_PAGE;
@@ -794,7 +794,7 @@ GetMgmtNetworkAddress(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
 	       void *inqp, unsigned int timeout)
 {
     inquiry_t *inquiry = inqp;
-    inquiry_page_t inquiry_data;  
+    inquiry_page_t inquiry_data;
     inquiry_page_t *inquiry_page = &inquiry_data;
     inquiry_header_t *inqh = &inquiry_page->inquiry_hdr;
     inquiry_network_service_page_t *inap;
@@ -904,7 +904,7 @@ GetUniqueID(HANDLE fd, char *dsf, hbool_t debug,
  */
 #define ReadCapacity10Name	"Read Capacity(10)"
 #define ReadCapacity10Opcode	0x25
-#define ReadCapacity10CdbSize	10 
+#define ReadCapacity10CdbSize	10
 #define ReadCapacity10Timeout	ScsiDefaultTimeout
 
 /*
@@ -998,7 +998,7 @@ ReadCapacity10(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
 #define ReadCapacity16Name	"Read Capacity(16)"
 #define ReadCapacity16Opcode	0x9e
 #define ReadCapacity16Subcode	0x10
-#define ReadCapacity16CdbSize	16 
+#define ReadCapacity16CdbSize	16
 #define ReadCapacity16Timeout	ScsiDefaultTimeout
 
 /*
@@ -1097,13 +1097,13 @@ GetCapacity(scsi_generic_t *sgp, u_int32 *device_size, large_t *device_capacity,
     ReadCapacity16_data_t ReadCapacity16_data;
     ReadCapacity16_data_t *rcdp = &ReadCapacity16_data;
     int status;
-    
+
     if (lbpme_flag) *lbpme_flag = False;
     if (lbprz_flag) *lbprz_flag = False;
     if (lbpmgmt_valid) *lbpmgmt_valid = False;
     /*
      * 16-byte CDB may fail on some disks, but 10-byte should succeed!
-     */ 
+     */
     status = ReadCapacity16(sgp->fd, sgp->dsf, sgp->debug,
 			    False, NULL, NULL,
 			    rcdp, sizeof(*rcdp), 0, 0);
@@ -1192,7 +1192,7 @@ Read6(scsi_generic_t *sgp, uint32_t lba, uint8_t blocks, uint32_t bytes)
     if (!sgp->timeout) {
 	sgp->timeout = ReadTimeout;
     }
-    
+
     error = libExecuteCdb(sgp);
 
     return(error);
@@ -1229,7 +1229,7 @@ Read10(scsi_generic_t *sgp, uint32_t lba, uint16_t blocks, uint32_t bytes)
     if (!sgp->timeout) {
 	sgp->timeout = ReadTimeout;
     }
-    
+
     error = libExecuteCdb(sgp);
 
     return(error);
@@ -1272,7 +1272,7 @@ Read16(scsi_generic_t *sgp, uint64_t lba, uint32_t blocks, uint32_t bytes)
     if (!sgp->timeout) {
 	sgp->timeout = ReadTimeout;
     }
-    
+
     error = libExecuteCdb(sgp);
 
     return(error);
@@ -1340,7 +1340,7 @@ Write6(scsi_generic_t *sgp, uint32_t lba, uint8_t blocks, uint32_t bytes)
     if (!sgp->timeout) {
 	sgp->timeout = WriteTimeout;
     }
-    
+
     error = libExecuteCdb(sgp);
 
     return(error);
@@ -1377,7 +1377,7 @@ Write10(scsi_generic_t *sgp, uint32_t lba, uint16_t blocks, uint32_t bytes)
     if (!sgp->timeout) {
 	sgp->timeout = WriteTimeout;
     }
-    
+
     error = libExecuteCdb(sgp);
 
     return(error);
@@ -1420,7 +1420,7 @@ Write16(scsi_generic_t *sgp, uint64_t lba, uint32_t blocks, uint32_t bytes)
     if (!sgp->timeout) {
 	sgp->timeout = ReadTimeout;
     }
-    
+
     error = libExecuteCdb(sgp);
 
     return(error);
@@ -1601,7 +1601,7 @@ Seek10(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
 
 /*
  * SendAnyCdb() - Send a User Defined CDB (no data for now).
- * 
+ *
  * Description:
  * 	Simple function to send a user defined trigger CDB.
  *
@@ -1627,7 +1627,7 @@ Seek10(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
  */
 int
 SendAnyCdb(HANDLE fd, char *dsf, hbool_t debug, hbool_t errlog,
-	   scsi_addr_t *sap, scsi_generic_t **sgpp, unsigned int timeout, 
+	   scsi_addr_t *sap, scsi_generic_t **sgpp, unsigned int timeout,
 	   uint8_t *cdb, uint8_t cdb_size)
 {
     scsi_generic_t scsi_generic;

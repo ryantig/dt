@@ -22,7 +22,7 @@
  * THIS SOFTWARE.							    *
  *									    *
  ****************************************************************************/
- /* 
+ /*
   * Moficiation History:
   *
   * May 30th, 2014 by Robin T. Miller
@@ -62,7 +62,7 @@
  * my OS and system is 64-bits. Otherwise too many of the printf() control
  * strings complains with: (sigh)
  * warning: format '%lu' expects type 'long unsigned int', but argument 5 has type 'uint64_t'
- * 
+ *
  * Here's what "man 3 printf" says: (Note: No mention of "l' printing 64-bits!)
  *
  *  Modifier          d, i           o, u, x, X            n
@@ -74,7 +74,7 @@
  *  t                 ptrdiff_t      (see note)            ptrdiff_t *
  *  z                 (see note)     size_t                (see note)
  *  q (deprecated)    quad_t         u_quad_t              quad_t *
- * 
+ *
  * Note; I'm from the DEC Alpha world, which is a true 64-bit environment!
  */
 # undef QuadIsLong
@@ -138,7 +138,7 @@
 #      define MAX_ULONG_LONG  ~((ULONGLONG) 0)
 #      define INFINITY  MAX_ULONG_LONG
 #      define TBYTE_SIZE (large_t)1095511627776
-#    else 
+#    else
 #      define MAX_LONG_LONG 0x7fffffffffffffffULL
 #      define MAX_ULONG_LONG 0xffffffffffffffffULL
 #      define INFINITY	 MAX_ULONG_LONG	/* Maximum possible large value */
@@ -169,12 +169,12 @@
 typedef ULONG64 		 large_t;
 typedef LONG64 	        	 slarge_t;
 typedef volatile large_t         v_large;
-typedef volatile slarge_t 	 v_slarge; 
+typedef volatile slarge_t 	 v_slarge;
 # define LUF		"%I64u"
 # define LDF		"%I64d"
 # define LXF		"0x%I64x"
-# define FUF		LUF 
-# define FXF		LXF 
+# define FUF		LUF
+# define FXF		LXF
 
 /* Note: Formats for leading zeros, half or full 64-bits. */
 # define LLHXFMT	"%08I64x"
@@ -221,13 +221,13 @@ typedef volatile slarge_t       v_slarge;
 typedef ULONGLONG		 large_t;
 typedef LONGLONG 		 slarge_t;
 typedef volatile large_t         v_large;
-typedef volatile slarge_t 	 v_slarge; 
+typedef volatile slarge_t 	 v_slarge;
 
 # define LUF		"%I64u"
 # define LDF		"%I64d"
 # define LXF		"0x%I64x"
-# define FUF		LUF 
-# define FXF		LXF 
+# define FUF		LUF
+# define FXF		LXF
 # define LLHXFMT	"%08I64x"
 # define LLFXFMT	"%016I64x"
 
@@ -281,7 +281,7 @@ typedef volatile slarge_t	v_slarge;
 
 /*
  * Time Format:
- */ 
+ */
 #if defined(WIN32)
 # if defined(_USE_32BIT_TIME_T)
 #  define TMF	"%d"
@@ -411,20 +411,20 @@ typedef int			ssize_t;
 /*
  * For IOT block numbers, use this definition.
  * TODO: Extend this to 64-bits in the future!
- */ 
+ */
 typedef unsigned int iotlba_t;
 
 #define SUCCESS		0			/* Success status code. */
 #define FAILURE		-1			/* Failure status code. */
 #define WARNING		1			/* Warning status code.	*/
-#define PARSE_MATCH	SUCCESS			/* Parsing macthed.	*/
+#define PARSE_MATCH	SUCCESS			/* Parsing matched.	*/
 #define PARSE_NOMATCH	WARNING			/* No parsing match.	*/
 #define STOP_PARSING	2			/* Stop parsing options */
 #define RETRYABLE	-2			/* Retryable error.	*/
 #define TRUE		1			/* Boolean TRUE value.	*/
 #define FALSE		0			/* Boolean FALSE value.	*/
 //#define UNINITIALIZED	255			/* Uninitialized flag.	*/
-#define NO_LBA		0xFFFFFFFFFFFFFFFFULL	/* No LBA vlaue.	*/
+#define NO_LBA		0xFFFFFFFFFFFFFFFFULL	/* No LBA value.	*/
 #define NO_OFFSET       (Offset_t)(~0ULL)       /* No offset value.     */
 
 #define BLOCK_SIZE		512		/* Bytes in block.	*/
@@ -618,7 +618,7 @@ typedef enum open_mode {
 #endif /* if !defined(MAX) */
 
 /*
- * Macro to calculate the starting block of where error occured.
+ * Macro to calculate the starting block of where error occurred.
  *    ( 'x' = byte count or file offset, 'y' = block size )
  */
 #define WhichBlock(x,y)		((x)/(y))

@@ -28,45 +28,45 @@
  *
  * Description:
  *	This module contains *unix OS specific functions.
- * 
+ *
  * Modification History:
- * 
+ *
  * March 31st, 2021 by Robin T. Miller
  *      For Solaris mount lookups, save the FS type and mount options.
- * 
+ *
  * March 30th, 2021 by Robin T. Miller
  *      In os_get_fs_information() switch to fundamental block size, required
  * for accurate free space on Solaris. Revert to block size as required.
- * 
+ *
  * March 10th, 2021 by Robin T. Miller
  *      For Solaris, clear O_DIRECT flag in os_open_file(), omitted previously!
- * 
+ *
  * July 17th, 2020 by Robin T. Miller
  *      Add a hack workaround for Linux disk names in ConvertDeviceToScsiDevice().
- * 
+ *
  * June 3rd, 2020 by Robin T. Miller
  *      Update os_report_file_map() to use NO_OFFSET value to report all
  * file extents, rather than failing to report extents of sparse files.
  * Note: We would not report any extents if the offset specified was sparse.
- * 
+ *
  * December 24th, 2019 by Robin T. Miller
  *      Added Linux support to map file offsets to physical LBA's.
- * 
+ *
  * March 1st, 2018 by Robin T Miller
  *      Add isDeviceMounted() for Linux only (right now), to determine if
  * a /dev disk name is mounted to prevent overwriting mounted file systems.
- * 
+ *
  * May 29th, 2015 by Robin T. Miller
  * 	Increase the mount file system options buffer, since the previous
  * of 128 bytes was too small for recent RHEL6 mounts with options >194!
  * Also, changed strcpy() to strncpy() to avoid overwriting the stack!
- * 
+ *
  * April 29th, 2015 by Robin T. Miller
  * 	For HP-UX, Solaris, and Linux, increase the mount path buffer sizes
  * from 128 bytes to 8k, since somone has decided to use rather long mounts!
- * 
+ *
  * Date Unknown! (Robin forgot to add one)
- *	Updated AIX mount function to lookup file system type.  
+ *	Updated AIX mount function to lookup file system type.
  */
 #include "dt.h"
 
@@ -92,13 +92,13 @@
 
 /*
  * ConvertBlockToRawDevice() Convert a Block Device to a Raw Device.
- * 
+ *
  * Inputs:
  * 	block_device = Pointer to the block device.
- * 
+ *
  * Return Value:
  * 	Returns the raw device or NULL of it's not a block device.
- */ 
+ */
 char *
 ConvertBlockToRawDevice(char *block_device)
 {
@@ -123,18 +123,18 @@ ConvertBlockToRawDevice(char *block_device)
 
 /*
  * ConvertDeviceToScsiDevice() Convert a Device to a SCSI Device.
- *  
- * Note: This is being specific added for RHEL6 since SCSI IOCTL fails 
+ *
+ * Note: This is being specific added for RHEL6 since SCSI IOCTL fails
  * if the device name has trailing numbers for the partition. Error returned:
- * 
+ *
  * SCSI request (SG_IO) failed on /dev/sdb1!, errno = 25 - Inappropriate ioctl for device
  *
  * Inputs:
  * 	device = Pointer to the device.
- * 
+ *
  * Return Value:
  * 	Returns a pointer to new memory with SCSI device name.
- */ 
+ */
 char *
 ConvertDeviceToScsiDevice(char *device)
 {
@@ -456,11 +456,11 @@ isDeviceMounted(dinfo_t *dip, char *path, hbool_t debug)
 	    Printf(dip, "dir = %s, fsname = %s, type = %s\n", mnt->mnt_dir, mnt->mnt_fsname, mnt->mnt_type);
 	}
 	/*
-	 * Normally users will specific /dev/sda, for example, while file systems 
-	 * are mounted from partitions such as /dev/sda1. We also must be careful 
-	 * for matching /dev/sda and /dev/sdaa, etc. when we have many disk names. 
-	 * DM-MP paths looks like this: /dev/mapper/35000cca2510285c8-part1 
-	 *  
+	 * Normally users will specific /dev/sda, for example, while file systems
+	 * are mounted from partitions such as /dev/sda1. We also must be careful
+	 * for matching /dev/sda and /dev/sdaa, etc. when we have many disk names.
+	 * DM-MP paths looks like this: /dev/mapper/35000cca2510285c8-part1
+	 *
 	 * Note: We do *not* catch this type of mount today: (sigh)
 	 *  /dev/mapper/centos_cos--lab--l4--test01-root -> ../dm-0 -> /dev/sdm
 	 */
@@ -515,27 +515,27 @@ FindMountDevice(dinfo_t *dip, char *path, hbool_t debug)
     /*
      * int
      * getfsstat(struct statfs *buf, long bufsize, int flags);
-     * 
+     *
      * DESCRIPTION
      * The getfsstat() system call returns information about all mounted file
      * systems.  The buf argument is a pointer to statfs structures, as
      * described in statfs(2).
-     * 
+     *
      * Fields that are undefined for a particular file system are set to -1.
      * The buffer is filled with an array of fsstat structures, one for each
      * mounted file system up to the byte count specified by bufsize.  Note, the
      * bufsize argument is the number of bytes that buf can hold, not the count
      * of statfs structures it will hold.
-     * 
+     *
      * If buf is given as NULL, getfsstat() returns just the number of mounted
      * file systems.
-     * 
+     *
      * Normally flags should be specified as MNT_WAIT.  If flags is set to
      * MNT_NOWAIT, getfsstat() will return the information it has available
      * without requesting an update from each file system.  Thus, some of the
      * information will be out of date, but getfsstat() will not block waiting
      * for information from a file system that is unable to respond.
-     * 
+     *
      * RETURN VALUES
      * Upon successful completion, the number of fsstat structures is returned.
      * Otherwise, -1 is returned and the global variable errno is set to indi-
@@ -551,7 +551,7 @@ FindMountDevice(dinfo_t *dip, char *path, hbool_t debug)
     bufsize = (sizeof(*sfsp) * entries);
     statfs_array = Malloc(dip, bufsize);
     if (statfs_array == NULL) return(False);
-    
+
     entries = getfsstat(statfs_array, bufsize, MNT_NOWAIT);
     if (entries == FAILURE) {
 	Perror(dip, "getfsstat");
@@ -701,9 +701,9 @@ os_open_file(char *name, int oflags, int perm)
 {
     HANDLE fd;
     hbool_t dio_flag = (oflags & O_DIRECT) ? True : False;
-    
+
     oflags &= ~O_DIRECT;	/* Clear the psuedo-flag. */
-    
+
     fd = open(name, oflags, perm);
     /* If requested, try to enable Direct I/O (DIO). */
     if ( (fd != NoFd) && (dio_flag == True) ) {
@@ -719,9 +719,9 @@ os_open_file(char *name, int oflags, int perm)
 {
     HANDLE fd;
     hbool_t dio_flag = (oflags & O_DIRECT) ? True : False;
-    
+
     oflags &= ~O_DIRECT;	/* Clear the psuedo-flag. */
-    
+
     /* Handle Direct I/O on HFS and Veritas file systems. */
     fd = open(name, oflags, perm);
     /* If requested, try to enable Direct I/O (DIO). */
@@ -744,9 +744,9 @@ os_open_file(char *name, int oflags, int perm)
 {
     HANDLE fd;
     hbool_t dio_flag = (oflags & O_DIRECT) ? True : False;
-    
+
     oflags &= ~O_DIRECT;	/* Clear the psuedo-flag. */
-    
+
     fd = open(name, oflags, perm);
     /* If requested, try to enable Direct I/O (DIO). */
     if ( (fd != NoFd) && (dio_flag == True) ) {
@@ -757,7 +757,7 @@ os_open_file(char *name, int oflags, int perm)
 }
 
 #endif /* defined(__hpux) || defined(MacDarwin) || defined(SOLARIS) */
-    
+
 char *
 os_ctime(time_t *timep, char *time_buffer, int timebuf_size)
 {
@@ -914,18 +914,18 @@ os_getaddrinfo(dinfo_t *dip, char *host, int family, void **sa, socklen_t *salen
     /* Loop through all the results to find the desired address. */
     for (aip = addrinfop; (aip != NULL); aip = aip->ai_next) {
 	if (aip->ai_family == AF_INET) {
-	    /* 
+	    /*
 	     * struct sockaddr_in {
 	     *   short   sin_family;
 	     *   u_short sin_port;
 	     *   struct  in_addr sin_addr;
 	     *   char    sin_zero[8];
 	     * };
-	     */ 
+	     */
 	    struct sockaddr_in *sainp = (struct sockaddr_in *)(aip->ai_addr);
-	    /* 
+	    /*
 	     * OS's NOT supporting these are in trouble! (not supported)
-	     * 
+	     *
 	     * const char *inet_ntop(int af, const void *src,
 	     * 			     char *dst, socklen_t size);
 	     * int inet_pton(int af, const char *cp, void *addr);
@@ -960,9 +960,9 @@ os_getaddrinfo(dinfo_t *dip, char *host, int family, void **sa, socklen_t *salen
 	    struct sockaddr_in6 *sain6p = (struct sockaddr_in6 *)(aip->ai_addr);
 	    const char *p = inet_ntop(AF_INET6, &sain6p->sin6_addr, address_str, IPv6_STRSIZE);
 	    if (p) {
-		/* 
+		/*
 		 * Note: This is required for Windows, not sure about Unix but adding it here too!
-		 * 
+		 *
 		 * There can be multiple IP addresses returned, and "::1" is for the IPv6 local host.
 		 * The ::1 address (or, rather, in any address, that has a double colon in it) double	
 		 * colon expands into the number of zero-bits, neccessary to pad the address to full
@@ -1024,7 +1024,7 @@ os_getnameinfo(dinfo_t *dip, struct sockaddr *sa, socklen_t salen)
     status = getnameinfo(sa, salen, host, sizeof(host),
 			 server, sizeof(server), NI_NAMEREQD);
     if (status == FAILURE) {
-	return(NULL); 
+	return(NULL);
     } else {
 	return( (strlen(host)) ? strdup(host) : NULL );
     }
@@ -1072,11 +1072,11 @@ os_file_information(char *file, large_t *filesize, hbool_t *is_dir, hbool_t *is_
 {
     struct stat sb;
     os_error_t status;
-    
+
     if (is_dir) *is_dir = False;
     if (is_file) *is_file = False;
     if (filesize) *filesize = 0;
-    
+
     status = stat(file, &sb);
     if (status == SUCCESS) {
 	if (filesize) *filesize = (large_t)sb.st_size;
@@ -1098,7 +1098,7 @@ hbool_t
 os_file_exists(char *file)
 {
     struct stat sb;
-    
+
     if (stat(file, &sb) == SUCCESS) {
 	return(True);
     } else {
@@ -1113,7 +1113,7 @@ os_get_fs_information(dinfo_t *dip, char *dir)
     struct statvfs *sfsp = &statfs_info;
     int status;
 
-    /* 
+    /*
      * Get the specified or current directory information.
      */
     if (dir) {
@@ -1124,7 +1124,7 @@ os_get_fs_information(dinfo_t *dip, char *dir)
 	status = statvfs(cdir, sfsp);
     }
 	
-    /* 
+    /*
      * Note: This data structure varies by Unix OS, this is Linux!
      *
      * struct statvfs {
@@ -1140,9 +1140,9 @@ os_get_fs_information(dinfo_t *dip, char *dir)
      *     unsigned long  f_flag;     // mount flags
      *     unsigned long  f_namemax;  // maximum filename length
      * };
-     * 
+     *
      * For reference, this is the Solaris format:
-     * 
+     *
      *        The statvfs structure pointed to by buf includes the following members:
      *
      *         u_long      f_bsize;             // preferred file system block size
@@ -1245,8 +1245,8 @@ os_DirectIO(struct dinfo *dip, char *file, hbool_t flag)
         Printf(dip, "%s direct I/O via fcntl(F_NOCACHE) API...\n", dio_msg);
     }
     /*
-     * https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man2/fcntl.2.html 
-     * 
+     * https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man2/fcntl.2.html
+     *
      * F_NOCACHE  Turns data caching off/on. A non-zero value in arg turns data caching off.
      *            A value of zero in arg turns data caching on.
      */
@@ -1420,8 +1420,8 @@ ReportOpenInformation(dinfo_t *dip, char *FileName, char *Operation,
 	    bp += sprintf(bp, "O_SYNC|");
 	}
 #endif /* defined(O_SYNC) */
-/* 
- * Note: On Linux, O_SYNC, O_DSYNC, and O_RSYNC are all the same value!* 
+/*
+ * Note: On Linux, O_SYNC, O_DSYNC, and O_RSYNC are all the same value!*
  */
 #if defined(O_DSYNC) && defined(O_SYNC) && (O_SYNC != O_DSYNC)
 # if defined(O_DSYNC)
@@ -1518,7 +1518,7 @@ os_set_lock_flags(lock_type_t lock_type, int *lock_type_flag,
     *exclusive = True;
     *immediate = True;
     *unlock_flag = False;
-    
+
     switch (lock_type) {
 	
 	case LOCK_TYPE_READ:
@@ -1784,8 +1784,8 @@ report_file_extent(dinfo_t *dip, struct fiemap_extent *fep, uint32_t dsize)
     char *bp = buffer;
 
     /*
-     * Example: 
-     *  
+     * Example:
+     *
      *   File Offset    Begin LBA      End LBA     Blocks
      *    	   0         2288         6383      4096
      *       2097152      7568792      7570839      2048

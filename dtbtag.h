@@ -24,11 +24,11 @@
  ****************************************************************************/
 /*
  * Modification History:
- * 
- * November 4th, 2021 by Robin T. Miller 
+ *
+ * November 4th, 2021 by Robin T. Miller
  *  Conditionally choose either the serial number of the device identifier.
  *  Switch the default to use the device ID, rather than the serial number.
- *  
+ *
  * September 17th, 2015 by Robin T Miller
  *  Add btag extension for tracking previous writes, for write dependencies.
  */
@@ -36,47 +36,47 @@
 #if !defined(_DTBTAG_H_)
 #define _DTBTAG_H_ 1
 
-/* 
+/*
  * Our unique block tag signature!
  */
 #define BTAG_SIGNATURE  0xbadcafee
 
-/* 
+/*
  * The host and serial sizes include a NULL byte!
- * Note: Host names can be very long, but we don't wish to waste space. 
- */ 
+ * Note: Host names can be very long, but we don't wish to waste space.
+ */
 #define HOST_SIZE       24
 
 #if !defined(USE_SERIAL_NUMBER)
 #  define USE_DEVICE_IDENTIFIER 1
 #endif /* !defined(USE_SERIAL_NUMBER) */
 
-/* 
- * Note: Please configure the serial number size for your storage devices. 
+/*
+ * Note: Please configure the serial number size for your storage devices.
  * TODO: The serial number size can be defined at compile time.
  */
-#if !defined(SERIAL_SIZE) 
+#if !defined(SERIAL_SIZE)
 #  define SERIAL_SIZE	36		/* The serial number size.	*/
 #endif /* !defined(SERIAL_SIZE) */
 
-/* 
- * FYI: The device identifier is more appropriate for some storage arrays. 
- * Note: dt stores this in ASCII, but usually the identifier is a 16 byte 
+/*
+ * FYI: The device identifier is more appropriate for some storage arrays.
+ * Note: dt stores this in ASCII, but usually the identifier is a 16 byte
  * binary value. Therefore, a future enhancment may be to use the binary ID.
  */
-#if !defined(DEVICEID_SIZE) 
+#if !defined(DEVICEID_SIZE)
 #  define DEVICEID_SIZE   36		/* The device identifier size.	*/
 #endif /* !defined(DEVICEID_SIZE) */
 
 #define BTAG_VERSION_1   1
 
-/* 
+/*
  * Opaque Data Types:
  */
 #define OPAQUE_NO_DATA_TYPE      0
 #define OPAQUE_WRITE_ORDER_TYPE  1
 
-/* 
+/*
  * Block Tag Flags:
  */
 #define BTAG_FILE           0x01        /* File = 1, Disk = 0 */
@@ -85,7 +85,7 @@
 #define BTAG_RANDOM         0x08        /* Random I/O = 1, Sequential = 0. */
 #define BTAG_REVERSE        0x10        /* Reverse I/O = 1, Forward = 0. */
 
-/* 
+/*
  * Block Tag Verify Flags:
  */
 #define BTAGV_LBA           0x1
@@ -118,11 +118,11 @@
 
 /*
  * Verify Flags for ALL Data.
- *  
- * Note: These are the fields checked *after* the CRC is verified! 
- * These additonal checks are required since the CRC may be correct, 
- * but the btag may be stale or from a different device. 
- *  
+ *
+ * Note: These are the fields checked *after* the CRC is verified!
+ * These additonal checks are required since the CRC may be correct,
+ * but the btag may be stale or from a different device.
+ *
  * FYI: I am omitting the "Record Size" check, to avoid *false* failures
  * when file system full conditions occur, and to avoid messy handling.
  * During the write, the btag has the full record size attempted, but
@@ -130,7 +130,7 @@
  * Therefore, the expected btag has a different, but correct record size.
  *
  * The footprint for these failures looks like this during write/read pass:
- * 
+ *
  *    Record Size (124): incorrect
  *             Expected: 196096 (0x0002fe00)
  *             Received: 196608 (0x00030000)
@@ -163,9 +163,9 @@
     BTAGV_OPAQUE_DATA | \
     BTAGV_CRC32 )
 
-/* 
- * Flags for a Quick Verify. 
- *  
+/*
+ * Flags for a Quick Verify.
+ *
  * Note: QV provides faster verification, but will miss some corruptions!
  */
 #define BTAGV_QV \
@@ -188,13 +188,13 @@
     BTAGV_CRC32 | \
     BTAGV_OPAQUE_DATA )
 
-/* 
+/*
  * Flags disabled for random I/O due to overwrites.
  */
 #define BTAGV_RANDOM_DISABLE \
   ( BTAGV_WRITE_SECS | BTAGV_WRITE_USECS | BTAGV_RECORD_INDEX | BTAGV_RECORD_SIZE | BTAGV_RECORD_NUMBER )
 
-/* 
+/*
  * Flags disabled for read-only.
  *
  * Note: Most folks use a runtime, so disable generation check.
@@ -207,7 +207,7 @@
     BTAGV_PROCESS_ID | BTAGV_JOB_ID | BTAGV_THREAD_NUMBER |  \
     BTAGV_RECORD_INDEX | BTAGV_RECORD_SIZE | BTAGV_RECORD_NUMBER )
 
-/* 
+/*
  * Note: enum's not used, to save space! (enum's allocate an int)
  */
 #define PTYPE_IOT       1
@@ -220,7 +220,7 @@
 
 /*
  * Block Tag (btag) Definition:
- * Note: Pack carefully to avoid wasted space due to alignment. 
+ * Note: Pack carefully to avoid wasted space due to alignment.
  */
 typedef struct btag {                                             /* Offset */
     union {                         /*                                  0 */

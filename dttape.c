@@ -79,7 +79,7 @@ DoMtOp (dinfo_t *dip, short cmd, daddr_t count, caddr_t msgp)
     }
 
     if (dip->di_debug_flag) {
-	Printf(dip, 
+	Printf(dip,
 	"Issuing '%s', count = %d (%#x) [file #%lu, record #%lu]\n",
 			msgp,  mtop->mt_count, mtop->mt_count,
 		(dip->di_mode == READ_MODE) ?
@@ -350,7 +350,7 @@ DoMtOp (dinfo_t *dip, short cmd, daddr_t count, caddr_t msgp)
     }
 
     if (dip->di_debug_flag) {
-	Printf(dip, 
+	Printf(dip,
 	"Issuing '%s', count = %d (%#x) [file #%lu, record #%lu]\n",
 			msgp,  stop->st_count, stop->st_count,
 		(dip->di_mode == READ_MODE) ?

@@ -23,12 +23,12 @@
 
 /*
  * dtapp.c - I/O Behavior for dtapp functionality.
- * 
+ *
  * Author: Robin T. Miller
  * Date Created: September 12th, 2015
- * 
- * Modification History: 
- *  
+ *
+ * Modification History:
+ *
  * November 9, 2021 by Chris Nelson (nelc@netapp.com)
  *    Add MIT license, in order to distribute to FOSS community so it can
  *    be used and maintained by a larger audience, particularly for the
@@ -36,21 +36,21 @@
  *
  * May 7th, 2020 by Robin T. Miller
  *      When using step option, honor the end offset even without slices.
- * 
+ *
  * May 5th, 2020 by Robin T. Miller
  *      Use high resolution timer for more accurate I/O timing. This is
  * implemented on Windows, but Unix systems still use gettimeofday() API.
- * 
- * December 21st, 2016 by Robin T. Miller 
+ *
+ * December 21st, 2016 by Robin T. Miller
  *      Disable random I/O operations to avoid false data corruptions.
- *  
- * February 10th, 2016 by Robin T. Miller 
+ *
+ * February 10th, 2016 by Robin T. Miller
  *      Update dtapp_read_record() to use common read_record() now that
  * we've switched to pread() in the latter function.
  *      When cleaning up devices, catch the case where dips is NULL, which
- * happens when the job log cannot be opened, yet we still do cleanup. 
- *  
- * October 8th, 2015 by Robin T. Miller 
+ * happens when the job log cannot be opened, yet we still do cleanup.
+ *
+ * October 8th, 2015 by Robin T. Miller
  *      Added btag CRC to write ordering extension to increase verification.
  */
 
@@ -70,7 +70,7 @@
 #define BTAG_NO_DEVICE_INDEX    0xFF
 
 /*
- * dtapp Specific Information: 
+ * dtapp Specific Information:
  */
 typedef struct dtapp_information {
     dinfo_t *dta_primary_dip;       /* The primary device information.          */
@@ -89,11 +89,11 @@ typedef struct dtapp_information {
 } dtapp_information_t;
 
 /*
- * Forward References: 
+ * Forward References:
  */
 void dtapp_help(dinfo_t *dip);
 
-/* 
+/*
  * I/O Behavior Functions:
  */
 int dtapp_initialize(dinfo_t *dip);
@@ -218,7 +218,7 @@ iobehavior_funcs_t dtapp_iobehavior_funcs = {
     NULL,			/* iob_thread_keepalive */
     NULL,                	/* iob_show_parameters */
     &dtapp_validate_parameters	/* iob_validate_parameters */
-};     
+};
 
 /*
  * Declare the generic (default) test functions.
@@ -276,7 +276,7 @@ dtapp_parse_device_list(dinfo_t *dip, char *devices, int num_devices)
     return(device_list);
 }
 
-void     
+void
 dtapp_set_iobehavior_funcs(dinfo_t *dip)
 {
     dip->di_iobf = &dtapp_iobehavior_funcs;
@@ -414,7 +414,7 @@ dtapp_thread(void *arg)
      */
     status = dtapp_setup_devices(dip, dtap);
     if (status == FAILURE) goto thread_exit;
-    
+
     /* This is delayed to here since it needs the device type! */
     (void)do_monitor_processing(master_dinfo, dip);
 
@@ -463,7 +463,7 @@ thread_exit:
     } else if (error == WARNING) { /* No more files! */		\
 	break;							\
     }
-    
+
 int
 dtapp_doio(dinfo_t *dip)
 {
@@ -502,7 +502,7 @@ dtapp_do_prepass_processing(dinfo_t *dip)
     if ( UseRandomSeed(dip) ) {
         setup_random_seeds(dip);
     }
-    /* 
+    /*
      * Vary the I/O Type (if requested)
      */
     if (dip->di_vary_iotype) {
@@ -642,7 +642,7 @@ restart:
     }
 
     IterateAllDevices(dtap, dtapp_error_count, &error_count, rc);
-    /* 
+    /*
      * We finished the write pass, see if we should continue with read pass.
      */
     if ( THREAD_TERMINATING(dip) || (error_count >= dip->di_error_limit) ) {
@@ -657,11 +657,11 @@ restart:
     //do_read_pass = (dip->di_dbytes_written != (large_t) 0);
 
     /*
-     * Now verify (read and compare) the data just written. 
-     *  
-     * Note: This is *only* executed when doing a separate read pass! 
+     * Now verify (read and compare) the data just written.
+     *
+     * Note: This is *only* executed when doing a separate read pass!
      */
-    if ( dip->di_verify_flag && do_read_pass && 
+    if ( dip->di_verify_flag && do_read_pass &&
          ( (dip->di_raw_flag == False) || (dip->di_raw_flag && dip->di_reread_flag)) ) {
         stats_t stats_type;
 
@@ -706,7 +706,7 @@ restart:
 
     error_count = 0;
     IterateAllDevices(dtap, dtapp_error_count, &error_count, rc);
-    /* 
+    /*
      * Remember, a full pass is both the write/read cycle (legacy dt way).
      */
     IterateAllDevices(dtap, dtapp_end_pass, NULL, rc);
@@ -714,14 +714,14 @@ restart:
         return(status);
     }
 
-    /* 
+    /*
      * Do post write processing to allow unmap or pass script.
      */
     rc = IterateOutputDevices(dtap, dtapp_postwrite_processing, NULL);
     if (rc == FAILURE) status = rc;
 
     /*
-     * Don't reopen if we've reached the error limit or the pass count, since we'll 
+     * Don't reopen if we've reached the error limit or the pass count, since we'll
      * be terminating shortly. Otherwise, prepare for the next write pass. (messy!)
      */
     if ( ((dip->di_pass_count < dip->di_pass_limit) || dip->di_runtime) ) {
@@ -760,7 +760,7 @@ dtapp_report_write_stats(dinfo_t *dip)
     return;
 }
 
-/* 
+/*
  * TODO: Loop over all devices for per device operations!
  */
 int
@@ -826,7 +826,7 @@ dtapp_finish_test_common(dinfo_t *dip, int thread_status)
     if ( (thread_status == FAILURE) || dip->di_logtrailer_flag ) {
 	log_header(dip, True);
     }
-#if defined(NETAPP) 
+#if defined(NETAPP)
     if (dip->di_debug_flag || dip->di_pDebugFlag || dip->di_tDebugFlag || dip->di_nate_flag) {
 	Printf (dip, "Thread exiting with status %d...\n", thread_status);
     }
@@ -842,10 +842,10 @@ dtapp_finish_test_common(dinfo_t *dip, int thread_status)
 }
 
 /*
- * Note: We only get called for the first device entry for each thread. 
- * Therefore, this function must cleanup the other list of devices setup. 
- * But that said, we do not free the primary device, since the common cleanup 
- * logic will do this, and we must avoid duplicate freeing. 
+ * Note: We only get called for the first device entry for each thread.
+ * Therefore, this function must cleanup the other list of devices setup.
+ * But that said, we do not free the primary device, since the common cleanup
+ * logic will do this, and we must avoid duplicate freeing.
  */
 void
 dtapp_cleanup_information(dinfo_t *dip)
@@ -926,16 +926,16 @@ dtapp_free_dips(dinfo_t *dip, dinfo_t **dips, int num_devices)
 }
 
 /*
- * We are called each time a device is cloned, to duplicate per device/thread 
- * information. The new contect flag is set when new threads are executed, so 
- * for this I/O behavior, it lets us know we need a new device list context. 
+ * We are called each time a device is cloned, to duplicate per device/thread
+ * information. The new contect flag is set when new threads are executed, so
+ * for this I/O behavior, it lets us know we need a new device list context.
 */
 int
 dtapp_clone_information(dinfo_t *dip, dinfo_t *cdip, hbool_t new_context)
 {
     /*
-     * Each thread needs its' own copy of the per thread information. 
-     * Each device within a thread share the primary device information! 
+     * Each thread needs its' own copy of the per thread information.
+     * Each device within a thread share the primary device information!
      */
     if (new_context == True) {
         dtapp_information_t *dtap = dip->di_opaque;
@@ -1015,14 +1015,14 @@ dtapp_initialize(dinfo_t *dip)
 }
 
 /*
- * This is called after parsing to start a job with threads, so we are 
- * in the master threads' context. 
- *  
- * Inputs: 
+ * This is called after parsing to start a job with threads, so we are
+ * in the master threads' context.
+ *
+ * Inputs:
  *      mdip = The master device information.
- *  
+ *
  * Return Value:
- *      Returns SUCCESS or FAILURE. 
+ *      Returns SUCCESS or FAILURE.
  */
 int
 dtapp_initiate_job(dinfo_t *mdip)
@@ -1030,7 +1030,7 @@ dtapp_initiate_job(dinfo_t *mdip)
     dtapp_information_t *dtap = mdip->di_opaque;
     dinfo_t *dip = NULL;
     int device = 0, status = SUCCESS;
-    
+
 #if defined(NETAPP)
     if (mdip->di_log_prefix == NULL) {
         if (mdip->di_nate_flag == False) {
@@ -1045,8 +1045,8 @@ dtapp_initiate_job(dinfo_t *mdip)
     }
 #endif /* defined(NETAPP) */
     /*
-     * Note: This order is important, since we want the output device to 
-     * be the thread device information, since we wish to do writes first. 
+     * Note: This order is important, since we want the output device to
+     * be the thread device information, since we wish to do writes first.
      */
     if (dtap->dta_output_count) {
         dip = dtapp_initialize_output_device(mdip, dtap->dta_output_devices[device], True);
@@ -1083,8 +1083,8 @@ dtapp_initialize_devices(dinfo_t *mdip, dtapp_information_t *dtap)
     int status = SUCCESS;
 
     /*
-     * Order is important, since we wish to progate output information 
-     * to the input (mirror) devices, such as the UUID (if any). 
+     * Order is important, since we wish to progate output information
+     * to the input (mirror) devices, such as the UUID (if any).
      */
     if ( (status == SUCCESS) && dtap->dta_output_count) {
 	status = dtapp_initialize_output_devices(mdip, dtap);
@@ -1121,7 +1121,7 @@ dtapp_initialize_input_devices(dinfo_t *mdip, dtapp_information_t *dtap)
 {
     dinfo_t *idip, *odip = NULL;
     int device = 0;
-    
+
     dtap->dta_input_dips = Malloc(mdip, sizeof(dinfo_t) * dtap->dta_input_count);
     if (dtap->dta_input_dips == NULL) return(FAILURE);
 
@@ -1658,7 +1658,7 @@ dtapp_common_device_setup(dinfo_t *dip)
         if (status == FAILURE) return(status);
     }
 
-    /* 
+    /*
      * Note: This initializes File System & SCSI information.
      */
     status = do_common_device_setup(dip);
@@ -1758,7 +1758,7 @@ dtapp_validate_parameters(dinfo_t *dip)
     status = dtapp_parse_devices(dip, dtap);
     if (status == FAILURE) return(status);
 
-    /* 
+    /*
      * Set/reset options we are not supporting!
      */
     dip->di_aio_flag = False;
@@ -1770,7 +1770,7 @@ dtapp_validate_parameters(dinfo_t *dip)
 
     /*
      * Since we do *not* track random I/O's, we cannot allow random overwrites,
-     * otherwise we'll report false data corruptions! 
+     * otherwise we'll report false data corruptions!
      */
     if ( (dip->di_bypass_flag == False) &&
 	 (dip->di_vary_iotype || (dip->di_io_type == RANDOM_IO)) ) {
@@ -1832,7 +1832,7 @@ dtapp_read_data(dinfo_t *dip)
 
     status = dtapp_set_device_offsets(dip, dtap);
     if (status == FAILURE) return(status);
-    
+
     if ( (dip->di_lock_files == True) && dt_test_lock_mode(dip, LOCK_RANGE_FULL) ) {
 	lock_full_range = True;
         status = dtapp_lock_unlock(dips, device_count, LOCK_TYPE_READ, data_limit);
@@ -2029,9 +2029,9 @@ dtapp_read_data(dinfo_t *dip)
 		    set_Eof(idip);
 		    break;
 		}
-		/* 
+		/*
 		 * This prevents us from going past the end of a slice/data limit.
-		 */ 
+		 */
 		if ( (idip->di_offset + (Offset_t)dsize) >= idip->di_end_position ) {
 		    set_Eof(idip);
 		    break;
@@ -2055,7 +2055,7 @@ dtapp_read_data(dinfo_t *dip)
 	if (dip->di_iops && (dip->di_iops_type == IOPS_MEASURE_EXACT) ) {
 	    highresolutiontime(&loop_end_time, NULL);
 	    loop_usecs = (uint32_t)timer_diff(&loop_start_time, &loop_end_time);
-            dip->di_target_total_usecs += dip->di_iops_usecs; 
+            dip->di_target_total_usecs += dip->di_iops_usecs;
             dip->di_actual_total_usecs += loop_usecs;
             if (dip->di_target_total_usecs > dip->di_actual_total_usecs) {
 		unsigned int usecs = (unsigned int)(dip->di_target_total_usecs - dip->di_actual_total_usecs);
@@ -2097,11 +2097,11 @@ dtapp_write_data(dinfo_t *dip)
     data_limit = dtapp_get_data_limit(dip, dtap);
 
     dtapp_set_device_offsets(dip, dtap);
-    /* 
-     * Setup new write orders for each pass to avoid overwrite issues! 
-     *  
-     * Each pass starts with a new random seed and possibly varying direction, 
-     * so don't wish to write stale entries and subsequently false failures. 
+    /*
+     * Setup new write orders for each pass to avoid overwrite issues!
+     *
+     * Each pass starts with a new random seed and possibly varying direction,
+     * so don't wish to write stale entries and subsequently false failures.
      * That's my thinking today, I belief it's valid, so being safe than sorry!
      */
     status = dtapp_setup_write_orders(dip, dtap, dtap->dta_output_count);
@@ -2275,7 +2275,7 @@ dtapp_write_data(dinfo_t *dip)
 		dip->di_error_count++;
 		if (dip->di_error_count >= dip->di_error_limit) break;
 	    }
-            /* 
+            /*
              * Verify the btag write order, unless read-after-write is enabled,
              * in which case this btag verification is done below.
              */
@@ -2304,7 +2304,7 @@ dtapp_write_data(dinfo_t *dip)
 
 	/*
 	 * Flush data *before* verify (required for buffered mode to catch ENOSPC).
-	 */ 
+	 */
 	if ( odip->di_fsync_frequency && ((odip->di_records_written % odip->di_fsync_frequency) == 0) ) {
 	    status = (*odip->di_funcs->tf_flush_data)(odip);
 	    if (status == FAILURE) {
@@ -2390,9 +2390,9 @@ dtapp_write_data(dinfo_t *dip)
 		    set_Eof(odip);
 		    break;
 		}
-		/* 
+		/*
 		 * This prevents us from going past the end of a slice/data limit.
-		 */ 
+		 */
 		if ( (odip->di_offset + (Offset_t)dsize) >= odip->di_end_position ) {
 		    set_Eof(dip);
     		    break;
@@ -2463,12 +2463,12 @@ dtapp_report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
     Fprintf(dip, "\n");
     Fprintf(dip, "Write Order Tag @ "LLPX0FMT" ("SDF" bytes):\n", rwrop, sizeof(*rwrop));
     Fprintf(dip, "\n");
-    
+
     if (ebtag) {
 	ewrop = (btag_write_order_t *)((char *)ebtag + btag_size);
     }
     /*
-     * This condition occurs when the primary btag does *not* verify, and 
+     * This condition occurs when the primary btag does *not* verify, and
      * we are called as the result of dumping the btag with errors. Mostly,
      * cosmetic, but seeing the invalid device index is misleading, so...
      */
@@ -2515,7 +2515,7 @@ dtapp_report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
             Fprintf(dip, DT_FIELD_WIDTH "%s\n", "Received Device", pdip->di_dname );
         }
     }
-    
+
     btag_index = offsetof(btag_write_order_t, wro_write_size);
     if ( (ewrop && rwrop) &&
 	 (ewrop->wro_write_size != rwrop->wro_write_size) ) {
@@ -2530,7 +2530,7 @@ dtapp_report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
 	Fprintf(dip, DT_BTAG_FIELD "%d\n",
 		"Write Size", (btag_size + btag_index), LtoH32(rwrop->wro_write_size) );
     }
-    
+
     btag_index = offsetof(btag_write_order_t, wro_write_offset);
     if ( (ewrop && rwrop) &&
 	 (ewrop->wro_write_offset != rwrop->wro_write_offset) ) {
@@ -2603,7 +2603,7 @@ dtapp_update_btag(dinfo_t *dip, btag_t *btag, Offset_t offset,
     int32_t btag_size = sizeof(*btag);
     btag_write_order_t *wrop, *pwrop = dtap->dta_last_write_order;
     int status = SUCCESS;
-    
+
     if (pwrop == NULL) return(SUCCESS);
 
     status = dtapp_verify_btag_opaque_data(dip, btag);
@@ -2649,7 +2649,7 @@ dtapp_verify_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag,
 	if (eindex && (btag_index < *eindex)) *eindex = btag_index;
 	btag_errors++;
     }
-    
+
     if (ewrop->wro_write_size != rwrop->wro_write_size) {
 	if (dip->di_btag_debugFlag) {
 	    Fprintf(dip, "BTAG: Write size incorrect, expected %u, received %u\n",
@@ -2792,9 +2792,9 @@ verify_btag_write_order(dinfo_t *dip, btag_t *btag, size_t transfer_count)
         dtapp_report_ordered_btags_error(dip, pdip, btag, pbtag, error_btag);
         return(status);
     }
-    /* 
-     * Note: We do *not* care about the previous write order of the previous btag! 
-     * Well, at least not for this test. We may wish to traverse all ordered later! 
+    /*
+     * Note: We do *not* care about the previous write order of the previous btag!
+     * Well, at least not for this test. We may wish to traverse all ordered later!
      */
     //pwrop = (btag_write_order_t *)((char *)pbtag + btag_size);
     //if (pwrop->wro_device_index == BTAG_NO_DEVICE_INDEX) return(SUCCESS);
@@ -2845,7 +2845,7 @@ verify_ordered_btags(dinfo_t *dip, btag_t *btag, btag_write_order_t *wrop, void 
 
     for (buffer_index = 0; buffer_index < record_size; buffer_index += dsize) {
 	pbtag = (btag_t *)bp;
-        /* 
+        /*
          * Verify write data and timestamps.
          */
         if ( isDiskDevice(dip) ) {
@@ -2911,8 +2911,8 @@ verify_ordered_btags(dinfo_t *dip, btag_t *btag, btag_write_order_t *wrop, void 
 }
 
 /*
- * Note: Wrapper to common read_record() for logging the record number. 
- * Previously this was a clone, but we have switched to pread/pwrite! 
+ * Note: Wrapper to common read_record() for logging the record number.
+ * Previously this was a clone, but we have switched to pread/pwrite!
  */
 ssize_t
 dtapp_read_record(dinfo_t *dip, uint8_t *buffer, size_t bsize, size_t dsize, Offset_t offset, int *status)

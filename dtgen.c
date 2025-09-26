@@ -31,18 +31,18 @@
  *	Generic test functions for the 'dt' program.
  *
  * Modification History:
- * 
+ *
  * October 9th, 2020 by Robin T. Miller
  *      Augment the disk threads to slices sanity check to handle single slice.
- * 
+ *
  * September 4th, 2020 by Robin T. Miller
  *      Set the seed for rand() random number generator, used for random I/O
  * direction, random I/O type, or random unmap types, to vary the starting
  * type chosen. Otherwise, each thread/slice uses the same starting type.
- * 
+ *
  * August 5th, 2020 by Robin T. Miller
  *      Add support for starting slice offset.
- * 
+ *
  * June 12th, 2020 by Robin T. Miller
  *      In validate_opts(), do NOT disable file ssytem align flag for NFS
  * if direct I/O is enabled. This flag must stay set for block tags (btags),
@@ -51,24 +51,24 @@
  *      Note: I can't remember why I disabled this, but I think NFS allows
  * direct I/O on non-block aligned offsets. As I recall, direct I/O simply
  * bypasses the client side NFS cache. Well, that's my recollection! :-)
- * 
+ *
  * June 10th, 2019 by Robin T. Miller
  *      Fix the substring search for 'xfs' to be an exact string match, so
  * 'vxfs' is *not* mistaken for XFS file system (sigh, too much cut/paste).
  * Also, only set the min/max block size for XFS if they were specified.
- * 
+ *
  * August 19th, 2015 by Robin T. Miller
  * 	If testing to the Linux memory file system (tmpfs), disable DIO,
  * otherwise EINVAL occurs. This helps avoid false failures and requiring
  * automation to change, which is sadly not always an easy operation! ;(
- * 
+ *
  * November 15th, 2014 by Robin T. Miller
  * 	Added sanity check to catch when the pattern buffer is less than
  * the device size when the IOT pattern is selected. Previously, a bs=256
  * would initially setup the wrong pattern buffer size, and even though the
  * block size was later adjusted, the IOT pattern was too small which lead
  * to a false corruption esp. with random I/O. (sigh) Long standing issue!
- * 
+ *
  * July 9th, 2014 by Robin T. Miller
  * 	Fixed regression in read_file(), where maxdata_reached flag was
  * initialized to True versus False (stupid cut/paste error on my part!).
@@ -78,7 +78,7 @@
  * direct I/O checks. Switch to using this API in set_open_flags, and also
  * reset the Direct I/O flag (O_DIRECT) if the caller passed this in, otherwise
  * flags=direct enabled DIO even though the buffer mode should have disabled.
- * 
+ *
  * June 20th, 2013 by Robin T Miller
  * 	Mostly a rewrite for multithreaded IO, so starting with new history!
  */
@@ -132,8 +132,8 @@ handle_multiple_files(dinfo_t *dip, char *file, int *oflags, int *status)
 	/* Update the file path and the prefix (as required). */
 	file = make_file_name(dip);
 	/*
-	 * Handle case where we are reading multiple files, but the file 
-	 * did not get created by the write workload, either because of a 
+	 * Handle case where we are reading multiple files, but the file
+	 * did not get created by the write workload, either because of a
 	 * file system full, or limited by the maxdata percentage.
 	 */
 	if (dip->di_input_file && (dip->di_file_number > 1)) {
@@ -186,7 +186,7 @@ common_open(dinfo_t *dip, char *FileName,
 
     init_open_defaults(dip);
     /*
-     * Note: This is a stepping stone towards switching to our os_open_file() API! 
+     * Note: This is a stepping stone towards switching to our os_open_file() API!
      */
     if (dip->di_open_delay) {
 	mySleep(dip, dip->di_open_delay);
@@ -349,18 +349,18 @@ set_open_flags(dinfo_t *dip, char *FileName,
 	oflags &= ~O_CREAT;	/* The file should already exist! */
     }
 #endif /* defined(WIN32) */
-    /* 
+    /*
      * Note to Self: The buffer mode is invoked in the main I/O loop, by calling
      * SetupBufferingMode(). It is peformed there, since we want multiple files
      * to use the same buffering mode.
-     * 
+     *
      * Also Note: For Windows, we must set the direct I/O psuedo-flag accordingly,
      * since the retry disconnect support uses the OS open API, since uses this
      * flag to enable pass through. Furthermore, this function will rely on this
      * flag (O_DIRECT) being set, when we switch to the same OS open function.
      * FWIW: I have not made the switch now, for fear of regressions and more
      * unit testing, than I have time for at present.
-     * 
+     *
      * FYI: For file systems, these read/write cache flags are enabled by default.
      * These flags can be modified via disable options, or indirectly by specifying
      * various buffer modes (bufmodes= option). Now one could argue we should only
@@ -371,9 +371,9 @@ set_open_flags(dinfo_t *dip, char *FileName,
      * to avoid missing write flushing errors, and mimic other OS's. Nonetheless,
      * the read/write cache flags can override dt's internal setting for Linux,
      * for folks who desire this (much) higher throughput with synchronous I/O.
-     * 
+     *
      * Also note that Solaris *must* enable DIO *after* the file is open'ed!
-     * 
+     *
      * Gee, this simple feature has far reaching implications, eh? :-)
      */
     if ( isDirectIO(dip) == True ) {
@@ -401,7 +401,7 @@ init_open_defaults(dinfo_t *dip)
     dip->di_error_lba = 0;
     dip->di_error_offset = (Offset_t)0;
     dip->di_inode = (os_ino_t)0;
-    
+
     /*
      * Reset counters in preparation for the next file.
      */
@@ -580,7 +580,7 @@ close_file(struct dinfo *dip)
 	    os_error_t error = os_get_error();
 	    INIT_ERROR_INFO(eip, file, op, CLOSE_OP, NULL, 0, (Offset_t)0, (size_t)0,
 			    os_get_error(), logLevelError, PRT_SYSLOG, RPT_NOFLAGS);
-    
+
 	    dip->di_file_system_full = os_isDiskFull(error);
 	    /* If restarting on file system full, log as a warning. */
 	    if ( dip->di_file_system_full && dip->di_fsfull_restart ) {
@@ -695,7 +695,7 @@ init_file(struct dinfo *dip)
 #if 0
     /*
      * Allow seek/position options with copy/mirror/verify modes.
-     */ 
+     */
     if ( dip->di_output_dinfo && dip->di_random_access && (dip->di_io_mode != TEST_MODE) ) {
 	dinfo_t *odip = dip->di_output_dinfo;
 	if (odip->di_ofile_position) {
@@ -786,7 +786,7 @@ flush_file(struct dinfo *dip)
 	    }
 	}
     } while ( (status == FAILURE) && (rc == RETRYABLE) );
-    
+
     dip->di_flushing = False;
 
     if ( dip->di_fsfile_flag &&	(dip->di_debug_flag || dip->di_file_system_full) ) {
@@ -1164,11 +1164,11 @@ restart_write_file(dinfo_t *dip)
     int status = WARNING;
 
     /* Special handling for file system full. */
-    /* 
+    /*
      * We cannot retry any operation requiring random number generator,
-     * since we require both I/O sizes and random offsets to exactly 
+     * since we require both I/O sizes and random offsets to exactly
      * match between the write pass and the read pass.
-     */ 
+     */
     if ( dip->di_file_system_full &&
 	 ( (dip->di_io_type == SEQUENTIAL_IO) && (dip->di_variable_flag == False) ) ) {
 	status = handle_file_system_full(dip, False);
@@ -1205,8 +1205,8 @@ validate_opts(struct dinfo *dip)
 {
     hbool_t dio_sanity_checks;
 
-    /* 
-     * Remember: The device/file is NOT open while validating options! 
+    /*
+     * Remember: The device/file is NOT open while validating options!
      */
     if (dip->di_bypass_flag == True) return(SUCCESS);
 
@@ -1219,10 +1219,10 @@ validate_opts(struct dinfo *dip)
 	 * Multiple threads to a disk are only allowed with I/O lock synchronization!
 	 */
 	if ( (dip->di_threads > 1 ) && (dip->di_slices == 0) && (dip->di_iolock == False) ) {
-	    /* 
+	    /*
 	     * Too many folks are selecting file system workloads with threads, so
-	     * convert this to slices here to avoid overwrites and *false* corruptions! 
-	     * Note: Some tools start with threads then convert to slices (as required). 
+	     * convert this to slices here to avoid overwrites and *false* corruptions!
+	     * Note: Some tools start with threads then convert to slices (as required).
 	     */
 	    if (dip->di_iobehavior == DT_IO) {
 		Wprintf(dip, "Converting multiple threads to slices to avoid false corruptions!\n");
@@ -1268,7 +1268,7 @@ validate_opts(struct dinfo *dip)
     }
 #if defined(WIN32)
     if (dip->di_fsfile_flag) {
-	/* 
+	/*
 	 * TODO: This is the correct check, but we cannot request this information
 	 * until the file is open'ed and we have a handle, so ineffective today!
 	 */
@@ -1321,7 +1321,7 @@ validate_opts(struct dinfo *dip)
 		return(FAILURE);
 	    }
 	}
-	/* 
+	/*
 	 * Catch when user specifies initial block size < the device size!
 	 * Note: This *cannot* be caught earlier, since device is not setup.
 	 * FYI: False corruptions occur when the IOT pattern buffer is too small!
@@ -1399,7 +1399,7 @@ validate_opts(struct dinfo *dip)
 	 * This is a bandaide to override automation *not* smart about file systems.
 	 * Note: We're adjusting a few things we can do safely, but we can't do all!
 	 * Also Note: Many other sanity checks are missed by Mickey Mousing this here!
-	 */ 
+	 */
 	if (dip->di_filesystem_type && EQ(dip->di_filesystem_type, "xfs")) {
 	    if (dip->di_device_size < XFS_DIO_BLOCK_SIZE) {
 		if (dip->di_verbose_flag) {
@@ -1452,7 +1452,7 @@ validate_opts(struct dinfo *dip)
 	}
     }
     /*
-     * Don't allow non-modulo data limits, since most disk drivers will error 
+     * Don't allow non-modulo data limits, since most disk drivers will error
      * when the request size is NOT modulo the sector size or DIO is enabled.
      * For example: 'ReadFile', errno = 87 - The parameter is incorrect.
      */

@@ -540,14 +540,14 @@ dthelp(dinfo_t *dip)
     P (dip, "\tsavecorrupted    Save corrupted data.       (Default: %s)\n",
 				(dip->di_save_corrupted) ? enabled_str : disabled_str);
     P (dip, "\tscriptverify     Script verify display.     (Default: %s)\n",
-				(dip->di_script_verify) ? enabled_str : disabled_str);   
+				(dip->di_script_verify) ? enabled_str : disabled_str);
     P (dip, "\tsighup           Hangup signal control.     (Default: %s)\n",
-				(sighup_flag) ? enabled_str : disabled_str);   
+				(sighup_flag) ? enabled_str : disabled_str);
 #if defined(WIN32)
     P (dip, "\tsparse           Sparse file attribute.     (Default: %s)\n",
-				(dip->di_sparse_flag) ? enabled_str : disabled_str);   
+				(dip->di_sparse_flag) ? enabled_str : disabled_str);
     P (dip, "\tprealloc         Preallocate w/o sparse.    (Default: %s)\n",
-				(dip->di_prealloc_flag) ? enabled_str : disabled_str);   
+				(dip->di_prealloc_flag) ? enabled_str : disabled_str);
 #endif /* defined(WIN32) */
 #if defined(NVME)
     P (dip, "\tnvme_io          NVMe I/O operations.       (Default: %s)\n",
@@ -793,7 +793,7 @@ dthelp(dinfo_t *dip)
     P (dip, "\t    \\f = Formfeed    \\n = Newline        \\r = Carriage Return\n");
     P (dip, "\t    \\t = Tab         \\v = Vertical Tab   \\e or \\E = Escape\n");
     P (dip, "\t    \\ddd = Octal Value    \\xdd or \\Xdd = Hexadecimal Value\n");
-  
+
     P (dip, "\n    Prefix Format Control:\n");
     P (dip, "\t    %%d = The device/file name.      %%D = The real device name.\n");
     P (dip, "\t    %%h = The host name.             %%H = The full host name.\n");

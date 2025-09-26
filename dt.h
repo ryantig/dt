@@ -24,16 +24,16 @@
  ****************************************************************************/
 /*
  * Modification History:
- * 
+ *
  * July 30th, 2021 by Robin T. Miller
  *      Adding initial support for NVMe disks.
- * 
+ *
  * May 25th, 2021 by Robin T. Miller
  *      Resetting RETRYDC_LIMIT back to 1, since the delay and extra re-read,
  * is generally undesirable when sending triggers quickly is more important!
  * Note: The extra re-read was added to help determine persistent vs. transient
  * type data corruptions, prevalent in caching products.
- * 
+ *
  * April 9th, 2020 by Robin T. Miller (Happy birthday to my son Tom!)
  *      Increase the data corruption retries from 1 to 2, so we can gather
  * yet another data point. If our first (immediate) re-read is still bad,
@@ -143,13 +143,13 @@
 
 /*
  * Default Log Prefixes:
- * 
+ *
  * Robin's Favorite: logprefix="%seq %et %prog %device (j:%job t:%thread): "
  */
 #define DEFAULT_LOG_PREFIX		"%prog (j:%job t:%thread): "
 #define DEFAULT_DEBUG_LOG_PREFIX	"%et %prog (j:%job t:%thread): "
 
-#define DEFAULT_GTOD_LOG_PREFIX		"%tod (%etod) %prog (j:%job t:%thread): " 
+#define DEFAULT_GTOD_LOG_PREFIX		"%tod (%etod) %prog (j:%job t:%thread): "
 
 /* Note: These must be defined per company to their own web pages! */
 #  //define DATA_CORRUPTION_URL	"";
@@ -330,7 +330,7 @@ typedef enum {
 #define isFileSystemFile(dip)	( dip->di_dtype && \
 				  ((dip->di_dtype->dt_dtype == DT_REGULAR) || \
 				   (dip->di_dtype->dt_dtype == DT_MMAP)) )
-				   
+				
 #define isRandomIO(dip)		( (dip->di_io_type == RANDOM_IO) || \
 				  (dip->di_variable_flag == True) )
 
@@ -367,7 +367,7 @@ typedef enum {
 
 #define HANDLE_THREAD_EXIT(dip) handle_thread_exit(dip)
 #define COMMAND_INTERRUPTED	( (InteractiveFlag == False) && (CmdInterruptedFlag == True) )
-#define PROGRAM_TERMINATING	(terminating_flag)   
+#define PROGRAM_TERMINATING	(terminating_flag)
 #define THREAD_FINISHED(dip) \
     ( PROGRAM_TERMINATING || \
       (dip->di_thread_state == TS_CANCELLED) || (dip->di_thread_state == TS_FINISHED) || \
@@ -465,10 +465,10 @@ typedef enum job_state {JS_STOPPED, JS_RUNNING, JS_FINISHED, JS_PAUSED, JS_TERMI
 typedef enum thread_state {TS_STOPPED, TS_STARTING, TS_RUNNING, TS_FINISHED, TS_JOINED, TS_PAUSED, TS_TERMINATING, TS_CANCELLED} tstate_t;
 typedef volatile jstate_t vjstate_t;
 typedef volatile tstate_t vtstate_t;
-/* 
- * Buffering Modes: 
+/*
+ * Buffering Modes:
  * buffered = normal FS buffering, unbuffered = Direct I/O
- * readcache = disabled write caching, writecache = disable read caching 
+ * readcache = disabled write caching, writecache = disable read caching
  */
 typedef enum bufmodes {
     NONE_SPECIFIED = 0,		/* No buffering mode specified.		*/
@@ -536,7 +536,7 @@ extern char *miscompare_op;
         if (dip->di_noprog_flag) {                                              \
             dip->di_optype = NONE_OP;                                           \
             dip->di_initiated_time = dip->di_next_noprog_time = (time_t)0;	\
-        } 
+        }
 
 typedef enum sleep_resolution {SLEEP_DEFAULT, SLEEP_SECS, SLEEP_MSECS, SLEEP_USECS} sleepres_t;
 typedef enum statslevel {STATS_BRIEF, STATS_FULL, STATS_NONE} statslevel_t;
@@ -593,10 +593,10 @@ typedef enum logLevel {
 #define PRT_NOLOG	0x08
 #define PRT_SYSLOG	0x10
 
-/* 
+/*
  * Extend Print Flags to Allow Message Types.
  * Note: This is done to use existing LogMsg() API!
- */ 
+ */
 #define PRT_MSGTYPE_SHIFT	8
 #define PRT_MSGTYPE_COMMAND	(1 << PRT_MSGTYPE_SHIFT)
 #define PRT_MSGTYPE_PROMPT	(2 << PRT_MSGTYPE_SHIFT)
@@ -740,13 +740,13 @@ typedef struct slice_info {
 typedef struct dinfo {
 	/*
 	 * Parsing Information:
-	 */ 
+	 */
 	int	argc;			/* Argument count.              */
 	char	**argv;			/* Argument pointer array.      */
 	char	*cmdbufptr;		/* The command buffer pointer.	*/
 	size_t	cmdbufsiz;		/* The command buffer size.	*/
 	/*
-	 * Script File Information. 
+	 * Script File Information.
 	 */
 	int	script_level;		/* The script nesting level.	*/
 	char	*script_name[ScriptLevels]; /* The script names.	*/
@@ -851,7 +851,7 @@ typedef struct dinfo {
         uint64_t di_corrupt_reads;      /* Corruption read records.     */
         uint64_t di_corrupt_writes;     /* Corruption write records.    */
 	/*
-	 * Per Pass Statistics: 
+	 * Per Pass Statistics:
 	 */
 	v_large	di_dbytes_read;		/* Number of data bytes read.	*/
 	v_large	di_dbytes_written;	/* Number of data bytes written.*/
@@ -1046,7 +1046,7 @@ typedef struct dinfo {
 	uint32_t di_total_max_noprogs;	/* The total max noprogt count.	*/
 	uint64_t di_total_max_noprogt;	/* The total max noprogt time.	*/
 	/*
-	 * Pattern Buffer Information: 
+	 * Pattern Buffer Information:
 	 */
 	uint32_t di_pattern;		/* The data pattern (not IOT).	*/
 	uint8_t *di_pattern_buffer;	/* Pointer to pattern buffer.	*/
@@ -1058,7 +1058,7 @@ typedef struct dinfo {
 	int	di_pattern_index;	/* The pass pattern index.	*/
 	hbool_t	di_pattern_in_buffer;	/* Full pattern is in buffer.	*/
 	/*
-	 * Prefix String Data (initial and formatted): 
+	 * Prefix String Data (initial and formatted):
 	 */
 	char	*di_prefix_string;	/* The prefix string (if any).	*/
 	int	di_prefix_size;		/* The prefix string size.	*/
@@ -1068,7 +1068,7 @@ typedef struct dinfo {
 	char	*di_uuid_string;	/* The UUID string (if OS has).	*/
 
 	/*
-	 * Data Buffers: 
+	 * Data Buffers:
 	 */
 	size_t	di_data_size;		/* Data buffer size + pad bytes	*/
 	size_t	di_data_alloc_size;	/* Data buffer allocation size.	*/
@@ -1108,12 +1108,12 @@ typedef struct dinfo {
 	uint64_t di_target_total_usecs;	/* The total target IOPS usecs.	*/
 	/*
 	 * Sleep Times:
-	 */ 
+	 */
 	uint32_t di_sleep_value;	/* Sleep value (in seconds).	*/
 	uint32_t di_msleep_value;	/* Millesecond (ms) sleep value	*/
 	uint32_t di_usleep_value;	/* Microsecond (us) sleep value	*/
 	/*
-	 * Test Times: 
+	 * Test Times:
 	 */
 	struct timeval di_start_timer;	/* The test start time. (hires)	*/
 	struct timeval di_end_timer;	/* The test end time.	(hires)	*/
@@ -1136,7 +1136,7 @@ typedef struct dinfo {
 
 #if defined(AIO)
 	/*
-	 * Asynchronous I/O: 
+	 * Asynchronous I/O:
 	 */
 	int	di_aio_bufs;		/* The number of AIO buffers.	*/
 	int	di_aio_index;		/* Index to AIO control block.	*/
@@ -1182,7 +1182,7 @@ typedef struct dinfo {
 	hbool_t	di_cerrors_flag;	/* Report device close errors.	*/
 	hbool_t	di_child_flag;		/* This is a child process.	*/
 	/*
-	 * Debug Flags: 
+	 * Debug Flags:
 	 */
 	hbool_t	di_debug_flag;		/* Enable debug output flag.	*/
 	hbool_t	di_Debug_flag;		/* Verbose debug output flag.	*/
@@ -1317,8 +1317,8 @@ typedef struct dinfo {
 	hbool_t	di_image_copy;		/* Sanity check image copies.	*/
 	hbool_t	di_max_capacity;	/* Use max capacity from IOCTL.	*/
 	large_t	di_user_capacity;	/* The user set drive capacity.	*/
-	/* 
-	 * Multiple Volumes: 
+	/*
+	 * Multiple Volumes:
 	 */
 	hbool_t	di_multi_flag;		/* Multi-volume media flag.	*/
 	v_int	di_multi_volume;	/* Multi-volume media count.	*/
@@ -1330,7 +1330,7 @@ typedef struct dinfo {
 	hbool_t	di_vary_iodir;		/* Vary sequential direction.	*/
 	hbool_t	di_vary_iotype;		/* Vary the I/O type flag.	*/
 	/*
-	 * Fill Pattern/File Definitions: 
+	 * Fill Pattern/File Definitions:
 	 */
 	hbool_t di_fill_always;		/* Always fill the files.	*/
 	hbool_t di_fill_once;		/* Fill the file once flag.	*/
@@ -1345,7 +1345,7 @@ typedef struct dinfo {
 	int	di_random_rpercentage;	/* The read random percentage.	*/
 	int	di_random_wpercentage;	/* The write random percentage.	*/
 	/*
-	 * Trigger Definitions: 
+	 * Trigger Definitions:
 	 */
 	hbool_t	di_trigargs_flag;	/* Trigger arguments flag.	*/
         hbool_t di_trigdefaults_flag;   /* Automatic trigger defaults.  */
@@ -1357,7 +1357,7 @@ typedef struct dinfo {
 	trigger_control_t di_trigger_control; /* The trigger control.	*/
 	trigger_data_t di_triggers[NUM_TRIGGERS];
 	/*
-	 * Keepalive Definitions: 
+	 * Keepalive Definitions:
 	 */
 	char	*di_keepalive;		/* The keepalive string.	*/
 	char    *di_pkeepalive;		/* The pass keepalive string.	*/
@@ -1366,7 +1366,7 @@ typedef struct dinfo {
 	hbool_t	di_user_pkeepalive;	/*        ... ditto ...         */
 	hbool_t	di_user_tkeepalive;	/*        ... ditto ...         */
 	/*
-	 * Multiple Process Information: 
+	 * Multiple Process Information:
 	 */
 	hbool_t	di_aborted_processes;	/* Processes have been aborted.	*/
 	char	*di_dtcmd;		/* Command line for subprocs.	*/
@@ -1385,7 +1385,7 @@ typedef struct dinfo {
         Offset_t di_slice_offset;       /* The starting slice offset.   */
 	/*
 	 * Thread Related Information:
-	 */ 
+	 */
 	hbool_t	di_async_job;		/* Execute job asynchronously.	*/
 	struct job_info *di_job;	/* Pointer to job information.	*/
 	char	*di_job_tag;		/* The user defined job tag.	*/
@@ -1447,7 +1447,7 @@ typedef struct dinfo {
 
 	/*
 	 * SCSI Unmap/Punch Hole/Write Same w/unmap Information:
-	 */ 
+	 */
 	hbool_t	di_get_lba_status_flag;	/* Get LBA status control flag.	*/
 	hbool_t	di_unmap_flag;		/* Unmap blocks control flag.	*/
 	unmap_type_t di_unmap_type;	/* The Unmap type to execute.	*/
@@ -1521,10 +1521,10 @@ typedef struct dinfo {
 
 	/*
 	 * Definitions for per thread random number generator.
-	 */ 
+	 */
 	mtrand64_t *di_mtrand;		/* Random number information.	*/
-	/* 
-	 * For Copy/Verify, the output device is here (for now)! 
+	/*
+	 * For Copy/Verify, the output device is here (for now)!
 	 */
 	struct dinfo *di_output_dinfo;	/* Output device information.	*/
 					/* This is used for copy/verify	*/
@@ -1571,7 +1571,7 @@ typedef struct job_info {
 #define DT_IOLOCK 1
 
 /*
- * Shared data for jobs with multiple threads (not slices). 
+ * Shared data for jobs with multiple threads (not slices).
  */
 typedef struct io_global_data {
     pthread_mutex_t io_lock;
@@ -1591,7 +1591,7 @@ typedef struct io_global_data {
 
 /*
  * Modify Parameters:
- */ 
+ */
 typedef struct modify_params {
     job_id_t	job_id;			/* The job identifier.		*/
     char	*job_tag;		/* The job tag (optional).	*/
@@ -1713,7 +1713,7 @@ typedef struct iobehavior_funcs {
 
 /*
  * Workload Definitions:
- */ 
+ */
 typedef struct workload_entry {
     char	*workload_name;
     char	*workload_desc;
@@ -1850,7 +1850,7 @@ extern void dtaio_free_buffers(dinfo_t *dip);
 /* dtbtag.c */
 extern btag_t *initialize_btag(dinfo_t *dip, uint8_t opaque_type);
 extern void report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag);
-extern void update_btag(dinfo_t *dip, btag_t *btag, Offset_t offset, 
+extern void update_btag(dinfo_t *dip, btag_t *btag, Offset_t offset,
 			uint32_t record_index, size_t record_size, uint32_t record_number);
 extern void update_buffer_btags(dinfo_t *dip, btag_t *btag, Offset_t offset,
 				void *buffer, size_t record_size, uint32_t record_number);
@@ -2457,7 +2457,7 @@ extern large_t GetStatsValue(struct dinfo *dip, stats_value_t stv, hbool_t pass_
 
 /*
  * Script Functions:
- */ 
+ */
 extern void DisplayScriptInformation(dinfo_t *dip);
 extern void CloseScriptFile(dinfo_t *dip);
 extern void CloseScriptFiles(dinfo_t *dip);
@@ -2472,7 +2472,7 @@ extern int OpenOutputFile(dinfo_t *dip, FILE **fp, char *file, char *mode, hbool
 
 /*
  * Strings used by Common Printing Functions (PrintAscii(), etc).
- * 
+ *
  * Note: The field width is shorter than scu/spt, so may need to adjust.
  */
 #define MSG_FIELD_WIDTH	"%30.30s: "

@@ -25,25 +25,25 @@
 /*
  * Module:	dtaio.c
  * Author:	Robin T. Miller
- * Date:	August 26, 1993 
+ * Date:	August 26, 1993
  *
  * Description:
  *	Functions to handle POSIX Asynchronous I/O requests for 'dt' program.
  *
  * Modification History:
- * 
+ *
  * September 20th, 2023 by Robin T. Miller
  *      For all random access devices, limit the data read to what was
  * written. Previously this was enabled only for file systems, but it's
  * possible for direct acces disks to create a premature end of data
  * condition. See dtread.c for further details.
- * 
+ *
  * June 5th, 2020 by Robin T. Miller
  *      Fix a case with slices and step option where we went past end of slice,
  * which caused a false data corruption (sigh). Depending on options specifed,
  * we may not set EOF when completing previous request, so the next partial
  * write was set based on the dta limit, *not* the end of the slice offset!
- * 
+ *
  * February 11th, 2016 by Robin T. Miller
  * 	When prefilling read buffers, rather than using the inverted pattern,
  * switch to 1) user defined fill pattern, or 2) the thread number. This helps
@@ -57,7 +57,7 @@
  * invoking read_check()/write_check(), which results in the wrong offset
  * being displayed for short read/write requests. Now, di_offset gets the
  * aiocb offset, which matches the setting for all other I/O behaviors.
- * 
+ *
  * June 5th, 2014 by Robin T. Miller
  * 	Fix bug where we would loop indefinitely, effectively hanging, when
  * the max data was reached within the inner AIO I/O loops.
@@ -333,7 +333,7 @@ dtaio_cancel_reads (struct dinfo *dip)
     dip->di_aio_data_adjust = dip->di_aio_file_adjust = dip->di_aio_record_adjust = 0L;
     (void) dtaio_cancel (dip);
     status = dtaio_waitall (dip, True);
-#if defined(TAPE) && !defined(WIN32) /* no tape support for Windows */ 
+#if defined(TAPE) && !defined(WIN32) /* no tape support for Windows */
     if (dip->di_aio_file_adjust && (dtp->dt_dtype == DT_TAPE) ) {
 	daddr_t count = (daddr_t)dip->di_aio_file_adjust;
 	/*
@@ -1372,7 +1372,7 @@ dtaio_write_data(struct dinfo *dip)
 	    if (dip->di_Debug_flag) {
 		report_io(dip, WRITE_MODE, (void *)acbp->aio_buf, acbp->aio_nbytes, acbp->aio_offset);
 	    }
-	    
+	
 #if defined(WIN32)
 	    /* TODO: Clean this up! */
 	    acbp->overlap.hEvent = 0;
@@ -1415,7 +1415,7 @@ dtaio_write_data(struct dinfo *dip)
 
 	    if (dip->di_io_dir == FORWARD) {
 		dip->di_aio_offset += bsize;
-	    } 
+	    }
 
 	    if (dip->di_step_offset) {
 		if (dip->di_io_dir == FORWARD) {
@@ -1480,7 +1480,7 @@ dtaio_write_data(struct dinfo *dip)
 	     (dip->di_io_dir == FORWARD)		&&
 	     (dip->di_io_type == SEQUENTIAL_IO)		&&
 	     (dip->di_slices == 0) ) {
-	    (void)dt_ftruncate_file(dip, dip->di_dname, dip->di_fd, dip->di_fbytes_written, NULL, EnableErrors); 
+	    (void)dt_ftruncate_file(dip, dip->di_dname, dip->di_fd, dip->di_fbytes_written, NULL, EnableErrors);
 	}
 
 	if (dip->di_end_of_file) break;
@@ -1516,7 +1516,7 @@ retry:
     error = dtaio_wait(dip, acbp);
 #if defined(WIN32)
     /* total bytes wrote by WriteFile call or FAILURE in case of error */
-    count = acbp->bytes_rw; 
+    count = acbp->bytes_rw;
     error = acbp->last_error;
 #else /* !defined(WIN32) */
     count = aio_return(acbp);
@@ -1685,7 +1685,7 @@ retry:
 
     /*
      * Flush data *before* verify (required for buffered mode to catch ENOSPC).
-     */ 
+     */
     if ( dip->di_fsync_frequency && ((dip->di_records_written % dip->di_fsync_frequency) == 0) ) {
 	status = (*dip->di_funcs->tf_flush_data)(dip);
 	if ( (status == FAILURE) && (dip->di_error_count >= dip->di_error_limit) ) return (status);
