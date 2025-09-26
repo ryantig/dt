@@ -5,7 +5,7 @@
 all: usage
 
 usage:
-	@echo "Select the OS to build:"
+	@echo "Select the OS to build (or 'clean' to remove all build directories):"
 	@echo ""
 	@echo "    -> aix"
 	@echo "    -> bsd"
@@ -13,6 +13,8 @@ usage:
 	@echo "    -> linux"
 	@echo "    -> macos"
 	@echo "    -> solaris"
+	@echo ""
+	@echo "note: For NVME or SCSI support, please build on Linux (no lib for macos)"
 	@echo ""
 	@echo "Please see makedt script for building with remote hosts!"
 	@echo ""
@@ -40,13 +42,22 @@ bsd:
 hpux:
 	( mkdir -p hpux.d ; cd hpux.d ; make -f ../Makefile.hpux VPATH=.. OS=hpux )
 
-macos:
-	( mkdir -p macos.d ; cd macos.d ; make -f ../Makefile.mac_darwin VPATH=.. )
-
 linux:
 	( mkdir -p linux.d ; cd linux.d ; make -f ../Makefile.linux VPATH=.. OS=linux )
+
+macos:
+	( mkdir -p macos.d ; cd macos.d ; make -f ../Makefile.mac_darwin VPATH=.. )
 
 solaris:
 	( mkdir -p solaris.d ; cd solaris.d ; make -f ../Makefile.solaris VPATH=.. OS=solaris )
 
+clean:
+	@echo "Cleaning build directories..."
+	@for dir in aix.d bsd.d hpux.d macos.d linux.d solaris.d; do \
+		if [ -d "$$dir" ]; then \
+			echo "Removing $$dir"; \
+			rm -rf "$$dir"; \
+		fi; \
+	done
+	@echo "Clean complete."
 
