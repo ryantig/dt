@@ -121,7 +121,9 @@ struct dtfuncs aio_funcs = {
     /*	tf_flush_data,		tf_verify_data,		tf_reopen_file,   */
 	flush_file,		verify_data,		reopen_file,
     /*	tf_startup,		tf_cleanup,		tf_validate_opts  */
-	nofunc,			nofunc,			validate_opts
+	nofunc,			nofunc,			validate_opts,
+    /*	tf_report_btag,		tf_update_btag		tf_verify_btag	  */
+	NULL,			NULL,			NULL,
 };
 
 /************************************************************************
@@ -738,14 +740,14 @@ dtaio_read_data(struct dinfo *dip)
 	if (dip->di_terminating) break;
 
 	if ( (dip->di_maxdata_reached == True) ||
-	     dip->di_max_data && (dip->di_maxdata_read >= dip->di_max_data) ) {
+	     (dip->di_max_data && (dip->di_maxdata_read >= dip->di_max_data)) ) {
 	    dip->di_maxdata_reached = True;
 	    break;
 	}
 
-	if (dip->di_volumes_flag && (dip->di_multi_volume >= dip->di_volume_limit) &&
-		  (dip->di_volume_records >= dip->di_volume_records)) {
-	    dip->di_volume_records = dip->di_volume_records;
+	if (dip->di_volumes_flag && (dip->di_multi_volume >= dip->di_volume_limit) /* &&
+		  (dip->di_volume_records >= dip->di_volume_records) */) { /* TODO: Fix tautological comparison */
+	    /* dip->di_volume_records = dip->di_volume_records; */ /* TODO: Fix self-assignment */
 	    break;
 	}
 
@@ -769,8 +771,8 @@ dtaio_read_data(struct dinfo *dip)
 		break;
 	    }
 
-	    if (dip->di_volumes_flag && (dip->di_multi_volume >= dip->di_volume_limit) &&
-		      (dip->di_volume_records >= dip->di_volume_records)) {
+	    if (dip->di_volumes_flag && (dip->di_multi_volume >= dip->di_volume_limit) /* &&
+		      (dip->di_volume_records >= dip->di_volume_records) */) { /* TODO: Fix tautological comparison */
 		break;
 	    }
 
@@ -1019,8 +1021,8 @@ retry:
 			  READ_MODE, acbp->aio_offset, (u_char *)acbp->aio_buf, bsize, count);
     }
 
-    if (dip->di_volumes_flag && (dip->di_multi_volume >= dip->di_volume_limit) &&
-	      (dip->di_volume_records == dip->di_volume_records)) {
+    if (dip->di_volumes_flag && (dip->di_multi_volume >= dip->di_volume_limit) /* &&
+	      (dip->di_volume_records == dip->di_volume_records) */) { /* TODO: Fix tautological comparison */
 	acbp->aio_fildes = AIO_NotQed;
 	return (SUCCESS);
     }
@@ -1029,7 +1031,7 @@ retry:
      * Look at errors early, to determine of this is a retriable error.
      */
     if (count == FAILURE) {
-	hbool_t eio_flag = os_isIoError(error);
+	/* hbool_t eio_flag = os_isIoError(error); */ /* Unused */
 	hbool_t isEof_flag = os_isEof(count, error);
 
 	if (isEof_flag == False) {
@@ -1139,7 +1141,7 @@ retry:
 	    }
 	    if ( (dip->di_error_count >= dip->di_error_limit) || dip->di_end_of_file) return(status);
 	} else if (dip->di_io_mode == VERIFY_MODE) {
-	    ssize_t rcount = verify_record(odip, dip->di_data_buffer, count, acbp->aio_offset, &status);
+	    (void)verify_record(odip, dip->di_data_buffer, count, acbp->aio_offset, &status);
 	    if (odip->di_end_of_file) {
 		dip->di_end_of_file = odip->di_end_of_file;
 	    } else if (status == FAILURE) {
@@ -1246,15 +1248,15 @@ dtaio_write_data(struct dinfo *dip)
 	if (dip->di_terminating) break;
 
 	if ( (dip->di_maxdata_reached == True) ||
-	     dip->di_max_data && (dip->di_maxdata_written >= dip->di_max_data) ) {
+	     (dip->di_max_data && (dip->di_maxdata_written >= dip->di_max_data)) ) {
 	    dip->di_maxdata_reached = True;
 	    break;
 	}
 
 	if ( (dip->di_volumes_flag == True)			&&
-	     (dip->di_multi_volume >= dip->di_volume_limit)	&&
-	     (dip->di_volume_records >= dip->di_volume_records)) {
-	    dip->di_volume_records = dip->di_volume_records;
+	     (dip->di_multi_volume >= dip->di_volume_limit)	/* &&
+	     (dip->di_volume_records >= dip->di_volume_records) */) { /* TODO: Fix tautological comparison */
+	    /* dip->di_volume_records = dip->di_volume_records; */ /* TODO: Fix self-assignment */
 	    break;
 	}
 
@@ -1279,8 +1281,8 @@ dtaio_write_data(struct dinfo *dip)
 	    }
 
 	    if ( (dip->di_volumes_flag == True)			&&
-		 (dip->di_multi_volume >= dip->di_volume_limit)	&&
-		 (dip->di_volume_records >= dip->di_volume_records)) {
+		 (dip->di_multi_volume >= dip->di_volume_limit)	/* &&
+		 (dip->di_volume_records >= dip->di_volume_records) */) { /* TODO: Fix tautological comparison */
 		break;
 	    }
 
@@ -1529,8 +1531,8 @@ retry:
 			  WRITE_MODE, acbp->aio_offset, (u_char *)acbp->aio_buf, bsize, count);
     }
 
-    if (dip->di_volumes_flag && (dip->di_multi_volume >= dip->di_volume_limit) &&
-	      (dip->di_volume_records == dip->di_volume_records)) {
+    if (dip->di_volumes_flag && (dip->di_multi_volume >= dip->di_volume_limit) /* &&
+	      (dip->di_volume_records == dip->di_volume_records) */) { /* TODO: Fix tautological comparison */
 	acbp->aio_fildes = AIO_NotQed;
 	return (SUCCESS);
     }
@@ -1539,7 +1541,7 @@ retry:
      */
     if (count == FAILURE) {
 	//int error = os_get_error();
-	hbool_t eio_flag = os_isIoError(error);
+	/* hbool_t eio_flag = os_isIoError(error); */ /* Unused */
 	hbool_t isEof_flag = os_isEof(count, error);
 
 	if (isEof_flag == False) {
@@ -1667,7 +1669,7 @@ retry:
 	if (dip->di_error_count >= dip->di_error_limit) return(status);
     } else if ( (dip->di_io_mode == MIRROR_MODE) || (dip->di_io_mode == VERIFY_MODE) ) {
 	dinfo_t *idip = dip->di_output_dinfo;
-	ssize_t rcount = verify_record(idip, (u_char *)acbp->aio_buf, count, acbp->aio_offset, &status);
+	(void)verify_record(idip, (u_char *)acbp->aio_buf, count, acbp->aio_offset, &status);
 	/* TODO: Need to cleanup multiple device support! */
 	/* For now, propagate certain information to writer. */
 	if (idip->di_end_of_file) {

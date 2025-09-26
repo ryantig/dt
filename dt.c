@@ -783,6 +783,7 @@ ProcessStartupScripts(dinfo_t *dip)
 iobehavior_funcs_t *
 find_iobehavior(dinfo_t *dip, char *name)
 {
+    (void)dip; /* Unused parameter */
     iobehavior_funcs_t **iobtp = &iobehavior_funcs_table[0];
     iobehavior_funcs_t *iobf;
 
@@ -856,7 +857,7 @@ main(int argc, char **argv)
 	} else {
 	    max_open_files = DEFAULT_MAX_OPEN_FILES;
 	}
-	if (max_open_files > prlim->rlim_cur) {
+	if ((rlim_t)max_open_files > prlim->rlim_cur) {
 	    if ( getuid() ) {
 		prlim->rlim_cur = prlim->rlim_max; /* non-root to hard limit! */
 		max_open_files = prlim->rlim_max;
@@ -931,19 +932,19 @@ main(int argc, char **argv)
     }
     /* Handle special I/O tool mapping (if supported). */
     if (iobf) {
-	int status = SUCCESS;
+	int map_status = SUCCESS;
 	/* Special name to map tool options to dt options. */
 	if (iobf->iob_maptodt_name) {
 	    maptodt = (EQS(cmdname, iobf->iob_maptodt_name)) ? True : False;
 	}
 	/* Map the tool options, if mapping is supported. */
 	if ( (maptodt == True) && iobf->iob_dtmap_options ) {
-	    status = (*iobf->iob_dtmap_options)(dip, argc, argv);
-	    exit(status);	/* Only display the mapped options! */
+	    map_status = (*iobf->iob_dtmap_options)(dip, argc, argv);
+	    exit(map_status);	/* Only display the mapped options! */
 	} else if (iobf->iob_map_options) {
-	    status = (*iobf->iob_map_options)(dip, argc, argv);
+	    map_status = (*iobf->iob_map_options)(dip, argc, argv);
 	}
-	if (status == FAILURE) exit(status);
+	if (map_status == FAILURE) exit(map_status);
 	InteractiveFlag = False;
     }
 
@@ -1383,6 +1384,7 @@ do_prejob_start_processing(dinfo_t *mdip, dinfo_t *dip)
 void
 catch_signals(dinfo_t *dip)
 {
+    (void)dip; /* Unused parameter */
     /*
      * Catch a couple signals to do elegant cleanup.
      */
@@ -1556,7 +1558,7 @@ do_common_startup_logging(dinfo_t *dip)
     if ( (dip->di_thread_number == 1) || dip->di_log_file ) {
 	if (dip->di_logheader_flag) {
 	    if ( (dip->di_iobehavior != DTAPP_IO) ||
-		 (dip->di_iobehavior == DTAPP_IO) && (dip->di_device_number == 0) ) {
+		 ((dip->di_iobehavior == DTAPP_IO) && (dip->di_device_number == 0)) ) {
 		report_os_information(dip, True);
 	    }
 	    report_file_system_information(dip, True, False);
@@ -2877,7 +2879,7 @@ handle_file_system_full(dinfo_t *dip, hbool_t delete_flag)
 	/* We may be overwriting an existing file with random I/O. */
 	/* Therefore, try to free space by truncating the file. */
 	/* Note: Oddly enough, truncate may encounter FS full! */
-	int rc = dt_truncate_file(dip, dip->di_dname, (Offset_t)0, &isDiskFull, EnableErrors);
+	(void)dt_truncate_file(dip, dip->di_dname, (Offset_t)0, &isDiskFull, EnableErrors);
 	/* Maybe space is being freed after delete or truncate? */
 	if ( (free_space = do_free_space_wait(dip, dip->di_fsfree_retries)) ) {
 	    /* Note: The main I/O loops expect the file to be open already. */
@@ -3059,7 +3061,6 @@ setup_log_directory(dinfo_t *dip, char *path, char *log)
 	/* Note: We do not expand the log directory here! */
         char *dsp = strrchr(log, dip->di_dir_sep);
 	if (dsp) {
-            char *dir = log;
             *dsp = '\0';
             /* create the log directory if it does not exist! */
 	    if (os_file_exists(log) == False) {
@@ -3332,8 +3333,8 @@ finish_test(dinfo_t *dip, int exit_code, hbool_t do_cleanup)
      */
     if ( do_cleanup && dip->di_output_file && dip->di_fsfile_flag &&
 	 (dip->di_io_mode == TEST_MODE) && (dip->di_dispose_mode == DELETE_FILE) ) {
-	int status = delete_files(dip, True);
-	if (status == FAILURE) exit_code = status; /* Delete failed, that's a test failure! */
+	int delete_status = delete_files(dip, True);
+	if (delete_status == FAILURE) exit_code = delete_status; /* Delete failed, that's a test failure! */
     }
 
     if ( (dip->di_eof_status_flag == False) && (exit_code == END_OF_FILE) ) {
@@ -3523,7 +3524,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	    continue;
 	}
 	if (match (&string, "notime=")) {
-	    int i;
+	    int j;
 	    optiming_t *optp;
 	    /*
 	     * May loop through table more than once, as we parse
@@ -3531,7 +3532,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	     */
 	    do {
 		optp = &optiming_table[OPEN_OP];
-		for ( i = OPEN_OP; (i < NUM_OPS); optp++, i++ ) {
+		for ( j = OPEN_OP; (j < NUM_OPS); optp++, j++ ) {
 		    if ( match(&string, ",") ) break;
 		    if ( match(&string, optp->opt_name) ) {
 			optp->opt_timing_flag = False;
@@ -5821,14 +5822,14 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	    dip->di_iot_pattern = False;
 	    dip->di_user_pattern = True;
 	    if (match (&string, "incr")) {	/* Incrementing pattern. */
-		int v, size = 256;
-		uint8_t *buffer = malloc_palign(dip, size, 0);
+		int v, pattern_size = 256;
+		uint8_t *buffer = malloc_palign(dip, pattern_size, 0);
 		uint8_t *bp = buffer;
-		for (v = 0; v < size; v++) {
+		for (v = 0; v < pattern_size; v++) {
 		    *bp++ = v;
 		}
 		dip->di_incr_pattern = True;
-		setup_pattern(dip, buffer, size, True);
+		setup_pattern(dip, buffer, pattern_size, True);
 	    } else if ( (size == 3) && 
 			(match(&string, "iot") || match(&string, "IOT")) ) {
 		dip->di_iot_pattern = True;
@@ -6003,9 +6004,9 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	    continue;
 	}
 	if (match (&string, "script=")) {
-	    int status;
-	    status = OpenScriptFile(dip, string);
-	    if (status == SUCCESS) {
+	    int script_status;
+	    script_status = OpenScriptFile(dip, string);
+	    if (script_status == SUCCESS) {
 		continue;
 	    } else {
 		return ( HandleExit(dip, FAILURE) );
@@ -6188,7 +6189,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	    continue;
 	}
 	if ( match(&string, "trigger=") || match(&string, "--trigger=") ) {
-	    trigger_data_t *tdp = &dip->di_triggers[dip->di_num_triggers];
+	    /* trigger_data_t *tdp = &dip->di_triggers[dip->di_num_triggers]; */ /* Unused */
             /* No trigger specified, so cleanup existing! */
 	    if (*string == '\0') {
 		remove_triggers(dip);
@@ -6515,13 +6516,13 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 	    /* Format is: define workload options...*/
 	    i++; argv++;	/* skip "define" */
 	    if (i < argc) {
-		char *p;
+		char *workload_p;
 		workload_entry_t *workload_entry;
 		workload_name = *argv;
 		/* Poor parser, allow description after the workload name! */
-		if ((p = strrchr(workload_name, ':'))) {
-		    *p++ = '\0';
-		    workload_desc = p;
+		if ((workload_p = strrchr(workload_name, ':'))) {
+		    *workload_p++ = '\0';
+		    workload_desc = workload_p;
 		}
 		workload_entry = find_workload(workload_name);
 		if (workload_entry) {
@@ -6682,6 +6683,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 char *
 make_options_string(dinfo_t *dip, int argc, char **argv, hbool_t quoting)
 {
+    (void)quoting; /* Unused parameter */
     int arg;
     char *bp;
     char *buffer, *options;
@@ -7222,8 +7224,8 @@ keepalive_alarm(dinfo_t *dip)
 #endif /* defined(DATA_CORRUPTION_URL) */
 	    }
 
-	    if ( dip->di_num_triggers &&
-		 (dip->di_trigger_control == TRIGGER_ON_ALL) ||
+	    if ( (dip->di_num_triggers &&
+		  (dip->di_trigger_control == TRIGGER_ON_ALL)) ||
 		 (dip->di_trigger_control == TRIGGER_ON_NOPROGS) ) {
         	/* Start thread to execute triggers, if not active already. */
 		if (dip->di_trigger_active == False) {
@@ -7354,7 +7356,7 @@ void
 SignalHandler(int signal_number)
 {
     dinfo_t *dip = master_dinfo;
-    int exit_status = signal_number;
+    /* int signal_exit_status = signal_number; */ /* Unused */
 
     if (debug_flag || pDebugFlag || tDebugFlag || dip->di_verbose_flag) {
 	Printf(NULL, "Caught signal %d\n", signal_number);
@@ -7505,8 +7507,9 @@ terminate(dinfo_t *dip, int exit_code)
  * 	exit_status = The exit status.
  */ 
 void
-finish_exiting(dinfo_t *dip, int exit_status)
+finish_exiting(dinfo_t *dip, int local_exit_status)
 {
+    (void)local_exit_status; /* Unused parameter */
     if (dip == NULL) dip = master_dinfo;
 
     if ( (dip->di_eof_status_flag == False) && (exit_status == END_OF_FILE)) {
@@ -7564,6 +7567,7 @@ handle_thread_exit(dinfo_t *dip)
 
 int nofunc(struct dinfo *dip)
 {
+    (void)dip; /* Unused parameter */
     return(SUCCESS);
 }
 
@@ -7930,7 +7934,6 @@ setup_thread_attributes(dinfo_t *dip, pthread_attr_t *tattrp, hbool_t joinable_f
 int
 init_pthread_attributes(dinfo_t *dip)
 {
-    size_t currentStackSize = 0;
     size_t desiredStackSize = THREAD_STACK_SIZE;
     char *p, *string;
     int status;
@@ -7939,6 +7942,7 @@ init_pthread_attributes(dinfo_t *dip)
 	string = p;
 	desiredStackSize = number(dip, string, ANY_RADIX, &status, False);
     }
+    (void)desiredStackSize; /* TODO: Should this be passed to setup_thread_attributes? */
     ParentThreadId = pthread_self();
 
 #if 1
@@ -9287,6 +9291,7 @@ clone_device(dinfo_t *dip, hbool_t master, hbool_t new_context)
 #endif /* defined(AIO) */
 	    /* Note: For AIO, this allocates data buffers! */
 	    status = (*cdip->di_funcs->tf_initialize)(cdip);
+	    (void)status; /* TODO: Should this be checked? */
 	}
     }
     if (dip->di_verify_buffer) {

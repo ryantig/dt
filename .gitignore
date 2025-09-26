@@ -3,3 +3,4 @@
 *.tlog
 windows/*.c
 windows/*.h
+.augment

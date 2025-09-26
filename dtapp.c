@@ -288,8 +288,8 @@ dtapp_set_iobehavior_funcs(dinfo_t *dip)
 int
 dtapp_parser(dinfo_t *dip, char *option)
 {
-    dtapp_information_t *dtap = dip->di_opaque;
-    int status = PARSE_MATCH;
+    /* dtapp_information_t *dtap = dip->di_opaque; */ /* Unused */
+    /* int status = PARSE_MATCH; */ /* Unused */
 
     if (match(&option, "-")) {         /* Optional "-" to match dtapp options! */
         ;
@@ -321,6 +321,7 @@ dtapp_make_device_list(char **devices, int device_count)
 void
 dtapp_report_all_statistics(dinfo_t *tdip, dtapp_information_t *dtap, char **devices, int device_count)
 {
+    (void)dtap; /* Unused parameter */
     char *device_list = dtapp_make_device_list(devices, device_count);
     char *dname = tdip->di_dname;
     tdip->di_dname = device_list;
@@ -332,6 +333,7 @@ dtapp_report_all_statistics(dinfo_t *tdip, dtapp_information_t *dtap, char **dev
 int
 dtapp_job_finish(dinfo_t *dip, job_info_t *job)
 {
+    (void)dip; /* Unused parameter */
     dtapp_information_t *dtap;
     threads_info_t *tip = job->ji_tinfo;
     dinfo_t *tdip;
@@ -385,7 +387,7 @@ dtapp_thread(void *arg)
 {
     dinfo_t *dip = arg;
     dtapp_information_t *dtap = dip->di_opaque;
-    uint64_t iterations = 0;
+    /* uint64_t iterations = 0; */ /* Unused */
     hbool_t do_cleanup = False;
     int status = SUCCESS, rc;
 
@@ -772,7 +774,6 @@ dtapp_finish_test(dinfo_t *dip, int exit_code, hbool_t do_cleanup)
      * before reporting statistics so they'll be correct.
      */
     if (dip && do_cleanup && (dip->di_fd != NoFd) ) {
-        dtapp_information_t *dtap = dip->di_opaque;
         status = dtapp_close_devices(dip, dtap);
 	//status = (*dip->di_funcs->tf_close)(dip);
 	if (status == FAILURE) exit_code = status;
@@ -1206,6 +1207,7 @@ dtapp_close_devices(dinfo_t *dip, dtapp_information_t *dtap)
 int
 dtapp_close_input_devices(dinfo_t *dip, dtapp_information_t *dtap)
 {
+    (void)dip; /* Unused parameter */
     int device, status = SUCCESS, rc;
 
     for (device = 0; (device < dtap->dta_input_count); device++) {
@@ -1220,6 +1222,7 @@ dtapp_close_input_devices(dinfo_t *dip, dtapp_information_t *dtap)
 int
 dtapp_close_output_devices(dinfo_t *dip, dtapp_information_t *dtap)
 {
+    (void)dip; /* Unused parameter */
     int device, status = SUCCESS, rc;
 
     for (device = 0; (device < dtap->dta_output_count); device++) {
@@ -1260,6 +1263,7 @@ dtapp_iterate_devices(dinfo_t **dips, int device_count, int (*func)(dinfo_t *dip
 int
 dtapp_test_startup(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     do_common_startup_logging(dip);
     do_setup_keepalive_msgs(dip);
     dip->di_program_start = time(NULL);
@@ -1286,6 +1290,7 @@ dtapp_set_open_flags(dinfo_t *dip, void *arg)
 int
 dtapp_end_pass(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     dip->di_end_time = times(&dip->di_etimes);
     gettimeofday(&dip->di_end_timer, NULL);
     return(SUCCESS);
@@ -1294,6 +1299,7 @@ dtapp_end_pass(dinfo_t *dip, void *arg)
 int
 dtapp_gather_stats(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     gather_stats(dip);      /* Gather the device statistics.    */
     gather_totals(dip);     /* Update the total statistics.	*/
     return(SUCCESS);
@@ -1310,6 +1316,7 @@ dtapp_error_count(dinfo_t *dip, void *arg)
 int
 dtapp_pass_count(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     dip->di_pass_count++;
     return(SUCCESS);
 }
@@ -1326,6 +1333,7 @@ dtapp_report_pass(dinfo_t *dip, void *arg)
 int
 dtapp_report_history(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     if (dip->di_history_size) {
         dump_history_data(dip);
     }
@@ -1335,6 +1343,7 @@ dtapp_report_history(dinfo_t *dip, void *arg)
 int
 dtapp_prepass_processing(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     dtapp_do_prepass_processing(dip);
     return(SUCCESS);
 }
@@ -1342,12 +1351,14 @@ dtapp_prepass_processing(dinfo_t *dip, void *arg)
 int
 dtapp_postwrite_processing(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     return( do_postwrite_processing(dip) );
 }
 
 int
 dtapp_start_read_pass(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     dip->di_mode = READ_MODE;
     dip->di_pass_time = times(&dip->di_ptimes);
     gettimeofday(&dip->di_pass_timer, NULL);
@@ -1359,6 +1370,7 @@ dtapp_start_read_pass(dinfo_t *dip, void *arg)
 int
 dtapp_start_write_pass(dinfo_t *dip, void *arg)
 {
+    (void)arg; /* Unused parameter */
     dip->di_mode = WRITE_MODE;
     dip->di_pass_time = times(&dip->di_ptimes);
     gettimeofday(&dip->di_pass_timer, NULL);
@@ -1775,7 +1787,7 @@ dtapp_validate_parameters(dinfo_t *dip)
 void
 dtapp_help(dinfo_t *dip)
 {
-    dtapp_information_t *dtap = dip->di_opaque;
+    /* dtapp_information_t *dtap = dip->di_opaque; */ /* Unused */
 
     P(dip, "Usage: %s iobehavior=dtapp [options...]\n", cmdname);
     P(dip, "\nOptions:\n");
@@ -1860,7 +1872,7 @@ dtapp_read_data(dinfo_t *dip)
 
 	if ( idip->di_volumes_flag &&
              (idip->di_multi_volume >= idip->di_volume_limit) &&
-             (idip->di_volume_records >= idip->di_volume_records) ) {
+             /* (idip->di_volume_records >= idip->di_volume_records) && */ True ) { /* TODO: Fix tautological comparison */
 	    break;
 	}
 
@@ -2139,7 +2151,7 @@ dtapp_write_data(dinfo_t *dip)
 
 	if ( odip->di_volumes_flag &&
              (odip->di_multi_volume >= odip->di_volume_limit) &&
-             (odip->di_volume_records >= odip->di_volume_records) ) {
+             /* (odip->di_volume_records >= odip->di_volume_records) && */ True ) { /* TODO: Fix tautological comparison */
 	    break;
 	}
 
@@ -2252,8 +2264,7 @@ dtapp_write_data(dinfo_t *dip)
 	    partial = (count < (ssize_t)bsize) ? True : False;
 	}
 	if ( (status == SUCCESS) && (dip->di_io_mode == MIRROR_MODE) ) {
-	    ssize_t rcount;
-            rcount = verify_record(idip, odip->di_data_buffer, count, odip->di_offset, &status);
+	    (void)verify_record(idip, odip->di_data_buffer, count, odip->di_offset, &status);
 	    /* TODO: Need to cleanup multiple device support! */
 	    /* For now, propagate certain information to writer. */
 	    if (idip->di_end_of_file) {
@@ -2427,9 +2438,9 @@ dtapp_write_data(dinfo_t *dip)
         IterateAllDevices(dtap, dtapp_error_count, &error_count, rc);
     }
     if (lock_full_range == True) {
-        int rc = dtapp_lock_unlock(dtap->dta_output_dips, dtap->dta_output_count,
+        int unlock_rc = dtapp_lock_unlock(dtap->dta_output_dips, dtap->dta_output_count,
                                    LOCK_TYPE_UNLOCK, data_limit);
-	if (rc == FAILURE) status = rc;
+	if (unlock_rc == FAILURE) status = unlock_rc;
     }
     return(status);
 }
@@ -2440,7 +2451,7 @@ dtapp_report_btag(dinfo_t *dip, btag_t *ebtag, btag_t *rbtag, hbool_t raw_flag)
     dtapp_information_t *dtap = dip->di_opaque;
     char str[LARGE_BUFFER_SIZE];
     dinfo_t *pdip = NULL;
-    char *strp = str;
+    /* char *strp = str; */ /* Unused */
     int btag_errors = 0;
     size_t btag_size = sizeof(*ebtag);
     btag_write_order_t *ewrop = NULL;
@@ -2715,7 +2726,7 @@ verify_btag_write_order(dinfo_t *dip, btag_t *btag, size_t transfer_count)
     dinfo_t *pdip = NULL;
     //Offset_t pbtag_offset;
     int status = SUCCESS;
-    int btag_errors = 0;
+    /* int btag_errors = 0; */ /* Unused */
     size_t bsize;
     ssize_t count;
 
