@@ -1361,7 +1361,7 @@ save_corrupted_data(dinfo_t *dip, char *filepath, void *buffer, size_t bufsize, 
 		(path = dip->di_job_log) ||
 		(path = dip->di_log_file) ) {
         dir = strdup(path);
-	if (p = strrchr(dir, dip->di_dir_sep)) {
+	if ((p = strrchr(dir, dip->di_dir_sep))) {
 	    *p = '\0';
 	} else { /* Assume just a file name, no directory. */
             free(dir);
@@ -1369,11 +1369,11 @@ save_corrupted_data(dinfo_t *dip, char *filepath, void *buffer, size_t bufsize, 
 	}
     }
     /* Find the basename of the file. */
-    if (p = strrchr(filepath, dip->di_dir_sep)) {
+    if ((p = strrchr(filepath, dip->di_dir_sep))) {
         file = ++p;
-    } else if (p = strrchr(filepath, DIRSEP)) {
+    } else if ((p = strrchr(filepath, DIRSEP))) {
         file = ++p;
-    } else if (p = strrchr(filepath, POSIX_DIRSEP)) {
+    } else if ((p = strrchr(filepath, POSIX_DIRSEP))) {
         file = ++p;
     } else {
         file = filepath;

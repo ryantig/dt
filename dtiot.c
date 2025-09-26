@@ -621,7 +621,7 @@ display_iot_block(dinfo_t *dip, int block, Offset_t block_offset,
 	Fprintf(dip, DT_FIELD_WIDTH "0x%08x (actual 0x%08x)\n", "Block timestamp value",
 		get_lbn( (riot + dip->di_fprefix_size) ), (uint32_t)seconds);
 	/* Check for invalid time values, with upper limit including fudge factor! */
-	if ( (seconds == (time_t)0) || (seconds > (time((time_t)0) + 300)) ) {
+	if ( (seconds == (time_t)0) || (seconds > (time(NULL) + 300)) ) {
 	    Fprintf(dip, DT_FIELD_WIDTH "%s\n",
 		    "Data Block Written on", "<invalid time value>");
 	} else {

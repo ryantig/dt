@@ -656,7 +656,7 @@ start_devs(dinfo_t *dip)
     devs = p = (dip->di_input_file) ? dip->di_input_file : dip->di_output_file;
     dip->di_num_devs = 1;
     /* Count the devices specified. */
-    while (p = strchr(p, ',')) {
+    while ((p = strchr(p, ','))) {
 	dip->di_num_devs++; p++;
     }
     dip->di_max_procs = dip->di_num_devs;

@@ -462,7 +462,7 @@ cleanup_job(dinfo_t *mdip, job_info_t *job, hbool_t lock_jobs)
 	}
     }
     /* Free job resources. */
-    if (tip = job->ji_tinfo) {
+    if ((tip = job->ji_tinfo)) {
 	dinfo_t *dip = NULL;
 	int thread;
 
@@ -547,7 +547,7 @@ remove_job_by_id(dinfo_t *dip, job_id_t job_id)
     job_info_t *job = NULL;
     int status = SUCCESS;
     
-    if (job = find_job_by_id(dip, job_id, True)) {
+    if ((job = find_job_by_id(dip, job_id, True))) {
 	status = remove_job(dip, job, False);
 	(void)release_jobs_lock(dip);
     } else {
@@ -600,13 +600,13 @@ set_threads_state(threads_info_t *tip, tstate_t thread_state)
 	dip = tip->ti_dts[thread];
 	dip->di_thread_state = thread_state;
 	if (thread_state == TS_TERMINATING) {
-	    dip->di_thread_stopped = time((time_t) 0);
+	    dip->di_thread_stopped = time(NULL);
 	}
 	/* For copy/mirror/verify I/O modes, do output device too! */
-	if (dip = dip->di_output_dinfo) {
+	if ((dip = dip->di_output_dinfo)) {
 	    dip->di_thread_state = thread_state;
 	    if (thread_state == TS_TERMINATING) {
-		dip->di_thread_stopped = time((time_t) 0);
+		dip->di_thread_stopped = time(NULL);
 	    }
 	}
     }
@@ -805,7 +805,7 @@ cancel_job_by_id(dinfo_t *dip, job_id_t job_id)
     job_info_t *job = NULL;
     int status = SUCCESS;
     
-    if (job = find_job_by_id(dip, job_id, True)) {
+    if ((job = find_job_by_id(dip, job_id, True))) {
 	status = cancel_job(dip, job);
 	(void)release_jobs_lock(dip);
     } else {
@@ -821,7 +821,7 @@ cancel_job_by_tag(dinfo_t *dip, char *job_tag)
     job_info_t *job = NULL;
     int status = SUCCESS;
     
-    if (job = find_job_by_tag(dip, job_tag, True)) {
+    if ((job = find_job_by_tag(dip, job_tag, True))) {
 	status = cancel_job(dip, job);
 	(void)release_jobs_lock(dip);
     } else {
@@ -839,7 +839,7 @@ cancel_jobs_by_tag(dinfo_t *dip, char *job_tag)
     int status = SUCCESS;
     hbool_t lock_jobs = True;
     
-    while (job = find_jobs_by_tag(dip, job_tag, job, lock_jobs)) {
+    while ((job = find_jobs_by_tag(dip, job_tag, job, lock_jobs))) {
 	int cstatus;
 	jobs_found++;
 	cstatus = cancel_job(dip, job);
@@ -908,7 +908,7 @@ pause_job_by_id(dinfo_t *dip, job_id_t job_id)
     job_info_t *job = NULL;
     int status = SUCCESS;
     
-    if (job = find_job_by_id(dip, job_id, True)) {
+    if ((job = find_job_by_id(dip, job_id, True))) {
 	if (job->ji_job_state == JS_RUNNING) {
 	    status = pause_job(dip, job);
 	} else if (job->ji_job_state == JS_PAUSED) {
@@ -930,7 +930,7 @@ pause_job_by_tag(dinfo_t *dip, char *job_tag)
     job_info_t *job = NULL;
     int status = SUCCESS;
     
-    if (job = find_job_by_tag(dip, job_tag, True)) {
+    if ((job = find_job_by_tag(dip, job_tag, True))) {
 	if (job->ji_job_state == JS_RUNNING) {
 	    status = pause_job(dip, job);
 	} else if (job->ji_job_state == JS_PAUSED) {
@@ -956,7 +956,7 @@ pause_jobs_by_tag(dinfo_t *dip, char *job_tag)
     int status = SUCCESS;
     hbool_t lock_jobs = True;
     
-    while (job = find_jobs_by_tag(dip, job_tag, job, lock_jobs)) {
+    while ((job = find_jobs_by_tag(dip, job_tag, job, lock_jobs))) {
 	jobs_found++;
 	if (job->ji_job_state == JS_RUNNING) {
 	    int pstatus = pause_job(dip, job);
@@ -1004,7 +1004,7 @@ resume_job_thread(dinfo_t *dip, job_info_t *job)
     status = acquire_jobs_lock(dip);
     job->ji_job_state = JS_RUNNING;
     dip->di_thread_state = TS_RUNNING;
-    dip->di_thread_stopped = time((time_t) 0);
+    dip->di_thread_stopped = time(NULL);
     Printf(dip, "Job %u, Thread %u resumed...\n",
 	   job->ji_job_id, dip->di_thread_number);
     if (status == SUCCESS) {

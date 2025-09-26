@@ -424,7 +424,7 @@ ReportExtendedErrorInfo(dinfo_t *dip, error_info_t *eip, char *format, ...)
 	    PrintLongDecHex(dip, fileID_str, fileID, PNL);
 	}
 	/* Isolate the directory and report its' ID too! */
-	if (p = strrchr(eip->ei_file, dip->di_dir_sep)) {
+	if ((p = strrchr(eip->ei_file, dip->di_dir_sep))) {
 	    os_ino_t dirID;
 	    *p = '\0';	/* Separate the directory from the file name. */
 	    dirID = os_get_fileID(eip->ei_file, NoFd);
@@ -1274,7 +1274,7 @@ PrintLines(dinfo_t *dip, hbool_t error_flag, char *buffer)
     lock_status = AcquirePrintLock(dip);
 
     do {
-        if (p = strchr(bp, '\n')) {
+        if ((p = strchr(bp, '\n'))) {
             p++;
 	    if (error_flag == True) {
 		Fprintf(dip, "%.*s", (p - bp), bp);

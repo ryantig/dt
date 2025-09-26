@@ -948,12 +948,12 @@ FmtString(dinfo_t *dip, char *format, hbool_t filepath_flag)
 			dptr = strdup(device);
 			pptr = sptr = skip_device_prefix(dptr);
 			/* Replace path delimiter(s) with undersores. */
-			while (sptr = strchr(sptr, ifs)) {
+			while ((sptr = strchr(sptr, ifs))) {
 			    *sptr++ = '_';
 			}
 			sptr = pptr;
 			/* Replace periods with an underscore too! */
-			while (sptr = strchr(sptr, '.')) {
+			while ((sptr = strchr(sptr, '.'))) {
 			    *sptr++ = '_';
 			}
 			to += Sprintf(to, "%s", pptr);
@@ -979,7 +979,7 @@ FmtString(dinfo_t *dip, char *format, hbool_t filepath_flag)
 			dptr = strdup(device);
 			pptr = sptr = skip_device_prefix(dptr);
 			/* Add basename of the device path. */
-			if (sptr = strrchr(pptr, ifs)) {
+			if ((sptr = strrchr(pptr, ifs))) {
 			    sptr++;
 			} else {
 			    sptr = pptr;
@@ -1049,7 +1049,7 @@ FmtString(dinfo_t *dip, char *format, hbool_t filepath_flag)
             } else if (strncasecmp(key, "host", 4) == 0) {
                 char *p, *hostname = os_gethostname();
 		if (hostname) {
-		    if (p = strchr(hostname, '.')) {
+		    if ((p = strchr(hostname, '.'))) {
 			*p = '\0';
 		    }
 		    to += Sprintf(to, "%s", hostname);
@@ -1088,7 +1088,7 @@ FmtString(dinfo_t *dip, char *format, hbool_t filepath_flag)
 		if (tmp) {
 		    char *fs;
 		    /* Format: yyyymmdd */
-		    if (fs = dip->di_date_sep) {
+		    if ((fs = dip->di_date_sep)) {
 			to += sprintf(to, "%04d%s%02d%s%02d",
 				      tmp->tm_year, fs, tmp->tm_mon, fs, tmp->tm_mday);
 		    } else {
@@ -1128,7 +1128,7 @@ FmtString(dinfo_t *dip, char *format, hbool_t filepath_flag)
 		if (tmp) {
         	    char *fs;
 		    /* Format: hhmmss */
-		    if (fs = dip->di_time_sep) {
+		    if ((fs = dip->di_time_sep)) {
 			to += sprintf(to, "%02d%s%02d%s%02d",
 				      tmp->tm_hour, fs, tmp->tm_min, fs, tmp->tm_sec);
 		    } else {

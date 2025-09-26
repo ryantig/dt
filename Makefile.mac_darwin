@@ -67,8 +67,11 @@ LINTLIBS=
 PORG      = -O3
 
 AWK=	awk
-CFLAGS+= $(PORG) -DAIO -DMMAP -DMacDarwin -DFreeBSD -D_BSD_SOURCE -D_LARGEFILE64_SOURCE
-#CFLAGS+= $(PORG) -DMMAP -DTAPE -DMacDarwin -DFreeBSD -D_BSD_SOURCE
+# Added -march=native -flto for Mac Darwin
+# For release builds may want to have: CFLAGS = -O3 -march=native -flto -std=c17 -Wall -Wextra -Werror -isysroot $(xcrun --show-sdk-path)
+CFLAGS+= $(PORG) -march=native -flto -Wall -Wextra -std=c17 -ftrapv -fstack-protector-all -Wstrict-overflow=5 -Wshadow -Wmissing-prototypes -DAIO -DMMAP -DMacDarwin -DFreeBSD -D_BSD_SOURCE -D_LARGEFILE64_SOURCE
+# CFLAGS+= $(PORG) -DAIO -DMMAP -DMacDarwin -DFreeBSD -D_BSD_SOURCE -D_LARGEFILE64_SOURCE
+# was commented out: CFLAGS+= $(PORG) -DMMAP -DTAPE -DMacDarwin -DFreeBSD -D_BSD_SOURCE
 CPP=	/usr/bin/cpp
 CPPOPTS= 
 LDFLAGS=

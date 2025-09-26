@@ -117,13 +117,17 @@ initialize_btag(dinfo_t *dip, uint8_t opaque_type)
 	btag->btag_devid = HtoL32(devid);
     } else {
 	btag_flags |= BTAG_FILE;
+#if defined(SCSI)
 	if (dip->di_serial_number == NULL) {
 	    dip->di_btag_vflags &= ~BTAGV_SERIAL;
 	}
+#else
+	dip->di_btag_vflags &= ~BTAGV_SERIAL;
+#endif
     }
     hostname = os_gethostname();
     if (hostname) {
-	if (p = strchr(hostname, '.')) {
+	if ((p = strchr(hostname, '.'))) {
 	    *p = '\0';
 	}
 	(void)strncpy(btag->btag_hostname, hostname, sizeof(btag->btag_hostname)-1);

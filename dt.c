@@ -786,7 +786,7 @@ find_iobehavior(dinfo_t *dip, char *name)
     iobehavior_funcs_t **iobtp = &iobehavior_funcs_table[0];
     iobehavior_funcs_t *iobf;
 
-    while ( iobf = *iobtp++ ) {
+    while ( (iobf = *iobtp++) ) {
         /* Switched to compare with length due to Windows .exe! */
 	if ( EQL(iobf->iob_name, name, strlen(iobf->iob_name)) ) {
 	    return(iobf);
@@ -848,7 +848,7 @@ main(int argc, char **argv)
     }
     if ((max_open_files < DEFAULT_MAX_OPEN_FILES) || getenv(MAXFILES_ENVNAME)) {
         char *p;
-	if (p = getenv(MAXFILES_ENVNAME)) {
+	if ((p = getenv(MAXFILES_ENVNAME))) {
 	    int maxfiles = number(dip, p, ANY_RADIX, &status, False);
 	    if (status == SUCCESS) {
 		max_open_files = maxfiles;
@@ -1130,7 +1130,7 @@ initiate_devs(dinfo_t *dip)
     devp = p = strdup(devices);
     dip->di_num_devs = 1;
     /* Count the devices specified. */
-    while (p = strchr(p, ',')) {
+    while ((p = strchr(p, ','))) {
 	dip->di_num_devs++; p++;
     }
     job_ids = Malloc(dip, sizeof(job_id_t) * dip->di_num_devs );
@@ -1483,7 +1483,7 @@ do_common_thread_startup(dinfo_t *dip)
     if (status == SUCCESS) {
 	status = release_job_lock(dip, dip->di_job);
     }
-    dip->di_program_start = time((time_t) 0);
+    dip->di_program_start = time(NULL);
     /* Prime the keepalive time, if enabled. */
     if (dip->di_keepalive_time) {
 	dip->di_last_keepalive = time((time_t *)0);
@@ -1713,7 +1713,7 @@ docopy(void *arg)
 	 */
 	dip->di_pass_time = times(&dip->di_ptimes);	/* Start the pass timer. */
 	gettimeofday(&dip->di_pass_timer, NULL);
-	dip->di_write_pass_start = time((time_t) 0);	/* Pass time in seconds. */
+	dip->di_write_pass_start = time(NULL);	/* Pass time in seconds. */
 	odip->di_pass_time = dip->di_pass_time;			/* HACK! */
 	odip->di_write_pass_start = dip->di_write_pass_start;	/* HACK! */
 
@@ -1761,7 +1761,7 @@ docopy(void *arg)
 	    }
 	    dip->di_pass_time = times(&dip->di_ptimes); /* Time the verify. */
 	    gettimeofday(&dip->di_pass_timer, NULL);
-	    dip->di_read_pass_start = time((time_t) 0);	/* Pass time in seconds. */
+	    dip->di_read_pass_start = time(NULL);	/* Pass time in seconds. */
 	    dip->di_io_mode = VERIFY_MODE;
 	    rc = (*dtf->tf_start_test)(dip);
 	    if (rc == SUCCESS) {
@@ -1957,7 +1957,7 @@ domirror(void *arg)
 	 */
 	odip->di_pass_time = times(&odip->di_ptimes);	/* Start the pass timer. */
 	gettimeofday(&odip->di_pass_timer, NULL);
-	odip->di_write_pass_start = time((time_t) 0);	/* Pass time in seconds. */
+	odip->di_write_pass_start = time(NULL);	/* Pass time in seconds. */
 	/* Propagate times to the mirror device too! */
 	idip->di_pass_time = odip->di_pass_time;
 	idip->di_read_pass_start = odip->di_write_pass_start;
@@ -2148,7 +2148,7 @@ doio(void *arg)
 	    hbool_t do_read_pass;
 	    dtf = dip->di_funcs;
 	    dip->di_mode = WRITE_MODE;
-	    dip->di_write_pass_start = time((time_t) 0);/* Pass time in seconds. */
+	    dip->di_write_pass_start = time(NULL);/* Pass time in seconds. */
 	    if (dip->di_raw_flag == True) {
 		dip->di_read_pass_start = dip->di_write_pass_start;
 	    }
@@ -2231,7 +2231,7 @@ doio(void *arg)
 		}
 		dip->di_pass_time = times(&dip->di_ptimes); /* Time just the reads. */
 		gettimeofday(&dip->di_pass_timer, NULL);
-		dip->di_read_pass_start = time((time_t) 0); /* Pass time in seconds. */
+		dip->di_read_pass_start = time(NULL); /* Pass time in seconds. */
 		/*dip->di_rotate_offset = 0;*/
 		if (dip->di_pattern_buffer) {
 		    dip->di_pattern_bufptr = dip->di_pattern_buffer;
@@ -2301,7 +2301,7 @@ doio(void *arg)
 	} else { /* Reading only. */
 	    dtf = dip->di_funcs;
 	    dip->di_mode = READ_MODE;
-	    dip->di_read_pass_start = time((time_t) 0); /* Pass time in seconds. */
+	    dip->di_read_pass_start = time(NULL); /* Pass time in seconds. */
 	    /*
 	     * Note: User must set random seed to repeat previous write sequence!
 	     */
@@ -2466,7 +2466,7 @@ setup_random_seeds(dinfo_t *dip)
     }
     set_rseed(dip, dip->di_random_seed);
     /* Note: rand() is used for these, to keep write/read random sequences the same! */
-    if (dip->di_vary_iodir || dip->di_vary_iotype || (dip->di_unmap_type == UNMAP_TYPE_RANDOM)) {
+    if (dip->di_vary_iodir || dip->di_vary_iotype IF_SCSI(|| (dip->di_unmap_type == UNMAP_TYPE_RANDOM))) {
 	srand((unsigned int)dip->di_random_seed);
     }
     return;
@@ -2879,7 +2879,7 @@ handle_file_system_full(dinfo_t *dip, hbool_t delete_flag)
 	/* Note: Oddly enough, truncate may encounter FS full! */
 	int rc = dt_truncate_file(dip, dip->di_dname, (Offset_t)0, &isDiskFull, EnableErrors);
 	/* Maybe space is being freed after delete or truncate? */
-	if ( free_space = do_free_space_wait(dip, dip->di_fsfree_retries) ) {
+	if ( (free_space = do_free_space_wait(dip, dip->di_fsfree_retries)) ) {
 	    /* Note: The main I/O loops expect the file to be open already. */
 	    if (dip->di_file_number) dip->di_file_number--; /* Same file please! */
 	    status = reopen_output_file(dip);
@@ -3176,7 +3176,7 @@ setup_base_name(dinfo_t *dip, char *file)
 {
     int status = SUCCESS;
     char *p;
-    if (p = strrchr(file, dip->di_dir_sep)) {
+    if ((p = strrchr(file, dip->di_dir_sep))) {
 	*p = '\0';	/* Separate the directory from the file name. */
 	dip->di_dir = strdup(file);
 	*p++ = dip->di_dir_sep;
@@ -6519,7 +6519,7 @@ parse_args(dinfo_t *dip, int argc, char **argv)
 		workload_entry_t *workload_entry;
 		workload_name = *argv;
 		/* Poor parser, allow description after the workload name! */
-		if (p = strrchr(workload_name, ':')) {
+		if ((p = strrchr(workload_name, ':'))) {
 		    *p++ = '\0';
 		    workload_desc = p;
 		}
@@ -7272,7 +7272,7 @@ keepalive_alarm(dinfo_t *dip)
 	    /* We can't assume all threads start running at the same time, so... */
 	    //(void)stop_job(dip, dip->di_job);
 	    dip->di_thread_state = TS_TERMINATING;
-	    dip->di_thread_stopped = time((time_t) 0);
+	    dip->di_thread_stopped = time(NULL);
 	}
     }
     if ( (THREAD_TERMINATING(dip) == False) &&
@@ -7562,8 +7562,7 @@ handle_thread_exit(dinfo_t *dip)
     return;
 }
 
-int
-nofunc(struct dinfo *dip)
+int nofunc(struct dinfo *dip)
 {
     return(SUCCESS);
 }
@@ -7863,7 +7862,7 @@ setup_thread_attributes(dinfo_t *dip, pthread_attr_t *tattrp, hbool_t joinable_f
     char *p, *string;
     int status;
 
-    if (p = getenv(THREAD_STACK_ENV)) {
+    if ((p = getenv(THREAD_STACK_ENV))) {
 	string = p;
 	desiredStackSize = number(dip, string, ANY_RADIX, &status, False);
     }
@@ -7936,7 +7935,7 @@ init_pthread_attributes(dinfo_t *dip)
     char *p, *string;
     int status;
 
-    if (p = getenv(THREAD_STACK_ENV)) {
+    if ((p = getenv(THREAD_STACK_ENV))) {
 	string = p;
 	desiredStackSize = number(dip, string, ANY_RADIX, &status, False);
     }
@@ -8191,7 +8190,7 @@ read_more:
     /*
      * Handle continuation lines.
      */ 
-    if (p = strrchr(bufptr, '\n')) {
+    if ((p = strrchr(bufptr, '\n'))) {
 	--p;
 	/* Handle Windows <cr><lf> sequence! */
 	if (*p == '\r') {
@@ -8512,7 +8511,7 @@ MakeArgList(char **argv, char *s)
                 to--;           /* Point to the trailing quote. */
                 from = s;       /* Copy the current string pointer. */
                 s = to;         /* This becomes the updated string. */
-                while (*to++ = *from++) ;
+                while ((*to++ = *from++)) ;
                 break;
 	    }
 	    default:
@@ -10337,7 +10336,7 @@ do_filesystem_setup(dinfo_t *dip)
      */
     if (dip->di_dir == NULL) {
 	char *p;
-	if (p = strrchr(file, dip->di_dir_sep)) {
+	if ((p = strrchr(file, dip->di_dir_sep))) {
 	    *p = '\0';	/* Separate the directory from the file name. */
 	    dip->di_dir = strdup(file);
 	    *p++ = dip->di_dir_sep;
@@ -10408,7 +10407,7 @@ do_filesystem_setup(dinfo_t *dip)
 	} else {
 	    char *p;
 	    /* Format strings must be the last part of path! */
-	    if (p = strrchr(dip->di_dir, dip->di_dir_sep)) {
+	    if ((p = strrchr(dip->di_dir, dip->di_dir_sep))) {
 		*p = '\0';	/* Remove last part of directory name. */
 		(void)os_get_fs_information(dip, dip->di_dir);
 		*p++ = dip->di_dir_sep;

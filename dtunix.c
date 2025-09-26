@@ -768,7 +768,7 @@ os_ctime(time_t *timep, char *time_buffer, int timebuf_size)
 	//Perror(NULL, "ctime_r() failed");
 	(int)sprintf(time_buffer, "<no time available>");
     } else {
-	if (bp = strrchr(time_buffer, '\n')) {
+	if ((bp = strrchr(time_buffer, '\n'))) {
 	    *bp = '\0';
 	}
     }

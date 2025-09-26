@@ -527,19 +527,6 @@ report_standard_scsi_information(dinfo_t *dip)
     return;
 }
 
-/*
- * NOTE: This is temporary, until we merge spt functions into dt!
- */ 
-#if defined(WIN32)
-
-char *spt_path = "C:\\tools\\spt.exe";
-
-#else /* !defined(WIN32) */
-
-char *spt_path = "/usr/local/bin/spt";
-
-#endif /* defined(WIN32) */
-
 int
 get_lba_status(dinfo_t *dip, Offset_t starting_offset, large_t data_bytes)
 {
@@ -890,9 +877,25 @@ dtReportScsiError(dinfo_t *dip, scsi_generic_t *sgp)
 
 #endif /* defined(SCSI) */
 
+/*
+ * NOTE: This is temporary, until we merge spt functions into dt!
+ */
+#if defined(WIN32)
+
+char *spt_path = "C:\\tools\\spt.exe";
+
+#else /* !defined(WIN32) */
+
+char *spt_path = "/usr/local/bin/spt";
+
+#endif /* defined(WIN32) */
+
 #if !defined(NVME)
 
 /* Creating stubs to ease conditionalization! */
+#if !defined(SCSI)
+#include "dt.h"
+#endif
 
 int
 init_nvme_info(dinfo_t *dip, char *dsf)

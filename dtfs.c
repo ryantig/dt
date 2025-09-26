@@ -1932,7 +1932,7 @@ restart_on_file_system_full(dinfo_t *dip)
 {
     hbool_t restart_flag = False;
 
-    if ( restart_flag = is_fsfull_restartable(dip) ) {
+    if ( (restart_flag = is_fsfull_restartable(dip)) ) {
 	set_unbuffered_mode(dip);
     }
     return(restart_flag);

@@ -334,13 +334,21 @@ typedef enum {
 #define isRandomIO(dip)		( (dip->di_io_type == RANDOM_IO) || \
 				  (dip->di_variable_flag == True) )
 
+/* Conditional compilation helper for SCSI features */
+#if defined(SCSI)
+#define IF_SCSI(x) x
+#else
+#define IF_SCSI(x)
+#endif
+
 /* TODO: Too many reasons to enable random generator, need to simplify! */
 #define UseRandomSeed(dip)	\
   ( isRandomIO(dip) || (dip->di_lock_files == True) || \
     (dip->di_read_percentage || dip->di_random_percentage) || \
     (dip->di_random_rpercentage || dip->di_random_wpercentage) || \
-    dip->di_vary_iodir || dip->di_vary_iotype || (dip->di_unmap_type == UNMAP_TYPE_RANDOM) || \
-    (dip->di_iobehavior == DTAPP_IO) || (dip->di_iobehavior == THUMPER_IO) || (dip->di_variable_limit == True) )
+    dip->di_vary_iodir || dip->di_vary_iotype || \
+    (dip->di_iobehavior == DTAPP_IO) || (dip->di_iobehavior == THUMPER_IO) || (dip->di_variable_limit == True) \
+    IF_SCSI(|| (dip->di_unmap_type == UNMAP_TYPE_RANDOM)) )
 
 #if defined(AIO)
 # define getFileOffset(dip) \
@@ -668,7 +676,9 @@ typedef struct {
 #define NOFUNC		(int (*)()) 0	/* No test function exists yet. */
 #define NoFd		INVALID_HANDLE_VALUE
 
-extern int nofunc();			/* Stub return (no test func).	*/
+/* Forward declaration */
+struct dinfo;
+extern int nofunc(struct dinfo *dip);	/* Stub return (no test func).	*/
 extern struct dtfuncs generic_funcs;	/* Generic test functions.	*/
 #if defined(AIO)
 extern struct dtfuncs aio_funcs;	/* POSIX AIO test functions.	*/
@@ -1813,7 +1823,6 @@ extern void handle_thread_exit(dinfo_t *dip);
 extern void finish_test_common(dinfo_t *dip, int thread_status);
 
 extern void terminate(dinfo_t *dip, int exit_code);
-extern int nofunc(struct dinfo *dip);
 extern int HandleMultiVolume(struct dinfo *dip);
 extern int RequestFirstVolume(struct dinfo *dip, int oflags);
 extern int RequestMultiVolume(struct dinfo *dip, hbool_t reopen, int open_flags);
@@ -2167,6 +2176,11 @@ extern ssize_t verify_record(	struct dinfo	*dip,
 extern int FindCapacity(struct dinfo *dip);
 extern void SetupTransferLimits(dinfo_t *dip, large_t bytes);
 
+/* Note: Without NVME support, stubs exist for these functions. */
+extern void report_standard_nvme_information(dinfo_t *dip);
+extern ssize_t nvmeReadData(dinfo_t *dip, void *buffer, size_t bytes, Offset_t offset);
+extern ssize_t nvmeWriteData(dinfo_t *dip, void *buffer, size_t bytes, Offset_t offset);
+
 /* dtscsi.c */
 #if defined(SCSI)
 
@@ -2188,11 +2202,6 @@ extern ssize_t scsiWriteData(dinfo_t *dip, void *buffer, size_t bytes, Offset_t 
 extern void dtReportScsiError(dinfo_t *dip, scsi_generic_t *sgp);
 extern int get_standard_scsi_information(dinfo_t *dip, scsi_generic_t *sgp);
 extern void strip_trailing_spaces(char *bp);
-
-/* Note: Without NVME support, stubs exist for these functions. */
-extern void report_standard_nvme_information(dinfo_t *dip);
-extern ssize_t nvmeReadData(dinfo_t *dip, void *buffer, size_t bytes, Offset_t offset);
-extern ssize_t nvmeWriteData(dinfo_t *dip, void *buffer, size_t bytes, Offset_t offset);
 
 /* dtnvme.c */
 #if defined(NVME) && defined(__linux__)

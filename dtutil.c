@@ -857,8 +857,8 @@ process_iotune(dinfo_t *dip, char *file)
 	    count = -1;		/* Error or EOF, stop reading! */
 	} else {
 	    char *p;
-	    if (p = strrchr(buffer, '\r')) *p = '\0';
-	    if (p = strrchr(buffer, '\n')) *p = '\0';
+	    if ((p = strrchr(buffer, '\r'))) *p = '\0';
+	    if ((p = strrchr(buffer, '\n'))) *p = '\0';
 	    count = (ssize_t)strlen(buffer);
 	}
 	/* Format: [jobid]|[tag] *_delay=value enable=flag... */
@@ -2913,7 +2913,11 @@ ExecuteTrigger(struct dinfo *dip, ...)
 #endif /* defined(SCSI) */
 		{
 		    (void)sprintf(cmd, "%s dsf=%s op=bus_rest",
+#if defined(SCSI)
 				  (dip->di_spt_path) ? dip->di_spt_path : spt_path,
+#else
+				  spt_path,
+#endif
 				  dip->di_dname);
 		    status = ExecuteCommand(dip, cmd, LogPrefixEnable, True);
 		}
@@ -2929,7 +2933,11 @@ ExecuteTrigger(struct dinfo *dip, ...)
 #endif /* defined(SCSI) */
 		{
 		    (void)sprintf(cmd, "%s dsf=%s op=target_rest",
+#if defined(SCSI)
 				  (dip->di_spt_path) ? dip->di_spt_path : spt_path,
+#else
+				  spt_path,
+#endif
 				  dip->di_dname);
 		    status = ExecuteCommand(dip, cmd, LogPrefixEnable, True);
 		}
@@ -2945,7 +2953,11 @@ ExecuteTrigger(struct dinfo *dip, ...)
 #endif /* defined(SCSI) */
 		{
 		    (void)sprintf(cmd, "%s dsf=%s op=lun_reset",
+#if defined(SCSI)
 				  (dip->di_spt_path) ? dip->di_spt_path : spt_path,
+#else
+				  spt_path,
+#endif
 				  dip->di_dname);
 		    status = ExecuteCommand(dip, cmd, LogPrefixEnable, True);
 		}

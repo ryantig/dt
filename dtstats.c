@@ -849,7 +849,7 @@ report_stats(struct dinfo *dip, enum stats stats_type)
     Lprintf (dip, DT_FIELD_WIDTH, "Starting time");
     Ctime(dip, dip->di_program_start);
     Lprintf(dip, "\n");
-    dip->di_program_end = time((time_t) 0);
+    dip->di_program_end = time(NULL);
     Lprintf (dip, DT_FIELD_WIDTH, "Ending time");
     Ctime(dip, dip->di_program_end);
     Lprintf(dip, "\n");
@@ -896,11 +896,11 @@ report_os_information(dinfo_t *dip, hbool_t print_header)
     if (print_header == True) {
 	Lprintf(dip, "\nOperating System Information:\n");
     }
-    if ( bp = os_gethostname() ) {
+    if ( (bp = os_gethostname()) ) {
 	char *host = bp;
 	char *address;
 	Lprintf(dip, DT_FIELD_WIDTH "%s", "Host name", host);
-	if ( address = os_getaddrinfo(dip, host, dip->di_inet_family, NULL, NULL) ) {
+	if ( (address = os_getaddrinfo(dip, host, dip->di_inet_family, NULL, NULL)) ) {
 	    Lprintf(dip, " (%s)\n", address);
 	    Free(dip, address);
 	} else {
@@ -908,12 +908,12 @@ report_os_information(dinfo_t *dip, hbool_t print_header)
 	}
 	Free(dip, host);
     }
-    if ( bp = os_getusername() ) {
+    if ( (bp = os_getusername()) ) {
 	Lprintf(dip, DT_FIELD_WIDTH "%s\n", "User name", bp);
 	Free(dip, bp); bp = NULL;
     }
     Lprintf(dip, DT_FIELD_WIDTH "%d\n", "Process ID", os_getpid());
-    if ( bp = os_getosinfo() ) {
+    if ( (bp = os_getosinfo()) ) {
 	Lprintf(dip, DT_FIELD_WIDTH "%s\n", "OS information", bp);
 	Free(dip, bp); bp = NULL;
     }

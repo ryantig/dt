@@ -247,7 +247,7 @@ dtapp_count_devices(char *devices)
     int num_devices = 1;
 
     /* Count the devices specified. */
-    while (p = strchr(p, ',')) {
+    while ((p = strchr(p, ','))) {
 	num_devices++; p++;
     }
     return(num_devices);
@@ -912,7 +912,7 @@ dtapp_free_dips(dinfo_t *dip, dinfo_t **dips, int num_devices)
     for (device = 0; (device < num_devices); device++) {
 	dinfo_t *cdip;
 	/* Free the device information we created. */
-	if (cdip = dips[device]) {
+	if ((cdip = dips[device])) {
 	    cdip->di_opaque = NULL;         /* Avoid recursion. */
             cdip->di_log_opened = False;    /* Master will close log file! */
 	    cleanup_device(cdip, False);
@@ -1262,7 +1262,7 @@ dtapp_test_startup(dinfo_t *dip, void *arg)
 {
     do_common_startup_logging(dip);
     do_setup_keepalive_msgs(dip);
-    dip->di_program_start = time((time_t) 0);
+    dip->di_program_start = time(NULL);
     dip->di_start_time = times(&dip->di_stimes);
     gettimeofday(&dip->di_start_timer, NULL);
     /* Prime the keepalive time, if enabled. */
@@ -1395,7 +1395,7 @@ dtapp_set_device_offsets(dinfo_t *dip, dtapp_information_t *dtap)
     dinfo_t **dips;
     int status = SUCCESS;
 
-    if (device_count = dtap->dta_output_count) {
+    if ((device_count = dtap->dta_output_count)) {
         dips = dtap->dta_output_dips;
         for (device = 0; (device < device_count); device++) {
             dinfo_t *odip = dips[device];
@@ -1409,7 +1409,7 @@ dtapp_set_device_offsets(dinfo_t *dip, dtapp_information_t *dtap)
                 }
             }
         }
-    } else if (device_count = dtap->dta_input_count) {
+    } else if ((device_count = dtap->dta_input_count)) {
         dips = dtap->dta_input_dips;
         for (device = 0; (device < device_count); device++) {
             dinfo_t *idip = dips[device];
@@ -1436,13 +1436,13 @@ dtapp_get_data_limit(dinfo_t *dip, dtapp_information_t *dtap)
     if (dip->di_user_limit) {
         return(dip->di_user_limit);
     }
-    if (device_count = dtap->dta_output_count) {
+    if ((device_count = dtap->dta_output_count)) {
         dips = dtap->dta_output_dips;
         for (device = 0; (device < device_count); device++) {
             dinfo_t *odip = dips[device];
             data_limit += get_data_limit(odip);
         }
-    } else if (device_count = dtap->dta_input_count) {
+    } else if ((device_count = dtap->dta_input_count)) {
         dips = dtap->dta_input_dips;
         for (device = 0; (device < device_count); device++) {
             dinfo_t *idip = dips[device];

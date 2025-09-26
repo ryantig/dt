@@ -1234,7 +1234,7 @@ verify_record (	struct dinfo	*dip,
     *status = (*dtf->tf_verify_data)(dip, dip->di_data_buffer, count, dip->di_pattern, &lba, True);
 
     /* Restore the previous pattern buffer (if any). */
-    if (dip->di_pattern_buffer = pbase) {
+    if ((dip->di_pattern_buffer = pbase)) {
 	dip->di_pattern_bufptr = pptr;
 	dip->di_pattern_bufend = pend;
 	dip->di_pattern_bufsize = psize;
